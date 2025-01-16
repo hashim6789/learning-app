@@ -1,0 +1,41 @@
+# version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3001:3000" # Changed port to 3001
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  # debug:
+  #   build:
+  #     context: .
+  #     target: debug
+  #   ports:
+  #     - "9229:9229"
+  #     - "3005:3000" # Changed port to 3001
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - NODE_ENV=development
+  #   entrypoint:
+  #     [
+  #       "node",
+  #       "--inspect=0.0.0.0:9229",
+  #       "-r",
+  #       "ts-node/register",
+  #       "src/frameworks_drivers/web/server.ts",
+  #     ]
+
+  mongo:
+    image: mongo
+    ports:
+      - "27018:27017"
