@@ -1,7 +1,3 @@
-import React, { useEffect, useState } from "react";
-
-import useBlockUnblock from "../../../hooks/useBlockUnblock";
-import { useTableFunctionality } from "../../../hooks/useTable";
 import useLearner from "../../../hooks/useLearner";
 
 interface Learner {
@@ -19,47 +15,6 @@ interface LearnerTableProps {
 }
 
 const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
-  // const { handleBlockUnblock, isLoading } = useBlockUnblock();
-  // const [learnerStatus, setLearnerStatus] = useState<{ [key: string]: Status }>(
-  //   learners.reduce((acc, learner) => {
-  //     acc[learner.id] = learner.status;
-  //     return acc;
-  //   }, {} as { [key: string]: Status })
-  // );
-
-  // const {
-  //   currentPage,
-  //   searchQuery,
-  //   filterStatus,
-  //   paginatedData,
-  //   totalPages,
-  //   handlePageChange,
-  //   handleSearchChange,
-  //   handleFilterChange,
-  // } = useTableFunctionality<Learner>({
-  //   data: learners,
-  //   itemsPerPage: 5,
-  //   filterField: "name",
-  // });
-
-  // const handleViewLearner = (learnerId: string) => {
-  //   console.log(learnerId, "learner");
-  // };
-
-  // const handleBlockUnblockWrapper = async (learnerId: string) => {
-  //   try {
-  //     const newStatus =
-  //       learnerStatus[learnerId] === "blocked" ? "unblocked" : "blocked";
-  //     await handleBlockUnblock(learnerId, "learner", learnerStatus[learnerId]);
-  //     setLearnerStatus((prevState) => ({
-  //       ...prevState,
-  //       [learnerId]: newStatus,
-  //     }));
-  //   } catch (error) {
-  //     console.error("Failed to block/unblock learner:", error);
-  //   }
-  // };
-
   const {
     isLoading,
     learnerStatus,

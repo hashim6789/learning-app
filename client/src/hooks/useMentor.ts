@@ -3,7 +3,7 @@ import useBlockUnblock from "./useBlockUnblock";
 import { useTableFunctionality } from "./useTable";
 import { useNavigate } from "react-router-dom";
 
-interface Learner {
+interface Mentor {
   id: string;
   name: string;
   email: string;
@@ -13,13 +13,13 @@ interface Learner {
 
 type Status = "blocked" | "unblocked";
 
-const useLearner = (learners: Learner[]) => {
+const useMentor = (mentors: Mentor[]) => {
   const { handleBlockUnblock, isLoading } = useBlockUnblock();
   const navigate = useNavigate();
 
-  const [learnerStatus, setLearnerStatus] = useState<{ [key: string]: Status }>(
-    learners.reduce((acc, learner) => {
-      acc[learner.id] = learner.status;
+  const [mentorStatus, setMentorStatus] = useState<{ [key: string]: Status }>(
+    mentors.reduce((acc, mentor) => {
+      acc[mentor.id] = mentor.status;
       return acc;
     }, {} as { [key: string]: Status })
   );
@@ -33,34 +33,34 @@ const useLearner = (learners: Learner[]) => {
     handlePageChange,
     handleSearchChange,
     handleFilterChange,
-  } = useTableFunctionality<Learner>({
-    data: learners,
+  } = useTableFunctionality<Mentor>({
+    data: mentors,
     itemsPerPage: 5,
     filterField: "name",
   });
 
-  const handleBlockUnblockWrapper = async (learnerId: string) => {
+  const handleBlockUnblockWrapper = async (mentorId: string) => {
     try {
       const newStatus =
-        learnerStatus[learnerId] === "blocked" ? "unblocked" : "blocked";
-      await handleBlockUnblock(learnerId, "learner", learnerStatus[learnerId]);
-      setLearnerStatus((prevState) => ({
+        mentorStatus[mentorId] === "blocked" ? "unblocked" : "blocked";
+      await handleBlockUnblock(mentorId, "mentor", mentorStatus[mentorId]);
+      setMentorStatus((prevState) => ({
         ...prevState,
-        [learnerId]: newStatus,
+        [mentorId]: newStatus,
       }));
     } catch (error) {
-      console.error("Failed to block/unblock learner:", error);
+      console.error("Failed to block/unblock mentor:", error);
     }
   };
 
-  const handleViewLearner = (learnerId: string) => {
-    navigate(`/admin/learners/${learnerId}`);
-    console.log(learnerId, "learner");
+  const handleViewMentor = (mentorId: string) => {
+    navigate(`/admin/mentors/${mentorId}`);
+    console.log(mentorId, "mentor");
   };
 
   return {
     isLoading,
-    learnerStatus,
+    mentorStatus,
     currentPage,
     searchQuery,
     filterStatus,
@@ -70,8 +70,8 @@ const useLearner = (learners: Learner[]) => {
     handleSearchChange,
     handleFilterChange,
     handleBlockUnblockWrapper,
-    handleViewLearner,
+    handleViewMentor,
   };
 };
 
-export default useLearner;
+export default useMentor;
