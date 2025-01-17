@@ -12,6 +12,7 @@ import AdminMentorManagement from "../modules/admin/pages/AdminMentorManagement"
 import AdminCourseManagement from "../modules/admin/pages/AdminCourseManagement";
 import AdminCategoryManagement from "../modules/admin/pages/AdminCategoryManagement";
 import AdminLearnerDetails from "../modules/admin/pages/AdminLernerDetails";
+import AdminMentorDetails from "../modules/admin/pages/AdminMentorDetails";
 
 //mentor module
 import MentorLayout from "../modules/mentor/pages/MentorLayout";
@@ -48,6 +49,7 @@ const AppRoutes: React.FC = () => {
         { path: "learners", element: <AdminLearnerManagement /> },
         { path: "learners/:learnerId", element: <AdminLearnerDetails /> },
         { path: "mentors", element: <AdminMentorManagement /> },
+        { path: "mentors/:mentorId", element: <AdminMentorDetails /> },
         { path: "courses", element: <AdminCourseManagement /> },
         { path: "courses", element: <AdminCourseManagement /> },
         { path: "categories", element: <AdminCategoryManagement /> },
