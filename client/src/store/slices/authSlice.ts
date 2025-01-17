@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { signup } from "../thunks/signup";
 import { login } from "../thunks/login";
+import { logout } from "../thunks/logout";
 import { googleSignup } from "../thunks/googleSignup";
 import { decodeToken } from "../../shared/utils/decodeToken";
 import { User } from "../../shared/types/User";
@@ -29,14 +30,7 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout(state) {
-      state.isAuthenticated = false;
-      state.loading = false;
-      state.error = null;
-      Cookies.remove("accessToken");
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -53,6 +47,7 @@ const authSlice = createSlice({
 
         try {
           localStorage.setItem("data", JSON.stringify(data));
+          localStorage.setItem("user", JSON.stringify(user));
         } catch (error) {
           console.error("Failed to store tokens in localStorage:", error);
         }
@@ -63,6 +58,20 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
+      })
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        Cookies.remove("accessToken");
+      })
+      .addCase(logout.fulfilled, (state) => {
+        (state.loading = false),
+          (state.user = "learner"),
+          (state.isAuthenticated = false);
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(signup.pending, (state) => {
         state.loading = true;
@@ -137,5 +146,5 @@ const authSlice = createSlice({
 });
 
 // Export the actions and reducer
-export const { logout } = authSlice.actions;
+// export const { logout } = authSlice.actions;
 export default authSlice.reducer;

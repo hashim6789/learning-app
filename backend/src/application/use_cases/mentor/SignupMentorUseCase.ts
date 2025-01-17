@@ -5,10 +5,8 @@ import { validateData } from "../../../shared/helpers/validateHelper";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import { Mentor } from "../../entities/Mentor";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class SignupMentorUseCase {
   private mentorRepository: IMentorRepository;
@@ -50,10 +48,7 @@ class SignupMentorUseCase {
       userId: createdMentor.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken({
-      userId: createdMentor.id,
-      role: "mentor",
-    });
+    const refreshToken = generateRefreshToken();
 
     const tokenSetMentor = await this.mentorRepository.setRefreshToken(
       createdMentor.id,

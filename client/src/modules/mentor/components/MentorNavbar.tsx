@@ -26,7 +26,7 @@ const Navbar: React.FC<MentorNavbarProps> = ({
         <span className="text-sm font-medium text-blue-600">{mentorName}</span>
         <ChevronDown className="w-4 h-4 text-blue-500" />
         <button
-          onClick={handleLogout}
+          onClick={() => handleLogout("mentor")}
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
         >
           Logout

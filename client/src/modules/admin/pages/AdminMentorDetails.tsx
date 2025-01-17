@@ -23,36 +23,6 @@ interface Mentor {
   isBlocked: boolean | null;
 }
 
-const testMentor: Mentor = {
-  firstName: "Jane",
-  lastName: "Smith",
-  email: "jane.smith@example.com",
-  profilePicture: "https://via.placeholder.com/150",
-  createdCourses: [
-    {
-      id: "course1",
-      title: "Mastering TypeScript",
-      description:
-        "A comprehensive course on TypeScript, from basics to advanced.",
-      thumbnail: "https://via.placeholder.com/200",
-      duration: "5 hours",
-      purchaseCount: 120,
-      status: "published",
-    },
-    {
-      id: "course2",
-      title: "React for Beginners",
-      description:
-        "Learn the fundamentals of React.js in this beginner-friendly course.",
-      thumbnail: "https://via.placeholder.com/200",
-      duration: "3 hours",
-      purchaseCount: 200,
-      status: "published",
-    },
-  ],
-  isBlocked: false,
-};
-
 const AdminMentorDetails = ({}: MentorDetailsProps) => {
   const { mentorId } = useParams();
   const { data: mentor, loading: mentorLoading } = useFetch<Mentor>(
@@ -212,3 +182,33 @@ const AdminMentorDetails = ({}: MentorDetailsProps) => {
 };
 
 export default AdminMentorDetails;
+
+// const testMentor: Mentor = {
+//   firstName: "Jane",
+//   lastName: "Smith",
+//   email: "jane.smith@example.com",
+//   profilePicture: "https://via.placeholder.com/150",
+//   createdCourses: [
+//     {
+//       id: "course1",
+//       title: "Mastering TypeScript",
+//       description:
+//         "A comprehensive course on TypeScript, from basics to advanced.",
+//       thumbnail: "https://via.placeholder.com/200",
+//       duration: "5 hours",
+//       purchaseCount: 120,
+//       status: "published",
+//     },
+//     {
+//       id: "course2",
+//       title: "React for Beginners",
+//       description:
+//         "Learn the fundamentals of React.js in this beginner-friendly course.",
+//       thumbnail: "https://via.placeholder.com/200",
+//       duration: "3 hours",
+//       purchaseCount: 200,
+//       status: "published",
+//     },
+//   ],
+//   isBlocked: false,
+// };

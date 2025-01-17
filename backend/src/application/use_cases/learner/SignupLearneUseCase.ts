@@ -5,10 +5,8 @@ import { validateData } from "../../../shared/helpers/validateHelper";
 import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
 import { Learner } from "../../entities/Learner";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class SignupLearnerUseCase {
   private learnerRepository;
@@ -51,10 +49,7 @@ class SignupLearnerUseCase {
       userId: createdLearner.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken({
-      userId: createdLearner.id,
-      role: "mentor",
-    });
+    const refreshToken = generateRefreshToken();
 
     return {
       statusCode: 200,

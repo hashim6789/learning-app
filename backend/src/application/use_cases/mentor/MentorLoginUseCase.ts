@@ -1,15 +1,13 @@
 import bcrypt from "bcryptjs";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { Mentor } from "../../entities/Mentor";
 import { validateData } from "../../../shared/helpers/validateHelper";
-import { IMentorRepository } from "../../../application/IRepositories/IMentorRepository";
+import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
-class LoginMentorUseCase {
+class MentorLoginUseCase {
   private mentorRepository;
   constructor(mentorRepository: IMentorRepository) {
     this.mentorRepository = mentorRepository;
@@ -47,10 +45,8 @@ class LoginMentorUseCase {
       userId: existingMentor.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken({
-      userId: existingMentor.id,
-      role: "mentor",
-    });
+
+    const refreshToken = generateRefreshToken();
 
     const tokenSetMentor = await this.mentorRepository.setRefreshToken(
       existingMentor.id,
@@ -67,16 +63,19 @@ class LoginMentorUseCase {
       };
     }
 
+    tokenSetMentor.password = null;
+
     return {
       statusCode: 200,
       success: true,
-      message: "Mentor loginned successful",
+      message: "Mentor login successful",
       data: {
         accessToken,
         refreshToken,
+        mentor: tokenSetMentor,
       },
     };
   }
 }
 
-export default LoginMentorUseCase;
+export default MentorLoginUseCase;

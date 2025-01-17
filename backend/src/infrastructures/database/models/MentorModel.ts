@@ -13,9 +13,9 @@ export interface IMentor extends Document {
     bankName: string | null;
     ifscCode: string | null;
   }[];
-  refreshToken: string;
+  refreshToken: string | null;
   password: string | null;
-  isBlocked: boolean | null;
+  isBlocked: boolean;
 }
 
 const MentorSchema: Schema = new Schema({
@@ -24,7 +24,7 @@ const MentorSchema: Schema = new Schema({
   lastName: { type: String },
   email: { type: String, required: true },
   profilePicture: { type: String },
-  createdCourses: [{ type: Schema.Types.ObjectId }],
+  createdCourses: [{ type: Schema.Types.ObjectId, ref: "Courses" }],
   bankDetails: [
     {
       accountNumber: { type: String },
@@ -34,7 +34,7 @@ const MentorSchema: Schema = new Schema({
   ],
   refreshToken: { type: String },
   password: { type: String },
-  isBlocked: { type: Boolean },
+  isBlocked: { type: Boolean, default: false },
 });
 
 // Ensure consistent naming convention for the model and export

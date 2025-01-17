@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/slices/authSlice";
+import { logout } from "../store/thunks/logout";
 import { AppDispatch, RootState } from "../store";
 import { AuthLoginCredentials } from "../DTOS/AuthLoginCredentials";
 import { AuthSignupCredentials } from "../DTOS/AuthSignupCredentials";
@@ -49,8 +49,8 @@ const useAuth = () => {
   };
 
   //for logout
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = (user: User) => {
+    dispatch(logout(user));
     navigate("/learner/login");
   };
 

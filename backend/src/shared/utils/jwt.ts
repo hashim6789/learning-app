@@ -17,11 +17,11 @@ export const generateAccessToken = (payload: Payload): string => {
   });
 };
 
-export const generateRefreshToken = (payload: Payload): string => {
-  return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: REFRESH_TOKEN_EXPIRATION,
-  });
-};
+// export const generateRefreshToken = (payload: Payload): string => {
+//   return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
+//     expiresIn: REFRESH_TOKEN_EXPIRATION,
+//   });
+// };
 
 export const verifyAccessToken = (token: string): Payload | null => {
   try {

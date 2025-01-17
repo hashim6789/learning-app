@@ -45,7 +45,7 @@ const LearnerNavbar: React.FC<NavbarProps> = ({ className = "" }) => {
           <span className="text-gray-600">Student ▾</span>
         </div>
         <button
-          onClick={handleLogout}
+          onClick={() => handleLogout("learner")}
           className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
         >
           Logout

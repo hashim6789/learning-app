@@ -1,3 +1,5 @@
+import Course from "./Course";
+
 // entities/Mentor.ts
 export class Mentor {
   constructor(
@@ -7,9 +9,9 @@ export class Mentor {
     public lastName: string | null,
     public email: string,
     public profilePicture: string | null,
-    public createdCourses: string[] | null,
+    public createdCourses: Course[] | null,
     public bankDetails: BankDetail[],
-    public isBlocked: boolean | null,
+    public isBlocked: boolean,
     public password: string | null,
     public refreshToken: string | null
   ) {}

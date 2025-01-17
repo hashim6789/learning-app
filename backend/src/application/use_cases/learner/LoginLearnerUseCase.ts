@@ -3,11 +3,9 @@ import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import { validateData } from "../../../shared/helpers/validateHelper";
 import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
 import bcrypt from "bcryptjs";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class LoginLearnerUseCase {
   private learnerRepository;
@@ -42,10 +40,7 @@ class LoginLearnerUseCase {
       userId: learner.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken({
-      userId: learner.id,
-      role: "mentor",
-    });
+    const refreshToken = generateRefreshToken();
 
     return {
       statusCode: 200,

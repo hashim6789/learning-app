@@ -1,10 +1,8 @@
 import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
 import axios from "axios";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
 import { Learner } from "../../entities/Learner";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class GoogleSignupLearnerUseCase {
   private learnerRepository;
@@ -53,10 +51,7 @@ class GoogleSignupLearnerUseCase {
       userId: fetchedUser.id,
       role: "learner",
     });
-    const refreshToken = generateRefreshToken({
-      userId: fetchedUser.id,
-      role: "learner",
-    });
+    const refreshToken = generateRefreshToken();
 
     return {
       statusCode: 200,

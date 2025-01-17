@@ -1,11 +1,9 @@
 import { User } from "../../../shared/types/User";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import axios from "axios";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
 import { BankDetail, Mentor } from "../../entities/Mentor";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class GoogleSignupMentorUseCase {
   private mentorRepository;
@@ -64,10 +62,7 @@ class GoogleSignupMentorUseCase {
       userId: fetchedUser.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken({
-      userId: fetchedUser.id,
-      role: "mentor",
-    });
+    const refreshToken = generateRefreshToken();
 
     const tokenSetMentor = await this.mentorRepository.setRefreshToken(
       fetchedUser.id,

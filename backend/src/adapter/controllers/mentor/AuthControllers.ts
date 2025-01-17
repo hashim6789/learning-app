@@ -4,7 +4,8 @@ import MentorRepository from "../../../infrastructures/database/repositories/Men
 import GoogleSignupMentorUseCase from "../../../application/use_cases/mentor/GoogleSignupMentorUseCase";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import SignupMentorUseCase from "../../../application/use_cases/mentor/SignupMentorUseCase";
-import LoginMentorUseCase from "../../../application/use_cases/mentor/LoginMentorUserCase";
+import LoginMentorUseCase from "../../../application/use_cases/mentor/MentorLoginUseCase";
+import { Mentor } from "../../../application/entities/Mentor";
 
 const mentorRepository = new MentorRepository();
 const signupMentorUseCase = new SignupMentorUseCase(mentorRepository);
@@ -50,20 +51,19 @@ class AuthController {
     try {
       const response = await loginMentorUseCase.execute(loginDTO);
       if (response.success && response.data) {
-        const { accessToken, refreshToken } = response.data as {
+        const { accessToken, refreshToken, mentor } = response.data as {
           accessToken: string;
           refreshToken: string;
+          mentor: Mentor;
         };
 
-        // Set refresh token as an HTTP-only cookie
-        // setRefreshTokenCookie(refreshToken, res);
-        // setRefreshTokenCookie(accessToken, res);
+        res.cookie("refreshToken", refreshToken, { httpOnly: true });
+        res.cookie("accessToken", accessToken, { httpOnly: false });
 
         // Send access token in response
         res.status(200).json({
           message: response.message,
-          accessToken,
-          refreshToken,
+          data: mentor,
           user: "mentor",
         });
       } else {
@@ -84,10 +84,6 @@ class AuthController {
           accessToken: string;
           refreshToken: string;
         };
-
-        // Set refresh token as an HTTP-only cookie
-        // setRefreshTokenCookie(refreshToken, res);
-        // setRefreshTokenCookie(accessToken, res);
 
         // Send access token in response
         res.status(200).json({

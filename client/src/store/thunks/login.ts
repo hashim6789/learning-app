@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthLoginCredentials } from "../../DTOS/AuthLoginCredentials";
 import api from "../../shared/utils/api";
+import { User } from "../../shared/types/User";
+import { config } from "../../shared/configs/config";
 
-type User = "admin" | "learner" | "mentor";
-
-const host = "http://localhost:3000";
+const host = config.API_BASE_URL;
 
 // Create an async thunk for the login API request
 export const login = createAsyncThunk(

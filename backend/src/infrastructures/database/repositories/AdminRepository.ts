@@ -40,6 +40,24 @@ class AdminRepository implements IAdminRepository {
     if (!admin) return null;
     return mappedAdmin(admin);
   }
+
+  async findByRefreshToken(token: string): Promise<Admin | null> {
+    const admin = await AdminModel.findOne({ refreshToken: token });
+    if (!admin) return null;
+    return mappedAdmin(admin);
+  }
+
+  async deleteRefreshToken(adminId: string): Promise<Admin | null> {
+    const admin = await AdminModel.findByIdAndUpdate(
+      adminId,
+      {
+        refreshToken: null,
+      },
+      { new: true }
+    );
+    if (!admin) return null;
+    return mappedAdmin(admin);
+  }
 }
 
 function mappedAdmin(data: IAdmin) {

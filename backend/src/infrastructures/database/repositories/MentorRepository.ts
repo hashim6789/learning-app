@@ -27,7 +27,10 @@ class MentorRepository implements IMentorRepository {
 
   //fetch a mentor by id
   async fetchMentorById(mentorId: string): Promise<Mentor | null> {
-    const mentor = await MentorModel.findById(mentorId);
+    const mentor = await MentorModel.findById(mentorId).populate(
+      "createdCourses"
+    );
+    console.log("mentor =", mentor);
     if (!mentor) return null;
     return mappedMentor(mentor);
   }
@@ -75,23 +78,25 @@ class MentorRepository implements IMentorRepository {
 
 //to convert the IMentor to Mentor
 function mappedMentor(data: IMentor): Mentor {
-  const id = data._id.toString();
+  const id = data._id?.toString() || ""; // Ensure id is a string
   const createdCourses = data.createdCourses
-    ? data.createdCourses.map((courseId) => courseId.toString())
-    : null;
-  const refreshToken = data.refreshToken ? data.refreshToken : null;
+    ? data.createdCourses.map((courseId) => courseId?.toString() || "")
+    : [];
+
+  const refreshToken = data.refreshToken || null;
+
   return new Mentor(
     id,
-    data.googleId,
+    data.googleId || null,
     data.firstName,
-    data.lastName,
+    data.lastName || null,
     data.email,
-    data.profilePicture,
-    createdCourses,
-    data.bankDetails,
+    data.profilePicture || null,
+    createdCourses.length > 0 ? createdCourses : null, // Return null if no courses
+    data.bankDetails || [], // Default to an empty array
     data.isBlocked,
-    data.password,
-    refreshToken
+    data.password || null,
+    refreshToken || null
   );
 }
 
