@@ -1,6 +1,9 @@
 import { useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+import MySwal from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 import api from "../shared/utils/api";
+import { showToast } from "../shared/utils/toastUtils";
 
 type EntityType = "learner" | "mentor" | "categorie";
 type Status = "blocked" | "unblocked";
@@ -8,7 +11,11 @@ type Status = "blocked" | "unblocked";
 interface UseBlockUnblockResponse {
   isLoading: boolean;
   error: string | null;
-  blockUnblock: (id: string, entityType: EntityType, status: Status) => void;
+  handleBlockUnblock: (
+    id: string,
+    entityType: EntityType,
+    currentStatus: Status
+  ) => Promise<void>;
 }
 
 const host = "http://localhost:3000";
@@ -17,32 +24,49 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const blockUnblock = async (
+  const handleBlockUnblock = async (
     id: string,
     entityType: EntityType,
-    status: Status
+    currentStatus: Status
   ) => {
     setIsLoading(true);
-    setError(null); // Reset error before making the request
+    setError(null);
 
     try {
-      const change = status === "blocked" ? false : true;
-      // Define the API endpoint
-      const endpoint = `${host}/admin/${entityType}s/${id}/block-unblock`;
-      console.log(change);
+      const action = currentStatus === "blocked" ? "unblock" : "block";
+      const change = currentStatus === "blocked" ? false : true;
 
-      // API call to block/unblock
-      const response = await api.patch(endpoint, { change });
+      const result = await MySwal(Swal).fire({
+        title: `Are you sure you want to ${action} this ${entityType}?`,
+        text: `This action will ${action} the ${entityType}.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: currentStatus === "blocked" ? "#3085d6" : "#d33",
+        cancelButtonColor: "#aaa",
+        confirmButtonText: `Yes, ${action}`,
+        cancelButtonText: "Cancel",
+      });
 
-      if (response.status === 200) {
+      if (result.isConfirmed) {
+        const endpoint = `${host}/admin/${entityType}s/${id}/block-unblock`;
+
+        // API call to block/unblock
+        const response = await api.patch(endpoint, { change });
+
+        if (response.status === 200) {
+          showToast.success(`Successfully ${action}ed the ${entityType}.`);
+        }
+      } else {
+        showToast.info("Action cancelled.");
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        // Handle AxiosError specifically
-        setError(err.response?.data?.message || "An error occurred");
+        const errorMessage = err.response?.data?.message || "An error occurred";
+        setError(errorMessage);
+        showToast.error(errorMessage);
       } else {
-        // Handle non-Axios errors
         setError("An unexpected error occurred");
+        showToast.error("An unexpected error occurred");
       }
     } finally {
       setIsLoading(false);
@@ -52,7 +76,7 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
   return {
     isLoading,
     error,
-    blockUnblock,
+    handleBlockUnblock,
   };
 };
 
