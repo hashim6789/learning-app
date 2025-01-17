@@ -44,19 +44,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        const { message, user, accessToken, refreshToken } = action.payload;
+        const { message, user, data } = action.payload;
 
         state.loading = false;
         state.isAuthenticated = true;
         state.user = user;
         state.error = null;
 
-        // try {
-        //   localStorage.setItem("accessToken", accessToken);
-        //   localStorage.setItem("refreshToken", refreshToken);
-        // } catch (error) {
-        //   console.error("Failed to store tokens in localStorage:", error);
-        // }
+        try {
+          localStorage.setItem("data", JSON.stringify(data));
+        } catch (error) {
+          console.error("Failed to store tokens in localStorage:", error);
+        }
 
         console.log("Login successful:", message);
       })

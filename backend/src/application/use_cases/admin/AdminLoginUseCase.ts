@@ -44,6 +44,8 @@ class AdminLoginUseCase {
       };
     }
 
+    refreshedAdmin.password = null;
+
     return {
       statusCode: 200,
       success: true,
