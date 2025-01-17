@@ -20,7 +20,7 @@ const LearnerSchema: Schema = new Schema({
   password: { type: String },
   email: { type: String, required: true },
   profilePicture: { type: String },
-  purchasedCourses: [{ type: Schema.Types.ObjectId }],
+  purchasedCourses: [{ type: Schema.Types.ObjectId, ref: "Courses" }],
   isBlocked: { type: Boolean },
 });
 

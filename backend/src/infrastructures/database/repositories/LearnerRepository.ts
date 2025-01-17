@@ -33,7 +33,13 @@ class LearnerRepository implements ILearnerRepository {
   }
 
   async fetchLearnerById(learnerId: string): Promise<Learner | null> {
-    const learner = await LearnerModel.findById(learnerId);
+    const learner = await LearnerModel.findById(learnerId).populate({
+      path: "purchasedCourses", // Path to the field being populated
+      model: "Courses", // The model being populated
+    });
+
+    console.log("populated learner", learner);
+
     if (!learner) return null;
     return mappingLearner(learner);
   }
