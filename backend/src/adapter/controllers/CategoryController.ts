@@ -3,21 +3,34 @@ import CategoryRepository from "../../infrastructures/database/repositories/Cate
 import GetCategoriesUseCase from "../../application/use_cases/admin/GetCategoriesUseCase";
 import CreateCategoryUseCase from "../../application/use_cases/admin/CreateCategoryUseCase";
 import ListUnListCategoryUseCase from "../../application/use_cases/admin/ListUnlistCategoryUseCase";
+import { IGetCategoriesUseCase } from "../IUseCases/admin/IGetCategoriesUseCase";
+import { ICreateCategoryUseCase } from "../../application/use_cases/admin/ICreateCategoryUseCase";
+import { IListUnListCategoryUseCase } from "../IUseCases/admin/IListUnListCategory";
 
 const categoryRepository = new CategoryRepository();
-const getCategoriesUseCase = new GetCategoriesUseCase(categoryRepository);
-const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository);
 const listUnListCategoryUseCase = new ListUnListCategoryUseCase(
   categoryRepository
 );
 class CategoryController {
+  private getCategoriesUseCase: IGetCategoriesUseCase;
+  private createCategoryUseCase: ICreateCategoryUseCase;
+  private listUnListCategoryUseCase: IListUnListCategoryUseCase;
+  constructor(
+    getCategoriesUseCase: IGetCategoriesUseCase,
+    createCategoryUseCase: ICreateCategoryUseCase,
+    listUnListCategoryUseCase: IListUnListCategoryUseCase
+  ) {
+    this.getCategoriesUseCase = getCategoriesUseCase;
+    this.createCategoryUseCase = createCategoryUseCase;
+    this.listUnListCategoryUseCase = listUnListCategoryUseCase;
+  }
   async fetchAllCategoriesForAdmin(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const response = await getCategoriesUseCase.execute();
+      const response = await this.getCategoriesUseCase.execute();
       if (response.success && response.data) {
         res
           .status(200)
@@ -36,7 +49,7 @@ class CategoryController {
     next: NextFunction
   ) {
     try {
-      const response = await getCategoriesUseCase.execute();
+      const response = await this.getCategoriesUseCase.execute();
       if (response.success && response.data) {
         res
           .status(200)
@@ -56,7 +69,10 @@ class CategoryController {
   ) {
     try {
       const { title, isListed } = req.body;
-      const response = await createCategoryUseCase.execute({ title, isListed });
+      const response = await this.createCategoryUseCase.execute({
+        title,
+        isListed,
+      });
       if (response && response.data) {
         res
           .status(response.statusCode)
@@ -76,9 +92,12 @@ class CategoryController {
     try {
       const { change } = req.body;
       const { categoryId } = req.params;
-      const response = await listUnListCategoryUseCase.execute(categoryId, {
-        change,
-      });
+      const response = await this.listUnListCategoryUseCase.execute(
+        categoryId,
+        {
+          change,
+        }
+      );
       if (response && response.data) {
         res
           .status(response.statusCode)
@@ -92,4 +111,4 @@ class CategoryController {
   }
 }
 
-export default new CategoryController();
+export default CategoryController;

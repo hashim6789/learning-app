@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import GetMentorsUseCase from "../../application/use_cases/admin/GetMentorsUseCase";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import BlockUnblockMentorUseCase from "../../application/use_cases/admin/BlockUnBlockMentorUseCase";
+import { IGetMentorsUseCase } from "../IUseCases/admin/IGetMentorUseCase";
+import { IBlockUnBlockMentorUseCase } from "../IUseCases/admin/IBlockUnblockMentorUseCase";
 
 const mentorRepository = new MentorRepository();
 const getMentorUseCase = new GetMentorsUseCase(mentorRepository);
@@ -10,13 +12,24 @@ const blockUnblockMentorUseCase = new BlockUnblockMentorUseCase(
 );
 
 class MentorController {
+  private getMentorUseCase: IGetMentorsUseCase;
+  private blockUnblockMentorUseCase: IBlockUnBlockMentorUseCase;
+
+  constructor(
+    getMentorUseCase: IGetMentorsUseCase,
+    blockUnblockMentorUseCase: IBlockUnBlockMentorUseCase
+  ) {
+    this.getMentorUseCase = getMentorUseCase;
+    this.blockUnblockMentorUseCase = blockUnblockMentorUseCase;
+  }
+
   async fetchAllMentorsForAdmin(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const response = await getMentorUseCase.execute();
+      const response = await this.getMentorUseCase.execute();
       if (response.success && response.data) {
         res
           .status(200)
@@ -32,7 +45,7 @@ class MentorController {
   async blockUnblockMentor(req: Request, res: Response, next: NextFunction) {
     try {
       const { mentorId } = req.params;
-      const response = await blockUnblockMentorUseCase.execute(
+      const response = await this.blockUnblockMentorUseCase.execute(
         mentorId,
         req.body
       );
@@ -49,4 +62,4 @@ class MentorController {
   }
 }
 
-export default new MentorController();
+export default MentorController;

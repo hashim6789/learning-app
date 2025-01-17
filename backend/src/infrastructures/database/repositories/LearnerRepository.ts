@@ -1,7 +1,7 @@
 import { ProgramUpdateLevel } from "typescript";
-import { Learner } from "../../../../application/entities/Learner";
-import { ILearnerRepository } from "../../../../application/IRepositories/ILearnerRepository";
-import LearnerModel, { ILearner } from "../../models/LearnerModel";
+import { Learner } from "../../../application/entities/Learner";
+import { ILearnerRepository } from "../../../application/IRepositories/ILearnerRepository";
+import LearnerModel, { ILearner } from "../models/LearnerModel";
 
 class LearnerRepository implements ILearnerRepository {
   //find learner by email

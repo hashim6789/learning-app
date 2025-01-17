@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import LearnerRepository from "../../../infrastructures/database/repositories/learner/LearnerRepository";
+import LearnerRepository from "../../../infrastructures/database/repositories/LearnerRepository";
 import { SignupDTO } from "../../../shared/dtos/SignupDTO";
 import SignupLearnerUseCase from "../../../application/use_cases/learner/SignupLearneUseCase";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";

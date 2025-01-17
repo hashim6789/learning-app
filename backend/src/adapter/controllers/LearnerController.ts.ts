@@ -1,22 +1,30 @@
 import { Request, Response, NextFunction } from "express";
-import GetLearnersUseCase from "../../application/use_cases/admin/GetLearnersUseCase";
-import LearnerRepository from "../../infrastructures/database/repositories/learner/LearnerRepository";
-import BlockUnblockLearnerUseCase from "../../application/use_cases/admin/BlockUnblockLearnerUseCase";
+// import GetLearnersUseCase from "../../application/use_cases/admin/GetLearnersUseCase";
+// import LearnerRepository from "../../infrastructures/database/repositories/learner/LearnerRepository";
+import { IGetLearnersUseCase } from "../IUseCases/admin/IGetLearnerUseCase";
+import { IBlockUnblockLearnerUseCase } from "../IUseCases/admin/IBlockUnblockLearnerUseCase";
+// import BlockUnblockLearnerUseCase from "../../application/use_cases/admin/BlockUnblockLearnerUseCase";
 
-const learnerRepository = new LearnerRepository();
-const getLearnersUseCase = new GetLearnersUseCase(learnerRepository);
-const blockUnblockLearnerUseCase = new BlockUnblockLearnerUseCase(
-  learnerRepository
-);
+// const learnerRepository = new LearnerRepository();
 
 class LearnerController {
+  private getLearnersUseCase: IGetLearnersUseCase;
+  private blockUnblockLearnerUseCase: IBlockUnblockLearnerUseCase;
+
+  constructor(
+    getLearnersUseCase: IGetLearnersUseCase,
+    blockUnblockLearnerUseCase: IBlockUnblockLearnerUseCase
+  ) {
+    this.getLearnersUseCase = getLearnersUseCase;
+    this.blockUnblockLearnerUseCase = blockUnblockLearnerUseCase;
+  }
   async getAllLearnersForAdmin(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const response = await getLearnersUseCase.execute();
+      const response = await this.getLearnersUseCase.execute();
       if (response.success && response.data) {
         res.status(200).json({
           message: response.message,
@@ -33,7 +41,7 @@ class LearnerController {
   async blockUnblockLearner(req: Request, res: Response, next: NextFunction) {
     try {
       const { learnerId } = req.params;
-      const response = await blockUnblockLearnerUseCase.execute(
+      const response = await this.blockUnblockLearnerUseCase.execute(
         learnerId,
         req.body
       );
@@ -51,4 +59,4 @@ class LearnerController {
   }
 }
 
-export default new LearnerController();
+export default LearnerController;
