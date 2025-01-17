@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import axiosInstance from "../shared/axiosInstance";
+import api from "../shared/utils/api";
 
 interface Lesson {
   title: string;
@@ -39,7 +39,7 @@ const useLesson = (courseId: string) => {
     if (!validateLesson()) return;
 
     try {
-      const response = await axiosInstance.post("/mentor/lessons", lesson); // Adjust endpoint as necessary
+      const response = await api.post("/mentor/lessons", lesson); // Adjust endpoint as necessary
       Swal.fire({
         icon: "success",
         title: "Lesson Added",

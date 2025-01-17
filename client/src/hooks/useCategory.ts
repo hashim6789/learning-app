@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../shared/utils/api";
 
 const useCategory = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -9,7 +9,7 @@ const useCategory = () => {
   const createCategory = async (newCategoryTitle: string) => {
     setLoading(true);
     try {
-      const response = await axios.post(
+      const response = await api.post(
         "http://localhost:3000/admin/categories",
         {
           title: newCategoryTitle.trim().toUpperCase(),
@@ -32,7 +32,7 @@ const useCategory = () => {
   ) => {
     setLoading(true);
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `http://localhost:3000/admin/categories/${categoryId}`,
         {
           title: newCategoryTitle.trim().toUpperCase(),

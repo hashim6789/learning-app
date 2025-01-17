@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import { IAdminLoginUseCase } from "../../IUseCases/admin/IAdminLoginUseCase";
+import { Admin } from "../../../application/entities/Admin";
 // import cookieConfig from "../../../shared/configs/cookieConfig";
 
 class AuthController {
@@ -14,9 +15,10 @@ class AuthController {
       const response = await this.adminLoginUseCase.execute(loginDTO);
 
       if (response.success && response.data) {
-        const { accessToken, refreshToken } = response.data as {
+        const { accessToken, refreshToken, admin } = response.data as {
           accessToken: string;
           refreshToken: string;
+          admin: Admin;
         };
 
         // Set refresh token as an HTTP-only cookie
@@ -27,6 +29,7 @@ class AuthController {
         res.status(200).json({
           message: response.message,
           user: "admin",
+          data: admin,
         });
       } else {
         res.status(400).json({ message: response.message });

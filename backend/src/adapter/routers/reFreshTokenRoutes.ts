@@ -22,7 +22,6 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 
   // Verify the refresh token
   const admin = await adminRepository.findByToken(refreshToken);
-  console.log(admin);
   if (!admin) {
     res.status(403).json({ message: "Invalid refresh token" });
     return;
@@ -36,6 +35,17 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 
   // Optionally, create a new refresh token (or reissue the same one)
   const newRefreshToken = generateRefreshToken();
+
+  const refreshedAdmin = await adminRepository.setRefreshTokenToDB(
+    newRefreshToken,
+    admin.id
+  );
+  console.log(refreshedAdmin);
+
+  if (!refreshedAdmin) {
+    res.status(400).json({ message: "an error when storing refresh token" });
+    return;
+  }
 
   // Set new refresh token and access token as cookies
   res.cookie("refreshToken", newRefreshToken, { httpOnly: true });

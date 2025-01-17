@@ -51,6 +51,7 @@ class AdminLoginUseCase {
       data: {
         accessToken,
         refreshToken,
+        admin: refreshedAdmin,
       },
     };
   }

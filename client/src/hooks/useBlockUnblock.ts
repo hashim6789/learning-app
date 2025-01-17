@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
+import api from "../shared/utils/api";
 
 type EntityType = "learner" | "mentor" | "categorie";
 type Status = "blocked" | "unblocked";
@@ -31,7 +32,7 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
       console.log(change);
 
       // API call to block/unblock
-      const response = await axios.patch(endpoint, { change });
+      const response = await api.patch(endpoint, { change });
 
       if (response.status === 200) {
       }

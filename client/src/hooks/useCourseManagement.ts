@@ -3,9 +3,8 @@ import {
   //  useEffect,
   useCallback,
 } from "react";
-import axios from "axios";
 
-import axiosInstance from "../shared/axiosInstance";
+import api from "../shared/utils/api";
 
 interface Course {
   id: string;
@@ -33,7 +32,7 @@ const useCourseManagement = (baseUrl: string) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${baseUrl}/categories`);
+      const response = await api.get(`${baseUrl}/categories`);
       setCategories(response.data.data);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch categories");
@@ -47,7 +46,7 @@ const useCourseManagement = (baseUrl: string) => {
     setLoading(true);
     setError(null);
     try {
-      await axiosInstance.post(`${baseUrl}/courses`, course);
+      await api.post(`${baseUrl}/courses`, course);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to add course");
     } finally {
