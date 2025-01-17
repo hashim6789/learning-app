@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosInstance from "../shared/axiosInstance";
+import api from "../shared/utils/api";
 
 const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
@@ -7,13 +7,12 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
   const [error, setError] = useState<string | null>(null); // Error message
 
   useEffect(() => {
-    console.log("learner fetching");
     const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await axiosInstance.get(url);
+        const response = await api.get(url);
 
         if (!response.data) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);

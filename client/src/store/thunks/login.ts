@@ -1,6 +1,6 @@
-import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AuthLoginCredentials } from "../../DTOS/AuthLoginCredentials";
+import api from "../../shared/utils/api";
 
 type User = "admin" | "learner" | "mentor";
 
@@ -14,7 +14,7 @@ export const login = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${host}/${user}/auth/login`,
         credentials
       );

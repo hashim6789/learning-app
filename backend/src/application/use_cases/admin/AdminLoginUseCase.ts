@@ -3,10 +3,8 @@ import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import { validateData } from "../../../shared/helpers/validateHelper";
 import { IAdminRepository } from "../../IRepositories/IAdminRepository";
 
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../shared/utils/jwt";
+import { generateAccessToken } from "../../../shared/utils/jwt";
+import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class AdminLoginUseCase {
   private adminRepository;
@@ -31,10 +29,20 @@ class AdminLoginUseCase {
       userId: admin.id,
       role: "admin",
     });
-    const refreshToken = generateRefreshToken({
-      userId: admin.id,
-      role: "admin",
-    });
+
+    const refreshToken = generateRefreshToken();
+
+    const refreshedAdmin = await this.adminRepository.setRefreshTokenToDB(
+      refreshToken,
+      admin.id
+    );
+    if (!refreshedAdmin) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "an error happened when the set the refresh token!",
+      };
+    }
 
     return {
       statusCode: 200,

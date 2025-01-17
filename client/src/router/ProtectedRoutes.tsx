@@ -1,33 +1,32 @@
+// ProtectedRoute.tsx
 import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { RootState } from "../store";
+import { RootState } from "../store"; // Adjust the path as needed
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  isAuthenticated: boolean;
-  requiredRole: string;
+  requiredRole: string; // The role required to access this route (admin, learner, mentor)
+  children?: React.ReactNode; // Optional, in case you pass child elements
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  isAuthenticated,
   requiredRole,
+  children,
 }) => {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const userRole = user || "learner"; // Replace with actual role from context or state
+  const { isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
     return <Navigate to={`/${requiredRole}/login`} replace />;
   }
 
-  if (userRole !== requiredRole) {
-    // Redirect to 403 page or home if role mismatch
-    return <Navigate to="/403" replace />;
+  if (user !== requiredRole) {
+    return <Navigate to={`/${requiredRole}/dashboard`} replace />;
   }
 
-  return <>{children}</>;
+  // If the user is authenticated and has the correct role, render the protected content.
+  return children ? <>{children}</> : <Outlet />;
 };
 
 export default ProtectedRoute;

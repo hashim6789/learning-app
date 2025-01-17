@@ -1,48 +1,52 @@
-//inbuilt mode modules
-import express, { Application, NextFunction } from "express";
-import connectDB from "../db/setup";
-import morgan from "morgan";
+// Inbuilt Node.js modules
+import express, { Application } from "express";
 import dotenv from "dotenv";
 import "reflect-metadata";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
 
-//cors setup
+// Custom configs
 import corsConfig from "../../shared/configs/corsConfig";
+import cookieConfig from "../../shared/configs/cookieConfig"; // Not used yet, so may be omitted if unnecessary
 
-//refresh router
+// Importing router level routes
 import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
-
-//imported the module level routers
 import learnerRouter from "../../adapter/routers/learner";
 import adminRouter from "../../adapter/routers/admin";
 import mentorRouter from "../../adapter/routers/mentor";
 
-//imported the custom middlewares
+// Custom middlewares
 import errorHandler from "../../adapter/middleware/errorHandler";
 
-//tins is for getting the environment variables
+// DB connection setup
+import connectDB from "../db/setup";
+
+// Load environment variables
 dotenv.config();
 
-//app initialization and middlewares implementations
+// Initialize Express app
 const app: Application = express();
 
-app.use(corsConfig);
-app.use(express.json());
-app.use(morgan("dev"));
+// Middleware setups
+app.use(morgan("dev")); // Request logging
+app.use(corsConfig); // Enable CORS
+app.use(express.json()); // Parse incoming JSON payloads
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bodies
+app.use(cookieParser()); // Parse cookies
 
-//called router level middlewares
+// Route-level middlewares
 app.use("/learner", learnerRouter);
 app.use("/admin", adminRouter);
 app.use("/mentor", mentorRouter);
-
 app.use("/refresh", refreshTokenRouter);
 
-//error handling middlewares
+// Error handling middleware (after routes to catch any errors)
 app.use(errorHandler);
 
-//invoked the database connection function
+// Database connection setup
 connectDB();
 
-//server configurations
+// Server configuration
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);

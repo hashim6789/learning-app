@@ -26,17 +26,22 @@ import LearnerLayout from "../modules/learner/pages/LearnerLayout";
 import LessonsCreatePage from "../modules/mentor/pages/LessonsCreationPage";
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const routes = [
     // Admin Routes
     {
       path: "/admin",
-      element: isAuthenticated ? (
-        <AdminLayout />
-      ) : (
-        <Navigate to="/admin/login" replace />
-      ),
+      element:
+        isAuthenticated && user === "admin" ? (
+          <AdminLayout />
+        ) : isAuthenticated ? (
+          <Navigate to={`/${user}/dashboard`} replace />
+        ) : (
+          <Navigate to="/admin/login" replace />
+        ),
       children: [
         { path: "dashboard", element: <AdminDashboard /> },
         { path: "learners", element: <AdminLearnerManagement /> },
@@ -59,11 +64,14 @@ const AppRoutes: React.FC = () => {
     // Learner Routes
     {
       path: "/learner",
-      element: isAuthenticated ? (
-        <LearnerLayout />
-      ) : (
-        <Navigate to="/learner/login" replace />
-      ),
+      element:
+        isAuthenticated && user === "learner" ? (
+          <LearnerLayout />
+        ) : isAuthenticated ? (
+          <Navigate to={`/${user}/dashboard`} replace />
+        ) : (
+          <Navigate to="/learner/login" replace />
+        ),
       children: [
         { path: "dashboard", element: <LearnerDashboard /> },
         // Add other learner pages here
@@ -81,11 +89,14 @@ const AppRoutes: React.FC = () => {
     // // Mentor Routes
     {
       path: "/mentor",
-      element: isAuthenticated ? (
-        <MentorLayout />
-      ) : (
-        <Navigate to="/mentor/login" replace />
-      ),
+      element:
+        isAuthenticated && user === "mentor" ? (
+          <MentorLayout />
+        ) : isAuthenticated ? (
+          <Navigate to={`/${user}/dashboard`} replace />
+        ) : (
+          <Navigate to={`/${user}/login`} replace />
+        ),
       children: [
         { path: "dashboard", element: <MentorDashboard /> },
         { path: "my-courses", element: <MentorCoursesManagement /> },
@@ -94,8 +105,6 @@ const AppRoutes: React.FC = () => {
           path: "courses/:courseId/lessons",
           element: <LessonsCreatePage />,
         },
-
-        // Add other mentor pages here
       ],
     },
     {

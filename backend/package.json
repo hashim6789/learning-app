@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/framework/web/server.js",
-    "dev": "nodemon src/framework/web/server.ts --watch",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/framework/web/server.ts",
     "debug": "nodemon --exec node --inspect -r ts-node/register src/framework/web/server.ts",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts",
@@ -17,6 +17,7 @@
   "description": "",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
@@ -42,6 +43,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
     "reflect-metadata": "^0.2.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "uuid": "^11.0.5"
   }
 }

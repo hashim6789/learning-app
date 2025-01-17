@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 const authorizeRole = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     // const userRole = req.user.role; // Get the user's role from the decoded token
-    const userRole = "learner";
+    const userRole = "admin";
     if (!userRole) {
       res.status(403).json({ success: false, message: "User role is missing" });
     }

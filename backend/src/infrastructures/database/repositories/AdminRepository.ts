@@ -27,7 +27,21 @@ class AdminRepository implements IAdminRepository {
 
     return mappedAdmin(admin);
   }
+
+  async setRefreshTokenToDB(
+    token: string,
+    adminId: string
+  ): Promise<Admin | null> {
+    const admin = await AdminModel.findByIdAndUpdate(
+      adminId,
+      { refreshToken: token },
+      { new: true }
+    );
+    if (!admin) return null;
+    return mappedAdmin(admin);
+  }
 }
+
 function mappedAdmin(data: IAdmin) {
   const id = data._id.toString();
   return new Admin(data.email, data.password, id);

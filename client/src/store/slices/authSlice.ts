@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { signup } from "../thunks/signup";
 import { login } from "../thunks/login";
-import { User } from "lucide-react";
 import { googleSignup } from "../thunks/googleSignup";
-
-type User = "admin" | "learner" | "mentor";
+import { decodeToken } from "../../shared/utils/decodeToken";
+import { User } from "../../shared/types/User";
+import Cookies from "js-cookie";
 
 interface GoogleSignupError {
   message: string;
@@ -12,14 +12,16 @@ interface GoogleSignupError {
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: User | null;
+  user: User;
   loading: boolean;
   error: string | null;
 }
 
+const decode = decodeToken("accessToken");
+
 const initialState: AuthState = {
-  isAuthenticated: !!localStorage.getItem("accessToken"),
-  user: null,
+  isAuthenticated: !!decode,
+  user: decode ? decode.role : "learner",
   loading: false,
   error: null,
 };
@@ -30,11 +32,9 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.isAuthenticated = false;
-      state.user = null;
       state.loading = false;
       state.error = null;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      Cookies.remove("accessToken");
     },
   },
   extraReducers: (builder) => {
@@ -51,12 +51,12 @@ const authSlice = createSlice({
         state.user = user;
         state.error = null;
 
-        try {
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-        } catch (error) {
-          console.error("Failed to store tokens in localStorage:", error);
-        }
+        // try {
+        //   localStorage.setItem("accessToken", accessToken);
+        //   localStorage.setItem("refreshToken", refreshToken);
+        // } catch (error) {
+        //   console.error("Failed to store tokens in localStorage:", error);
+        // }
 
         console.log("Login successful:", message);
       })
@@ -86,12 +86,12 @@ const authSlice = createSlice({
           state.loading = false;
           state.isAuthenticated = true;
           state.user = user;
-          try {
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-          } catch (error) {
-            console.error("Failed to store tokens in localStorage:", error);
-          }
+          // try {
+          //   localStorage.setItem("accessToken", accessToken);
+          //   localStorage.setItem("refreshToken", refreshToken);
+          // } catch (error) {
+          //   console.error("Failed to store tokens in localStorage:", error);
+          // }
           console.log("Signup successful:", message);
         }
       )
@@ -119,12 +119,12 @@ const authSlice = createSlice({
           state.isAuthenticated = true;
           state.loading = false;
           state.user = user;
-          try {
-            localStorage.setItem("accessToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-          } catch (error) {
-            console.error("Failed to store tokens in localStorage:", error);
-          }
+          // try {
+          //   localStorage.setItem("accessToken", accessToken);
+          //   localStorage.setItem("refreshToken", refreshToken);
+          // } catch (error) {
+          //   console.error("Failed to store tokens in localStorage:", error);
+          // }
           console.log("login with google successful:", message);
         }
       )
