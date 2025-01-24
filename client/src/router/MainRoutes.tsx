@@ -21,7 +21,8 @@ import AdminMentorDetails from "../modules/admin/pages/AdminMentorDetails";
 //mentor related components
 import MentorLayout from "../modules/mentor/pages/MentorLayout";
 import MentorDashboard from "../modules/mentor/pages/MentorDashboard";
-import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
+// import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
+import MentorLogin from "../modules/mentor/pages/MentorLogin";
 import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManagement";
 import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
@@ -100,7 +101,7 @@ const MainRoutes: React.FC = () => {
       element: isAuthenticated ? (
         <Navigate to={`/${user}/dashboard`} />
       ) : (
-        <MentorLoginPage />
+        <MentorLogin />
       ),
     },
 
@@ -146,7 +147,7 @@ const MainRoutes: React.FC = () => {
 
     //Admin login page route
     {
-      path: "/Admin/login",
+      path: "/admin/login",
       element: isAuthenticated ? (
         <Navigate to={`/${user}/dashboard`} />
       ) : (
@@ -156,7 +157,7 @@ const MainRoutes: React.FC = () => {
 
     //Admin private routes
     {
-      path: "/Admin",
+      path: "/admin",
       children: [
         //protected routes
         {

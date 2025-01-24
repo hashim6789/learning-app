@@ -20,17 +20,12 @@ const MentorLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Navbar fixed at the top */}
+    <div className="min-h-screen bg-gray-50">
       <Navbar mentorName="Hashim" profileImage="" />
 
-      <div className="flex flex-1 mt-16">
-        {" "}
-        {/* mt-16 offsets the main content */}
-        {/* Sidebar takes full height */}
+      <div className="flex w-screen h-screen">
         <Sidebar items={sidebarItems} />
-        <main className="flex-1 p-6 overflow-auto">
-          {/* Add margin-top to offset the fixed navbar */}
+        <main className="flex-1 p-6">
           <Outlet />
         </main>
       </div>

@@ -7,6 +7,7 @@ import { decodeToken } from "../../shared/utils/decodeToken";
 import { User } from "../../shared/types/User";
 import { verifyOtp } from "../thunks/verifyOtp";
 import { forgotPassword } from "../thunks/forgotPassword";
+import { showToast } from "../../shared/utils/toastUtils";
 
 // interface GoogleSignupError {
 //   message: string;
@@ -173,12 +174,15 @@ const authSlice = createSlice({
       .addCase(googleSignup.rejected, (state, action: PayloadAction<any>) => {
         const { message } = action.payload;
         state.loading = false;
-        state.error = message;
+        state.error = message.message;
         state.isBlocked = true;
         state.isVerified = false;
         state.isAuthenticated = false;
         // (action.payload as GoogleSignupError).message ||
         // "Failed the Google login";
+
+        console.log("Login successful:", message);
+        showToast.error(message.message);
       })
       .addCase(forgotPassword.pending, (state) => {
         state.error = null;
