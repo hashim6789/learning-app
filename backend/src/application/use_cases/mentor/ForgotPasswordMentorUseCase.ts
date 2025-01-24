@@ -1,36 +1,36 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { sendForgotPasswordMail } from "../../../shared/utils/mail";
-import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
+import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import { generateAccessToken as generateToken } from "../../../shared/utils/jwt";
 
-class ForgotPasswordLearnerUseCase {
-  private learnerRepository: ILearnerRepository;
-  constructor(learnerRepository: ILearnerRepository) {
-    this.learnerRepository = learnerRepository;
+class ForgotPasswordMentorUseCase {
+  private mentorRepository: IMentorRepository;
+  constructor(mentorRepository: IMentorRepository) {
+    this.mentorRepository = mentorRepository;
   }
 
   async execute(email: string): Promise<ResponseModel> {
     try {
-      const existingLearner = await this.learnerRepository.findByEmail(email);
-      if (!existingLearner) {
+      const existingMentor = await this.mentorRepository.findByEmail(email);
+      if (!existingMentor) {
         return {
           statusCode: 404,
           success: false,
-          message: "no learner exist in this email!",
+          message: "no mentor exist in this email!",
         };
       }
 
       const resetToken = generateToken({
-        userId: existingLearner.id,
-        role: "learner",
+        userId: existingMentor.id,
+        role: "mentor",
       });
 
-      const tokenSetLearner = await this.learnerRepository.updateLearner(
-        existingLearner.id,
+      const tokenSetMentor = await this.mentorRepository.updateMentor(
+        existingMentor.id,
         { resetToken }
       );
 
-      if (!tokenSetLearner) {
+      if (!tokenSetMentor) {
         return {
           statusCode: 400,
           success: false,
@@ -38,8 +38,8 @@ class ForgotPasswordLearnerUseCase {
         };
       }
       const isSended = await sendForgotPasswordMail(
-        "learner",
-        existingLearner,
+        "mentor",
+        existingMentor,
         resetToken
       );
       if (!isSended) {
@@ -50,14 +50,14 @@ class ForgotPasswordLearnerUseCase {
         };
       }
 
-      existingLearner.removeSensitive();
+      existingMentor.removeSensitive();
 
       return {
         statusCode: 200,
         success: true,
         message: "The forgot password sent successfully",
         data: {
-          learner: existingLearner,
+          mentor: existingMentor,
         },
       };
     } catch (error) {
@@ -66,4 +66,4 @@ class ForgotPasswordLearnerUseCase {
   }
 }
 
-export default ForgotPasswordLearnerUseCase;
+export default ForgotPasswordMentorUseCase;

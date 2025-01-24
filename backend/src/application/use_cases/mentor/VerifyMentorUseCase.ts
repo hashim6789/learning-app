@@ -1,52 +1,66 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import bcrypt from "bcryptjs";
+import { IOtpRepository } from "../../IRepositories/IOtpRepository";
+import { validateData } from "../../../shared/helpers/validateHelper";
+import { OtpDTO } from "../../../shared/dtos/OtpDTO";
 
 class VerifyMentorUseCase {
   private mentorRepository: IMentorRepository;
-  constructor(mentorRepository: IMentorRepository) {
+  private otpRepository: IOtpRepository;
+  constructor(
+    mentorRepository: IMentorRepository,
+    otpRepository: IOtpRepository
+  ) {
     this.mentorRepository = mentorRepository;
+    this.otpRepository = otpRepository;
   }
 
-  async execute(otp: string, mentorId: string): Promise<ResponseModel> {
+  async execute(otpData: OtpDTO, mentorId: string): Promise<ResponseModel> {
     try {
-      const mentor = await this.mentorRepository.fetchMentorById(mentorId);
-      if (!mentor) {
+      await validateData(otpData, OtpDTO);
+      const existingOtp = await this.otpRepository.findOtpByUseId(mentorId);
+      if (!existingOtp) {
         return {
           statusCode: 404,
           success: false,
-          message: "The mentor doesn't exist",
+          message: "The otp is doesn't exist",
         };
       }
 
-      const isBlocked = mentor.isBlocked;
-      const otpExpiration = mentor.otpExpiration ? mentor.otpExpiration : 0;
-
-      if (isBlocked || Date.now() > otpExpiration) {
+      if (existingOtp.expiresIn + 5 * 60 * 1000 > Date.now()) {
         return {
           statusCode: 400,
           success: false,
-          message: "The mentor is blocked or otp is expired",
+          message: "The otp is expired!",
         };
       }
 
-      if (
-        otp === null ||
-        mentor.otp === null ||
-        !(await bcrypt.compare(otp, mentor.otp))
-      ) {
+      if (!(await bcrypt.compare(otpData.otp, existingOtp.otp))) {
         return {
           statusCode: 400,
           success: false,
-          message: "The otp is not valid",
+          message: "The otp is not valid!",
         };
       }
+
+      const verifiedMentor = await this.mentorRepository.verifyMentor(mentorId);
+
+      if (!verifiedMentor) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The mentor cannot be verified",
+        };
+      }
+
+      verifiedMentor.removeSensitive();
 
       return {
         statusCode: 200,
         success: true,
         message: "The otp is verified successfully",
-        data: { mentor },
+        data: { mentor: verifiedMentor },
       };
     } catch (error) {
       throw new Error("An error when the otp is verified.");

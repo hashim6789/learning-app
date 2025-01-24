@@ -59,10 +59,10 @@ export class AuthSignupCredentials {
 
   @IsOptional()
   @IsString({ message: "Last name must be a valid string." })
-  @Matches(/^[A-Za-z\s'-]+$/, {
-    message:
-      "Last name can only contain letters, spaces, hyphens, and apostrophes.",
-  })
+  // @Matches(/^[A-Za-z\s'-]+$/, {
+  //   message:
+  //     "Last name can only contain letters, spaces, hyphens, and apostrophes.",
+  // })
   @MaxLength(15, { message: "Last name cannot exceed 50 characters." })
   lastName?: string;
 

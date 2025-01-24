@@ -26,6 +26,7 @@ import MentorLogin from "../modules/mentor/pages/MentorLogin";
 import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManagement";
 import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
+import MentorChangePasswordPage from "../modules/mentor/pages/MentorChangePasswordPage";
 
 //Learner related components
 import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
@@ -112,7 +113,7 @@ const MainRoutes: React.FC = () => {
         //unprotected routes
         {
           path: "auth/:token/change-password",
-          element: <LearnerChangePasswordPage />,
+          element: <MentorChangePasswordPage />,
         },
         //protected routes
         {

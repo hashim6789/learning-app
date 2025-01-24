@@ -1,13 +1,13 @@
-import bcrypt from "bcryptjs";
-import { generateAccessToken } from "../../../shared/utils/jwt";
+import MentorModel from "../../../infrastructures/database/models/MentorModel";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { Mentor } from "../../entities/Mentor";
+import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import { validateData } from "../../../shared/helpers/validateHelper";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
-import { LoginDTO } from "../../../shared/dtos/LoginDTO";
+import { generateAccessToken } from "../../../shared/utils/jwt";
+import bcrypt from "bcryptjs";
 import { generateRefreshToken } from "../../../shared/utils/uuid";
 
-class MentorLoginUseCase {
+class LoginMentorUseCase {
   private mentorRepository;
   constructor(mentorRepository: IMentorRepository) {
     this.mentorRepository = mentorRepository;
@@ -15,57 +15,62 @@ class MentorLoginUseCase {
 
   async execute(data: LoginDTO): Promise<ResponseModel> {
     await validateData(data, LoginDTO);
-
     const existingMentor = await this.mentorRepository.findByEmail(data.email);
-    console.log(existingMentor);
-
-    if (!existingMentor)
+    if (!existingMentor) {
       return {
         statusCode: 404,
         success: false,
-        message: "The user is doesn't exist",
-      };
-
-    const isBlocked = existingMentor.isBlocked;
-
-    const isValidPassword = await bcrypt.compare(
-      data.password,
-      existingMentor.password as string
-    );
-
-    if (isBlocked || !isValidPassword) {
-      return {
-        statusCode: 400,
-        success: false,
-        message: "Invalid Credentials or blocked",
+        message: "The mentor is doesn't exist!",
       };
     }
 
-    // Generate tokens
+    if (existingMentor.isBlocked) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The mentor is blocked!",
+      };
+    }
+    if (!existingMentor.isVerified) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The mentor is not verified can you re-register!",
+      };
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      data.password,
+      existingMentor.password as string
+    );
+    if (!isPasswordValid) {
+      return {
+        statusCode: 401,
+        success: false,
+        message: "Invalid credentials or blocked!",
+      };
+    }
+
     const accessToken = generateAccessToken({
       userId: existingMentor.id,
       role: "mentor",
     });
-
     const refreshToken = generateRefreshToken();
 
-    const tokenSetMentor = await this.mentorRepository.setRefreshToken(
+    const refreshedMentor = await this.mentorRepository.setRefreshToken(
       existingMentor.id,
       refreshToken
     );
 
-    console.log(tokenSetMentor);
-
-    if (!tokenSetMentor) {
+    if (!refreshedMentor) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         success: false,
-        message: "The mentor doesn't exist",
+        message: "The refreshed token can't be set.",
       };
     }
 
-    tokenSetMentor.password = null;
-    tokenSetMentor.refreshToken = null;
+    refreshedMentor.removeSensitive();
 
     return {
       statusCode: 200,
@@ -74,10 +79,10 @@ class MentorLoginUseCase {
       data: {
         accessToken,
         refreshToken,
-        mentor: tokenSetMentor,
+        mentor: refreshedMentor,
       },
     };
   }
 }
 
-export default MentorLoginUseCase;
+export default LoginMentorUseCase;

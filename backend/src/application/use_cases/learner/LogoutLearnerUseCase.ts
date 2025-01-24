@@ -1,7 +1,7 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
 
-class LearnerLogoutUseCase {
+class LogoutLearnerUseCase {
   private learnerRepository: ILearnerRepository;
   constructor(learnerRepository: ILearnerRepository) {
     this.learnerRepository = learnerRepository;
@@ -39,4 +39,4 @@ class LearnerLogoutUseCase {
   }
 }
 
-export default LearnerLogoutUseCase;
+export default LogoutLearnerUseCase;

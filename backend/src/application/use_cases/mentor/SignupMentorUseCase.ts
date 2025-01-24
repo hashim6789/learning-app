@@ -1,4 +1,3 @@
-// usecases/SignupMentorUseCase.ts
 import bcrypt from "bcryptjs";
 import { SignupDTO } from "../../../shared/dtos/SignupDTO";
 import { validateData } from "../../../shared/helpers/validateHelper";
@@ -9,40 +8,55 @@ import { generateAccessToken } from "../../../shared/utils/jwt";
 import { generateRefreshToken } from "../../../shared/utils/uuid";
 import generateOtp from "../../../shared/utils/otp";
 import { sendOtpEmail } from "../../../shared/utils/mail";
+import { Otp } from "../../entities/Otp";
+import { IOtpRepository } from "../../IRepositories/IOtpRepository";
 
 class SignupMentorUseCase {
   private mentorRepository: IMentorRepository;
+  private otpRepository: IOtpRepository;
 
-  constructor(mentorRepository: IMentorRepository) {
+  constructor(
+    mentorRepository: IMentorRepository,
+    otpRepository: IOtpRepository
+  ) {
     this.mentorRepository = mentorRepository;
+    this.otpRepository = otpRepository;
   }
 
   async execute(data: SignupDTO): Promise<ResponseModel> {
     await validateData(data, SignupDTO);
 
     const existingMentor = await this.mentorRepository.findByEmail(data.email);
+
     if (existingMentor) {
-      return {
-        statusCode: 400,
-        success: false,
-        message: "The mentor already exists",
-      };
+      if (!existingMentor.isVerified) {
+        await this.mentorRepository.deleteMentorById(existingMentor.id);
+        console.log("deleted user");
+      } else {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The mentor already exists",
+        };
+      }
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
+    const refreshToken = generateRefreshToken();
+
     const mentor = new Mentor(
-      "",
       null,
+      "",
       data.firstName,
       data.lastName || null,
       data.email,
-      null,
-      null,
-      [],
-      false,
       hashedPassword,
       null,
-      null,
+      [],
+      [],
+      false,
+      false,
+      refreshToken,
       null
     );
 
@@ -55,43 +69,37 @@ class SignupMentorUseCase {
         message: "The mentor creation failed!",
       };
     }
-
     const accessToken = generateAccessToken({
       userId: createdMentor.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken();
-
-    const refreshedMentor = await this.mentorRepository.setRefreshToken(
-      createdMentor.id,
-      refreshToken
-    );
-
-    if (!refreshedMentor) {
-      return {
-        statusCode: 404,
-        success: false,
-        message: "The mentor can't set the refresh token",
-      };
-    }
 
     const otp = generateOtp();
     console.log(otp, "otp");
     const hashedOtp = await bcrypt.hash(otp, 10);
-    const otpCreatedMentor = await this.mentorRepository.setOtpToDB(
-      refreshedMentor.id,
-      hashedOtp
-    );
-    if (!otpCreatedMentor) {
+
+    const otpEntity = new Otp("", createdMentor.id, hashedOtp, Date.now());
+
+    const createdOtp = await this.otpRepository.createOtp(otpEntity);
+
+    if (!createdOtp) {
       return {
         statusCode: 400,
         success: false,
         message: "The otp can't be set to the db",
       };
     }
-    console.log("token =", otpCreatedMentor);
 
-    await sendOtpEmail(otpCreatedMentor.email, otp);
+    const isSended = await sendOtpEmail(createdMentor.email, otp);
+    if (!isSended) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The mail is not sent!",
+      };
+    }
+
+    createdMentor.removeSensitive();
 
     return {
       statusCode: 200,
@@ -100,7 +108,7 @@ class SignupMentorUseCase {
       data: {
         accessToken,
         refreshToken,
-        mentor: otpCreatedMentor,
+        mentor: createdMentor,
       },
     };
   }

@@ -3,6 +3,7 @@ import { Learner } from "../../application/entities/Learner";
 import { Mentor } from "../../application/entities/Mentor";
 import { mailConfig } from "../configs/mailConfigs";
 import { config } from "../configs/config";
+import { User } from "../types/User";
 
 export const sendOtpEmail = async (
   email: string,
@@ -45,6 +46,7 @@ export const sendOtpEmail = async (
 };
 
 export const sendForgotPasswordMail = async (
+  role: User,
   user: Learner | Mentor,
   resetURL: string
 ) => {
@@ -61,12 +63,12 @@ export const sendForgotPasswordMail = async (
         <p>Hello <strong>${user.firstName}</strong>,</p>
         <p>You recently requested to reset your password for your account. No worries, we've got you covered!</p>
         <p style="text-align: center;">
-          <a href="${config.FRONTEND_HOST}/learner/auth/${resetURL}/change-password" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">
+          <a href="${config.FRONTEND_HOST}/${role}/auth/${resetURL}/change-password" style="display: inline-block; padding: 12px 24px; font-size: 16px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">
             Reset My Password
           </a>
         </p>
         <p>If the button above doesn't work, please copy and paste the following link into your web browser:</p>
-        <p style="word-break: break-all; background-color: #f4f4f4; padding: 10px; border-radius: 5px;">${config.FRONTEND_HOST}/learner/auth/${resetURL}/change-password</p>
+        <p style="word-break: break-all; background-color: #f4f4f4; padding: 10px; border-radius: 5px;">${config.FRONTEND_HOST}/${role}/auth/${resetURL}/change-password</p>
         <p>If you didn’t request a password reset, please ignore this email. Your account is safe with us.</p>
         <p>Best regards,</p>
         <p><strong>Your Support Team</strong></p>

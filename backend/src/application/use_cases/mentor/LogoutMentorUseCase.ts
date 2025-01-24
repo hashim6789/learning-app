@@ -1,14 +1,14 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 
-class MentorLogoutUseCase {
+class LogoutMentorUseCase {
   private mentorRepository: IMentorRepository;
   constructor(mentorRepository: IMentorRepository) {
     this.mentorRepository = mentorRepository;
   }
 
-  async execute(refreshToken: string): Promise<ResponseModel> {
-    const mentor = await this.mentorRepository.findByRefreshToken(refreshToken);
+  async execute(mentorId: string): Promise<ResponseModel> {
+    const mentor = await this.mentorRepository.fetchMentorById(mentorId);
     if (!mentor) {
       return {
         statusCode: 404,
@@ -39,4 +39,4 @@ class MentorLogoutUseCase {
   }
 }
 
-export default MentorLogoutUseCase;
+export default LogoutMentorUseCase;

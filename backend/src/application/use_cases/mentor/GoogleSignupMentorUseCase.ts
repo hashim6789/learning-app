@@ -1,8 +1,7 @@
-import { User } from "../../../shared/types/User";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import axios from "axios";
 import { generateAccessToken } from "../../../shared/utils/jwt";
-import { BankDetail, Mentor } from "../../entities/Mentor";
+import { Mentor } from "../../entities/Mentor";
 import { generateRefreshToken } from "../../../shared/utils/uuid";
 
 class GoogleSignupMentorUseCase {
@@ -16,68 +15,72 @@ class GoogleSignupMentorUseCase {
       `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`
     );
 
-    let fetchedUser = await this.mentorRepository.findByGoogleId(data.sub);
-    console.log("user 3 :", fetchedUser);
-    if (!fetchedUser) {
-      fetchedUser = await this.mentorRepository.findByEmail(data.email);
-    }
-    console.log("user 2 :", fetchedUser);
+    const fetchedMentor = await this.mentorRepository.findByEmail(data.email);
 
-    if (!fetchedUser) {
-      const googleId = data.sub;
-      const firstName = data.given_name;
-      const lastName = data.family_name || null;
-      const email = data.email;
-      const profilePicture = data.picture || null;
-      const isBlocked = false;
-
-      const newLearner = new Mentor(
+    let mentor: Mentor | null = null;
+    if (!fetchedMentor) {
+      const newMentor = new Mentor(
+        data.sub,
         "",
-        googleId,
-        firstName,
-        lastName,
-        email,
-        profilePicture,
+        data.given_name,
+        data.family_name || null,
+        data.email,
+        null,
+        data.picture || null,
         [],
         [],
-        isBlocked,
-        null,
-        null,
+        false,
+        data.email_verified,
         null,
         null
       );
-      fetchedUser = await this.mentorRepository.createMentor(newLearner);
+      mentor = await this.mentorRepository.createMentor(newMentor);
+    } else if (fetchedMentor.isBlocked) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "Mentor is blocked!",
+      };
+    } else if (!fetchedMentor.isVerified) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "Mentor is unverified!",
+      };
+    } else if (!fetchedMentor.googleId) {
+      const updateData: Partial<Mentor> = {
+        googleId: data.sub,
+        profilePicture: data.picture,
+        isVerified: true,
+      };
+
+      mentor = await this.mentorRepository.updateMentor(
+        fetchedMentor.id,
+        updateData
+      );
+    } else {
+      mentor = fetchedMentor;
     }
 
-    console.log("New User Created:", fetchedUser);
-
-    if (fetchedUser.isBlocked) {
+    if (!mentor) {
       return {
-        statusCode: 403,
+        statusCode: 400,
         success: false,
-        message: "invalid credentials or blocked!",
+        message: "Mentor is can't be created",
       };
     }
 
+    console.log("New User Created:", mentor);
+
     // Generate tokens
     const accessToken = generateAccessToken({
-      userId: fetchedUser.id,
+      userId: mentor.id,
       role: "mentor",
     });
     const refreshToken = generateRefreshToken();
 
-    const tokenSetMentor = await this.mentorRepository.setRefreshToken(
-      fetchedUser.id,
-      refreshToken
-    );
+    mentor.removeSensitive();
 
-    if (!tokenSetMentor) {
-      return {
-        statusCode: 404,
-        success: false,
-        message: "The mentor doesn't exist",
-      };
-    }
     return {
       statusCode: 200,
       success: true,
@@ -85,7 +88,7 @@ class GoogleSignupMentorUseCase {
       data: {
         accessToken,
         refreshToken,
-        mentor: tokenSetMentor,
+        mentor,
       },
     };
   }

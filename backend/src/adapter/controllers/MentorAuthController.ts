@@ -6,81 +6,81 @@ import { LoginDTO } from "../../shared/dtos/LoginDTO";
 import { OtpDTO } from "../../shared/dtos/OtpDTO";
 
 //imported the entities
-import { Learner } from "../../application/entities/Learner";
+import { Mentor } from "../../application/entities/Mentor";
 
 //imported the repositories
-import LearnerRepository from "../../infrastructures/database/repositories/LearnerRepository";
+import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import OtpRepository from "../../infrastructures/database/repositories/OtpRepository";
 
 //imported the use cases
-import SignupLearnerUseCase from "../../application/use_cases/learner/SignupLearnerUseCase";
-import LoginLearnerUseCase from "../../application/use_cases/learner/LoginLearnerUseCase";
-// import GoogleSignupUseCase from "../../../application/use_cases/learner/GoogleSignupLearnerUseCase";
-import LogoutLearnerUseCase from "../../application/use_cases/learner/LogoutLearnerUseCase";
-import GoogleSignupLearnerUseCase from "../../application/use_cases/learner/GoogleSignupLearnerUseCase";
-import VerifyLearnerUseCase from "../../application/use_cases/learner/VerifyLearnerUseCase";
-import ResendOtpLearnerUseCase from "../../application/use_cases/learner/ResendOtpLearnerUseCase";
-import ForgotPasswordLearnerUseCase from "../../application/use_cases/learner/ForgotPasswordLearnerUseCase";
-import GetChangePasswordLearnerUseCase from "../../application/use_cases/learner/GetChangePasswordLearnerUseCase";
-import ChangePasswordLearnerUseCase from "../../application/use_cases/learner/ChangePasswordLearnerUseCase";
+import SignupMentorUseCase from "../../application/use_cases/mentor/SignupMentorUseCase";
+import LoginMentorUseCase from "../../application/use_cases/mentor/LoginMentorUseCase";
+// import GoogleSignupUseCase from "../../../application/use_cases/mentor/GoogleSignupMentorUseCase";
+import LogoutMentorUseCase from "../../application/use_cases/mentor/LogoutMentorUseCase";
+import GoogleSignupMentorUseCase from "../../application/use_cases/mentor/GoogleSignupMentorUseCase";
+import VerifyMentorUseCase from "../../application/use_cases/mentor/VerifyMentorUseCase";
+import ResendOtpMentorUseCase from "../../application/use_cases/mentor/ResendOtpMentorUseCase";
+import ForgotPasswordMentorUseCase from "../../application/use_cases/mentor/ForgotPasswordMentorUseCase";
+import GetChangePasswordMentorUseCase from "../../application/use_cases/mentor/GetChangePasswordMentorUseCase";
+import ChangePasswordMentorUseCase from "../../application/use_cases/mentor/ChangePasswordMentorUseCase";
 
 //created the instances
-const learnerRepository = new LearnerRepository();
+const mentorRepository = new MentorRepository();
 const otpRepository = new OtpRepository();
-const signupLearnerUseCase = new SignupLearnerUseCase(
-  learnerRepository,
+const signupMentorUseCase = new SignupMentorUseCase(
+  mentorRepository,
   otpRepository
 );
-const loginLearnerUseCase = new LoginLearnerUseCase(learnerRepository);
-const googleSignupLearnerUseCase = new GoogleSignupLearnerUseCase(
-  learnerRepository
+const loginMentorUseCase = new LoginMentorUseCase(mentorRepository);
+const googleSignupMentorUseCase = new GoogleSignupMentorUseCase(
+  mentorRepository
 );
-const logoutLearnerUseCase = new LogoutLearnerUseCase(learnerRepository);
-const verifyLearnerUseCase = new VerifyLearnerUseCase(
-  learnerRepository,
+const logoutMentorUseCase = new LogoutMentorUseCase(mentorRepository);
+const verifyMentorUseCase = new VerifyMentorUseCase(
+  mentorRepository,
   otpRepository
 );
-const resendOtpLearnerUseCase = new ResendOtpLearnerUseCase(
-  learnerRepository,
+const resendOtpMentorUseCase = new ResendOtpMentorUseCase(
+  mentorRepository,
   otpRepository
 );
 
-const forgotPasswordForLearner = new ForgotPasswordLearnerUseCase(
-  learnerRepository
+const forgotPasswordMentorUseCase = new ForgotPasswordMentorUseCase(
+  mentorRepository
 );
 
-const getChangePasswordLearnerUseCase = new GetChangePasswordLearnerUseCase(
-  learnerRepository
+const getChangePasswordMentorUseCase = new GetChangePasswordMentorUseCase(
+  mentorRepository
 );
 
-const changePasswordLearnerUseCase = new ChangePasswordLearnerUseCase(
-  learnerRepository
+const changePasswordMentorUseCase = new ChangePasswordMentorUseCase(
+  mentorRepository
 );
 
-//learner controller
-class LearnerAuthController {
+//mentor controller
+class MentorAuthController {
   constructor() {}
 
-  //learner signup
-  async learnerSignup(req: Request, res: Response, next: NextFunction) {
+  //mentor signup
+  async mentorSignup(req: Request, res: Response, next: NextFunction) {
     const signupDTO: SignupDTO = req.body;
     try {
-      const response = await signupLearnerUseCase.execute(signupDTO);
+      const response = await signupMentorUseCase.execute(signupDTO);
       if (response.success && response.data) {
-        const { accessToken, refreshToken, learner } = response.data as {
+        const { accessToken, refreshToken, mentor } = response.data as {
           accessToken: string;
           refreshToken: string;
-          learner: Learner;
+          mentor: Mentor;
         };
 
         res.cookie("refreshToken", refreshToken, { httpOnly: true });
         res.cookie("accessToken", accessToken, { httpOnly: false });
-        res.cookie("user", "learner", { httpOnly: true });
+        res.cookie("user", "mentor", { httpOnly: true });
 
         res.status(200).json({
           message: response.message,
-          user: "learner",
-          data: learner,
+          user: "mentor",
+          data: mentor,
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -90,24 +90,20 @@ class LearnerAuthController {
     }
   }
 
-  //learner otp verification
-  async learnerOtpVerification(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const learnerId = req.user?.userId || "";
+  // //mentor otp verification
+  async mentorOtpVerification(req: Request, res: Response, next: NextFunction) {
+    const mentorId = req.user?.userId || "";
     try {
-      const response = await verifyLearnerUseCase.execute(req.body, learnerId);
+      const response = await verifyMentorUseCase.execute(req.body, mentorId);
       if (response.success && response.data) {
-        const { learner } = response.data as {
-          learner: Learner;
+        const { mentor } = response.data as {
+          mentor: Mentor;
         };
         // Send access token in response
         res.status(200).json({
           message: response.message,
-          data: learner,
-          user: "learner",
+          data: mentor,
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -117,16 +113,15 @@ class LearnerAuthController {
     }
   }
 
-  //learner resend otp
-  async learnerResendOtp(req: Request, res: Response, next: NextFunction) {
-    const learnerId = req.user?.userId || "";
+  // //mentor resend otp
+  async mentorResendOtp(req: Request, res: Response, next: NextFunction) {
+    const mentorId = req.user?.userId || "";
     try {
-      const response = await resendOtpLearnerUseCase.execute(learnerId);
-
+      const response = await resendOtpMentorUseCase.execute(mentorId);
       if (response.success && response.data) {
         res.status(200).json({
           message: response.message,
-          user: "learner",
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -136,27 +131,25 @@ class LearnerAuthController {
     }
   }
 
-  //learner login
-  async learnerLogin(req: Request, res: Response, next: NextFunction) {
+  // //mentor login
+  async mentorLogin(req: Request, res: Response, next: NextFunction) {
     const loginDTO: LoginDTO = req.body;
     try {
-      const response = await loginLearnerUseCase.execute(loginDTO);
+      const response = await loginMentorUseCase.execute(loginDTO);
       if (response.success && response.data) {
-        const { accessToken, refreshToken, learner } = response.data as {
+        const { accessToken, refreshToken, mentor } = response.data as {
           accessToken: string;
           refreshToken: string;
-          learner: Learner;
+          mentor: Mentor;
         };
-
         res.cookie("refreshToken", refreshToken, { httpOnly: true });
         res.cookie("accessToken", accessToken, { httpOnly: false });
-        res.cookie("user", "learner", { httpOnly: true });
-
+        res.cookie("user", "mentor", { httpOnly: true });
         // Send access token in response
         res.status(200).json({
           message: response.message,
-          data: learner,
-          user: "learner",
+          data: mentor,
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -165,11 +158,13 @@ class LearnerAuthController {
       next(error);
     }
   }
-  async learnerLogout(req: Request, res: Response, next: NextFunction) {
+
+  //mentor logout
+  async mentorLogout(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.cookies;
-      const learnerId = req.user?.userId || "";
-      const response = await logoutLearnerUseCase.execute(learnerId);
+      const mentorId = req.user?.userId || "";
+      const response = await logoutMentorUseCase.execute(mentorId);
       if (response.success && response.data) {
         res.cookie("refreshToken", "", { httpOnly: true });
         res.cookie("accessToken", "", { httpOnly: false });
@@ -181,28 +176,25 @@ class LearnerAuthController {
     }
   }
 
-  async learnerGoogleSignup(req: Request, res: Response, next: NextFunction) {
+  //mentor google login and signup
+  async mentorGoogleSignup(req: Request, res: Response, next: NextFunction) {
     const { token }: { token: string } = req.body;
     try {
-      const response = await googleSignupLearnerUseCase.execute(token);
-
+      const response = await googleSignupMentorUseCase.execute(token);
       if (response.success && response.data) {
-        const { accessToken, refreshToken, learner } = response.data as {
+        const { accessToken, refreshToken, mentor } = response.data as {
           accessToken: string;
           refreshToken: string;
-          learner: Learner;
+          mentor: Mentor;
         };
-
         res.cookie("refreshToken", refreshToken, { httpOnly: true });
         res.cookie("accessToken", accessToken, { httpOnly: false });
-        res.cookie("user", "learner", { httpOnly: true });
-
+        res.cookie("user", "mentor", { httpOnly: true });
         res.status(200).json({
           message: response.message,
-          user: "learner",
-          data: learner,
+          user: "mentor",
+          data: mentor,
         });
-
         // Send access token in response
       } else {
         res.status(400).json({ message: response.message });
@@ -212,23 +204,23 @@ class LearnerAuthController {
     }
   }
 
-  //learner forgot password
-  async forgotPasswordForLearner(
+  // //mentor forgot password
+  async forgotPasswordForMentor(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     const { email } = req.body;
     try {
-      const response = await forgotPasswordForLearner.execute(email);
+      const response = await forgotPasswordMentorUseCase.execute(email);
       if (response.success && response.data) {
-        const { learner } = response.data as {
-          learner: Learner;
+        const { mentor } = response.data as {
+          mentor: Mentor;
         };
         res.status(200).json({
           message: response.message,
-          data: learner,
-          user: "learner",
+          data: mentor,
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -238,26 +230,24 @@ class LearnerAuthController {
     }
   }
 
-  //learner get the change password
-  async getChangePasswordLearner(
+  // //mentor get the change password
+  async getChangePasswordMentor(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     const { token } = req.params;
     try {
-      const response = await getChangePasswordLearnerUseCase.execute(token);
+      const response = await getChangePasswordMentorUseCase.execute(token);
       if (response.success && response.data) {
         const { resetToken } = response.data as {
           resetToken: string;
         };
-
         //set the reset token in cookie
         res.cookie("resetToken", resetToken, { httpOnly: true });
-
         res.status(200).json({
           message: response.message,
-          user: "learner",
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -267,11 +257,11 @@ class LearnerAuthController {
     }
   }
 
-  //learner change password
-  async changePasswordLearner(req: Request, res: Response, next: NextFunction) {
+  // //mentor change password
+  async changePasswordMentor(req: Request, res: Response, next: NextFunction) {
     try {
       const { resetToken } = req.cookies;
-      const response = await changePasswordLearnerUseCase.execute(
+      const response = await changePasswordMentorUseCase.execute(
         resetToken,
         req.body
       );
@@ -280,7 +270,7 @@ class LearnerAuthController {
         res.cookie("resetToken", "", { httpOnly: true });
         res.status(200).json({
           message: response.message,
-          user: "learner",
+          user: "mentor",
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -291,4 +281,4 @@ class LearnerAuthController {
   }
 }
 
-export default LearnerAuthController;
+export default MentorAuthController;
