@@ -7,6 +7,8 @@ import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 import { Mentor } from "../../entities/Mentor";
 import { generateAccessToken } from "../../../shared/utils/jwt";
 import { generateRefreshToken } from "../../../shared/utils/uuid";
+import generateOtp from "../../../shared/utils/otp";
+import { sendOtpEmail } from "../../../shared/utils/mail";
 
 class SignupMentorUseCase {
   private mentorRepository: IMentorRepository;
@@ -39,10 +41,20 @@ class SignupMentorUseCase {
       [],
       false,
       hashedPassword,
+      null,
+      null,
       null
     );
 
     const createdMentor = await this.mentorRepository.createMentor(mentor);
+
+    if (!createdMentor) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The mentor creation failed!",
+      };
+    }
 
     const accessToken = generateAccessToken({
       userId: createdMentor.id,
@@ -50,18 +62,36 @@ class SignupMentorUseCase {
     });
     const refreshToken = generateRefreshToken();
 
-    const tokenSetMentor = await this.mentorRepository.setRefreshToken(
+    const refreshedMentor = await this.mentorRepository.setRefreshToken(
       createdMentor.id,
       refreshToken
     );
 
-    if (!tokenSetMentor) {
+    if (!refreshedMentor) {
       return {
         statusCode: 404,
         success: false,
-        message: "The mentor doesn't exist",
+        message: "The mentor can't set the refresh token",
       };
     }
+
+    const otp = generateOtp();
+    console.log(otp, "otp");
+    const hashedOtp = await bcrypt.hash(otp, 10);
+    const otpCreatedMentor = await this.mentorRepository.setOtpToDB(
+      refreshedMentor.id,
+      hashedOtp
+    );
+    if (!otpCreatedMentor) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The otp can't be set to the db",
+      };
+    }
+    console.log("token =", otpCreatedMentor);
+
+    await sendOtpEmail(otpCreatedMentor.email, otp);
 
     return {
       statusCode: 200,
@@ -70,6 +100,7 @@ class SignupMentorUseCase {
       data: {
         accessToken,
         refreshToken,
+        mentor: otpCreatedMentor,
       },
     };
   }

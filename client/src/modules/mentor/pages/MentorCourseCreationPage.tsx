@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Camera, ChevronDown } from "react-feather";
 import useCourseManagement from "../../../hooks/useCourseManagement";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import api from "../../../shared/utils/api";
+import { config } from "../../../shared/configs/config";
+import { showToast } from "../../../shared/utils/toastUtils";
 
-const host = "http://localhost:3000/mentor";
 const MentorCreateCoursePage = () => {
   const { addCourse, loading, error, categories, fetchCategories } =
-    useCourseManagement(host);
+    useCourseManagement(config.API_BASE_URL);
   console.log("categories :", categories);
 
   const [courseTitle, setCourseTitle] = useState("");
@@ -31,8 +32,8 @@ const MentorCreateCoursePage = () => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/mentor/upload/course-img",
+      const response = await api.post(
+        `${config.API_BASE_URL}/mentor/upload/course-img`,
         formData,
         {
           headers: {
@@ -41,18 +42,24 @@ const MentorCreateCoursePage = () => {
         }
       );
 
+      showToast.success("image uploaded successfully!"); // Use Toastify for success
+
       const { url } = response.data;
       setCourseThumbnail(url);
-      toast.success("Image uploaded successfully!"); // Use Toastify for success
     } catch (error: any) {
-      toast.error("Image upload failed"); // Use Toastify for errors
+      showToast.error("image uploaded failed!"); // Use Toastify for success
       console.error("Upload error:", error.message || error);
     }
   };
 
   const handleAddCourse = async () => {
-    if (!courseTitle || !courseCategory || !courseDescription) {
-      toast.error("Please fill out all fields."); // Toastify error for empty fields
+    if (
+      !courseTitle ||
+      !courseCategory ||
+      !courseDescription ||
+      !courseThumbnail
+    ) {
+      toast.error("Please fill out all fields and upload a thumbnail.");
       return;
     }
 
@@ -60,24 +67,15 @@ const MentorCreateCoursePage = () => {
       title: courseTitle,
       description: courseDescription,
       category: courseCategory,
-      thumbnail: courseThumbnail || "",
+      thumbnail: courseThumbnail,
     };
 
     try {
       await addCourse(newCourse);
-      Swal.fire({
-        title: "Success!",
-        text: "Course added successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
+      toast.success("Course created successfully!");
     } catch (err) {
-      Swal.fire({
-        title: "Error!",
-        text: "An error occurred while adding the course.",
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
+      console.error("Error creating course:", err);
+      toast.error("Failed to create course. Please try again.");
     }
   };
 

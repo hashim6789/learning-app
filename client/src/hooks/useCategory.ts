@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../shared/utils/api";
+import { showToast } from "../shared/utils/toastUtils";
 
 const useCategory = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,8 +18,9 @@ const useCategory = () => {
         }
       );
 
-      console.log("New category created:", response.data);
+      showToast.success("New category created:");
     } catch (err) {
+      showToast.error("An error when the category created:");
       setError("Error creating category");
     } finally {
       setLoading(false);

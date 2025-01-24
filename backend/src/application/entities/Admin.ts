@@ -7,4 +7,9 @@ export class Admin {
     this.email = email;
     this.password = password;
   }
+
+  //to remove the sensitive data
+  removeSensitive() {
+    this.password = null;
+  }
 }

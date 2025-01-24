@@ -27,10 +27,7 @@ class MentorRepository implements IMentorRepository {
 
   //fetch a mentor by id
   async fetchMentorById(mentorId: string): Promise<Mentor | null> {
-    const mentor = await MentorModel.findById(mentorId).populate(
-      "createdCourses"
-    );
-    console.log("mentor =", mentor);
+    const mentor = await MentorModel.findById(mentorId);
     if (!mentor) return null;
     return mappedMentor(mentor);
   }
@@ -63,9 +60,47 @@ class MentorRepository implements IMentorRepository {
     token: string
   ): Promise<Mentor | null> {
     try {
-      const mentor = await MentorModel.findById(
+      const mentor = await MentorModel.findByIdAndUpdate(
         mentorId,
         { refreshToken: token },
+        { new: true }
+      );
+      if (!mentor) return null;
+      return mappedMentor(mentor);
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  }
+
+  async findByRefreshToken(token: string): Promise<Mentor | null> {
+    try {
+      const mentor = await MentorModel.findOne({ refreshToken: token });
+      if (!mentor) return null;
+      return mappedMentor(mentor);
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  }
+
+  async deleteRefreshToken(mentorId: string): Promise<Mentor | null> {
+    try {
+      const mentor = await MentorModel.findByIdAndUpdate(
+        mentorId,
+        { refreshToken: null },
+        { new: true }
+      );
+      if (!mentor) return null;
+      return mappedMentor(mentor);
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  }
+
+  async setOtpToDB(mentorId: string, otp: string): Promise<Mentor | null> {
+    try {
+      const mentor = await MentorModel.findByIdAndUpdate(
+        mentorId,
+        { otp, otpExpiration: Date.now() + 5 * 60 * 1000 },
         { new: true }
       );
       if (!mentor) return null;
@@ -78,25 +113,20 @@ class MentorRepository implements IMentorRepository {
 
 //to convert the IMentor to Mentor
 function mappedMentor(data: IMentor): Mentor {
-  const id = data._id?.toString() || ""; // Ensure id is a string
-  const createdCourses = data.createdCourses
-    ? data.createdCourses.map((courseId) => courseId?.toString() || "")
-    : [];
-
-  const refreshToken = data.refreshToken || null;
-
   return new Mentor(
-    id,
+    data._id?.toString() || "",
     data.googleId || null,
-    data.firstName,
+    data.firstName || "",
     data.lastName || null,
-    data.email,
+    data.email || "",
     data.profilePicture || null,
-    createdCourses.length > 0 ? createdCourses : null, // Return null if no courses
-    data.bankDetails || [], // Default to an empty array
-    data.isBlocked,
+    data.createdCourses?.map((courseId) => courseId?.toString() || "") || null,
+    data.bankDetails || [],
+    data.isBlocked ?? false,
     data.password || null,
-    refreshToken || null
+    data.refreshToken || null,
+    data.otp,
+    data.otpExpiration
   );
 }
 

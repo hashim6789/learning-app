@@ -6,10 +6,15 @@ export interface ICategory extends Document {
   isListed: boolean;
 }
 
-const CategorySchema: Schema = new Schema({
-  title: { type: String, required: true },
-  isListed: { type: Boolean, required: true },
-});
+const CategorySchema: Schema = new Schema(
+  {
+    title: { type: String, required: true },
+    isListed: { type: Boolean, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const CategoryModel = mongoose.model<ICategory>("Categories", CategorySchema);
 

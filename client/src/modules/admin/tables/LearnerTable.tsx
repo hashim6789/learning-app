@@ -1,14 +1,5 @@
 import useLearner from "../../../hooks/useLearner";
-
-interface Learner {
-  id: string;
-  name: string;
-  email: string;
-  status: Status;
-  profilePicture: string;
-}
-
-type Status = "blocked" | "unblocked";
+import { Learner } from "../../../shared/types/Learner";
 
 interface LearnerTableProps {
   learners: Learner[];

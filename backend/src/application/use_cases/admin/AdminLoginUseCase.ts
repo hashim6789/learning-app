@@ -1,10 +1,15 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { LoginDTO } from "../../../shared/dtos/LoginDTO";
-import { validateData } from "../../../shared/helpers/validateHelper";
+
+//imported the interfaces
 import { IAdminRepository } from "../../IRepositories/IAdminRepository";
 
+//imported dtos for check the body credentials
+import { LoginDTO } from "../../../shared/dtos/LoginDTO";
+
+//import the utility methods
 import { generateAccessToken } from "../../../shared/utils/jwt";
 import { generateRefreshToken } from "../../../shared/utils/uuid";
+import { validateData } from "../../../shared/helpers/validateHelper";
 
 class AdminLoginUseCase {
   private adminRepository;
@@ -24,7 +29,6 @@ class AdminLoginUseCase {
       };
     }
 
-    // Generate tokens
     const accessToken = generateAccessToken({
       userId: admin.id,
       role: "admin",
@@ -36,6 +40,7 @@ class AdminLoginUseCase {
       refreshToken,
       admin.id
     );
+
     if (!refreshedAdmin) {
       return {
         success: false,
@@ -44,7 +49,7 @@ class AdminLoginUseCase {
       };
     }
 
-    refreshedAdmin.password = null;
+    refreshedAdmin.removeSensitive();
 
     return {
       statusCode: 200,

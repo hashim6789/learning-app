@@ -1,15 +1,6 @@
 import React from "react";
-import useMentor from "../../../hooks/useMentor";
-
-interface Mentor {
-  id: string;
-  name: string;
-  email: string;
-  status: Status;
-  profilePicture: string;
-}
-
-type Status = "blocked" | "unblocked";
+import useMentor from "../hooks/useMentor";
+import { Mentor } from "../../../shared/types/Mentor";
 
 interface MentorTableProps {
   mentors: Mentor[];
@@ -33,8 +24,7 @@ const MentorsTable: React.FC<MentorTableProps> = ({ mentors }) => {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        {/* Search Bar */}
+      <div className="mb-4">
         <input
           type="text"
           placeholder="Search mentors..."
@@ -42,8 +32,6 @@ const MentorsTable: React.FC<MentorTableProps> = ({ mentors }) => {
           onChange={(e) => handleSearchChange(e.target.value)}
           className="px-4 py-2 border rounded-md"
         />
-
-        {/* Filter Dropdown */}
         <select
           value={filterStatus}
           onChange={(e) =>
@@ -58,134 +46,101 @@ const MentorsTable: React.FC<MentorTableProps> = ({ mentors }) => {
           <option value="unblocked">Unblocked</option>
         </select>
       </div>
-
-      {/* Mentors Table */}
-      <div className="bg-white shadow-md rounded-lg">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border-b px-6 py-4 text-left text-sm font-medium text-gray-600">
-                Account Status
-              </th>
-              <th className="border-b px-6 py-4 text-left text-sm font-medium text-gray-600">
-                Mentor Name
-              </th>
-              <th className="border-b px-6 py-4 text-left text-sm font-medium text-gray-600">
-                Email
-              </th>
-              <th className="border-b px-6 py-4 text-left text-sm font-medium text-gray-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-4 text-center text-sm text-gray-600"
-                >
-                  Loading mentors...
-                </td>
-              </tr>
-            ) : paginatedData.length > 0 ? (
-              paginatedData.map((mentor) => (
-                <tr key={mentor.id} className="border-b">
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        mentorStatus[mentor.id] === "blocked"
-                          ? "bg-red-100 text-red-600"
-                          : "bg-green-100 text-green-600"
-                      }`}
-                    >
-                      {mentorStatus[mentor.id]}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={mentor.profilePicture}
-                        alt="profile"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <span className="text-sm font-medium text-gray-800">
-                        {mentor.name}
-                      </span>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Email
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {paginatedData.map((mentor) => (
+            <tr key={mentor.id}>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 h-10 w-10">
+                    <img
+                      className="h-10 w-10 rounded-full"
+                      src={mentor.profilePicture || "/placeholder.svg"}
+                      alt=""
+                    />
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-900">
+                      {mentor.name}
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">
-                      {mentor.email}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 flex items-center gap-2">
-                    <button
-                      onClick={() => handleViewMentor(mentor.id)}
-                      className="text-sm px-4 py-2 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleBlockUnblockWrapper(mentor.id)}
-                      className={`text-sm px-4 py-2 rounded-md ${
-                        mentorStatus[mentor.id] === "blocked"
-                          ? "bg-red-100 text-red-600 hover:bg-red-200"
-                          : "bg-green-100 text-green-600 hover:bg-green-200"
-                      }`}
-                    >
-                      {mentorStatus[mentor.id] === "blocked"
-                        ? "Unblock"
-                        : "Block"}
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-6 py-4 text-center text-sm text-gray-600"
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">{mentor.email}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    mentorStatus[mentor.id] === "blocked"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
                 >
-                  No mentors found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="mt-4 flex justify-between items-center">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 text-sm bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
-        >
-          Prev
-        </button>
-        <div className="flex gap-2">
-          {[...Array(totalPages)].map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 text-sm rounded-md ${
-                currentPage === index + 1
-                  ? "bg-purple-500 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {index + 1}
-            </button>
+                  {mentorStatus[mentor.id]}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button
+                  onClick={() => handleBlockUnblockWrapper(mentor.id)}
+                  disabled={isLoading}
+                  className={`text-sm px-4 py-2 rounded-md mr-2 ${
+                    mentorStatus[mentor.id] === "blocked"
+                      ? "bg-green-100 text-green-600 hover:bg-green-200"
+                      : "bg-red-100 text-red-600 hover:bg-red-200"
+                  }`}
+                >
+                  {mentorStatus[mentor.id] === "blocked" ? "Unblock" : "Block"}
+                </button>
+                <button
+                  onClick={() => handleViewMentor(mentor.id)}
+                  className="text-sm px-4 py-2 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
           ))}
+        </tbody>
+      </table>
+      <div className="mt-4 flex justify-between items-center">
+        <div>
+          Showing {(currentPage - 1) * 5 + 1} to{" "}
+          {Math.min(currentPage * 5, mentors.length)} of {mentors.length}{" "}
+          entries
         </div>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 text-sm bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
-        >
-          Next
-        </button>
+        <div>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border rounded-md mr-2"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border rounded-md"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

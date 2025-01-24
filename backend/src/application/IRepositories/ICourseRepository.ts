@@ -3,6 +3,7 @@ import Course from "../entities/Course";
 
 export default interface ICourseRepository {
   findCourseById(courseId: string): Promise<Course | null>;
+  findCourseByTitle(title: string): Promise<Course | null>;
   fetchAllCourses(): Promise<Course[] | null>;
   fetchAllCoursesByMentorId(mentorId: string): Promise<Course[] | null>;
   updateCourseById(

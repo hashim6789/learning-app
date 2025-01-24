@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../../shared/utils/api";
 
 interface SignupCredentials {
   firstName: string;
@@ -20,7 +20,7 @@ export const signup = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${host}/${user}/auth/signup`,
         credentials
       );

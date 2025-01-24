@@ -2,11 +2,11 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../store"; // Adjust the path as needed
+import { RootState } from "../store";
 
 interface ProtectedRouteProps {
-  requiredRole: string; // The role required to access this route (admin, learner, mentor)
-  children?: React.ReactNode; // Optional, in case you pass child elements
+  requiredRole: string;
+  children?: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -25,7 +25,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={`/${requiredRole}/dashboard`} replace />;
   }
 
-  // If the user is authenticated and has the correct role, render the protected content.
   return children ? <>{children}</> : <Outlet />;
 };
 

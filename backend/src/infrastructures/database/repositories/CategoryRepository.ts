@@ -9,6 +9,11 @@ class CategoryRepository implements ICategoryRepository {
     if (!categories || categories.length === 0) return null;
     return categories.map(mappedCategory);
   }
+  async fetchAllListedCategories(): Promise<Category[] | null> {
+    const categories = await CategoryModel.find({ isListed: true });
+    if (!categories || categories.length === 0) return null;
+    return categories.map(mappedCategory);
+  }
 
   //get a category by id
   async fetchCategoryById(categoryId: string): Promise<Category | null> {
@@ -63,7 +68,9 @@ class CategoryRepository implements ICategoryRepository {
 
   async findCategoryByTitle(categoryTitle: string): Promise<Category | null> {
     try {
-      const category = await CategoryModel.findOne({ title: categoryTitle });
+      const category = await CategoryModel.findOne({
+        title: { $regex: new RegExp(`^${categoryTitle}$`, "i") },
+      });
       if (!category) return null;
       return mappedCategory(category);
     } catch (error) {

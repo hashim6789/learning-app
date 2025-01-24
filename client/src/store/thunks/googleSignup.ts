@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { config } from "../../shared/configs/config";
 
-const host = "http://localhost:3000";
+const host = config.API_BASE_URL;
 type User = "admin" | "mentor" | "learner";
 
 export const googleSignup = createAsyncThunk(
@@ -11,9 +12,13 @@ export const googleSignup = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(`${host}/${user}/auth/google`, {
-        token,
-      });
+      const response = await axios.post(
+        `${host}/${user}/auth/google`,
+        {
+          token,
+        },
+        { withCredentials: true }
+      );
       console.log(response);
       return response.data; // Return the data (user info and token)
     } catch (error: any) {

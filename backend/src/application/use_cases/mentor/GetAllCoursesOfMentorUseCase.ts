@@ -34,20 +34,20 @@ class GetAllCourseOfMentorUseCase {
         mentorId
       );
 
-      if (courses) {
-        return {
-          statusCode: 201,
-          success: true,
-          message: "The courses is fetched successfully.",
-          data: courses,
-        };
-      } else {
+      if (!courses || courses.length === 0) {
         return {
           statusCode: 400,
           success: false,
           message: "The course didn't create!",
+          data: [],
         };
       }
+      return {
+        statusCode: 201,
+        success: true,
+        message: "The courses is fetched successfully.",
+        data: courses,
+      };
     } catch (error) {
       throw new Error(error as string);
     }

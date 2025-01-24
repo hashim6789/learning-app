@@ -1,16 +1,22 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../../hooks/useFetch";
 import LessonStructure from "../components/LessonStructure";
 import Swal from "sweetalert2";
 import axios from "axios";
 import LessonList from "../components/LessonList";
+import api from "../../../shared/utils/api";
+import { showToast } from "../../../shared/utils/toastUtils";
+import CourseDetails from "./MentorCourseDetailsPage";
+import useCourseManagement from "../../../hooks/useCourseManagement";
+import { config } from "../../../shared/configs/config";
+import { Category } from "../../../shared/types/Category";
 
 interface Course {
   id: string;
   status: "Approved" | "Rejected" | "Pending" | "Draft";
   title: string;
-  category: string;
+  category: Category;
   thumbnail: string;
   lessons: Lesson[];
   description: string;
@@ -25,20 +31,22 @@ interface Lesson {
 const LessonsCreatePage = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [isAddLesson, setIsAddLesson] = useState(false);
+  const { categories, fetchCategories } = useCourseManagement(
+    config.API_BASE_URL
+  );
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const {
     data: course,
     loading: courseLoading,
     error: courseError,
-  } = useFetch<Course>(`http://localhost:3000/mentor/courses/${courseId}`);
+  } = useFetch<Course>(`${config.API_BASE_URL}/mentor/courses/${courseId}`);
 
-  // const {
-  //   data: lessons,
-  //   loading: lessonsLoading,
-  //   error: lessonsError,
-  // } = useFetch<Lesson[]>(
-  //   `http://localhost:3000/mentor/courses/${courseId}/lessons`
-  // );
   const lessons = course?.lessons;
   const fetchedLessons: Lesson[] = Array.isArray(lessons)
     ? lessons.map((item) => ({
@@ -66,15 +74,40 @@ const LessonsCreatePage = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(
-            `http://localhost:3000/mentor/courses/${courseId}/lessons/${lessonId}`
+          await api.delete(
+            `${config.API_BASE_URL}/mentor/courses/${courseId}/lessons/${lessonId}`
           );
-          Swal.fire("Deleted!", "Your lesson has been deleted.", "success");
+          showToast.success("Your lesson has been deleted.");
         } catch (error) {
-          Swal.fire("Error", "Failed to delete the lesson.", "error");
+          showToast.error("Failed to delete the lesson.");
         }
       }
     });
+  };
+
+  const handleCourseUpdate = async (
+    courseId: string,
+    updatedCourse: Pick<Course, "description" | "title"> & {
+      category: string;
+    }
+  ) => {
+    try {
+      const response = await api.put(
+        `${config.API_BASE_URL}/mentor/courses/${courseId}`,
+        updatedCourse
+      );
+
+      if (!response) {
+        throw new Error("Failed to update course");
+      }
+
+      navigate("/mentor/my-courses");
+      showToast.success("Course updated successfully!");
+    } catch (error) {
+      showToast.error("Course update failed!!");
+
+      console.error("Error updating course:", error);
+    }
   };
 
   if (courseLoading) {
@@ -90,20 +123,13 @@ const LessonsCreatePage = () => {
       <h1 className="text-3xl font-bold mb-6">Course Lessons</h1>
 
       {course && (
-        <div className="border rounded-lg p-6 mb-6 bg-white shadow-md">
-          <h2 className="text-2xl font-semibold">{course.title}</h2>
-          <p className="text-gray-600">{course.category}</p>
-          <div className="flex items-center gap-4 mt-4">
-            <img
-              src={course.thumbnail}
-              alt={course.title}
-              className="w-24 h-24 object-cover rounded-lg"
-            />
-            <div>
-              <p className="font-medium">Status: {course.status}</p>
-              <p className="font-medium">description: {course.description}</p>
-            </div>
-          </div>
+        <div className="max-w-4xl mx-auto p-6">
+          <h1 className="text-3xl font-bold mb-6">Course Management</h1>
+          <CourseDetails
+            categories={categories}
+            course={course}
+            onUpdate={handleCourseUpdate}
+          />
         </div>
       )}
 

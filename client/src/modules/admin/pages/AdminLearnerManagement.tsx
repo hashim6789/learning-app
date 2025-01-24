@@ -1,22 +1,15 @@
 import LearnersTable from "../tables/LearnerTable";
 import useFetch from "../../../hooks/useFetch";
+import { Learner } from "../../../shared/types/Learner";
 
 interface Props {}
-
-interface Learner {
-  id: string;
-  name: string;
-  email: string;
-  status: "blocked" | "unblocked";
-  profilePicture: string;
-}
 
 const AdminLearnerManagement: React.FC<Props> = ({}) => {
   const {
     data,
     loading: learnersLoading,
     error: learnersError,
-  } = useFetch<any[] | null>("http://localhost:3000/admin/learners");
+  } = useFetch<any[] | null>("/admin/learners");
 
   const learners: Learner[] = Array.isArray(data)
     ? data.map((item) => ({
@@ -28,7 +21,7 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
       }))
     : [];
 
-  console.log("learners", data);
+  // console.log("learners", data);
 
   if (learnersLoading) {
     return (

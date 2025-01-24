@@ -1,190 +1,168 @@
-import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import useAuth from "../../../hooks/useAuth";
-import { validateCredentials } from "../../../DTOS/authValidator";
-import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
-import { AuthSignupCredentials } from "../../../DTOS/AuthSignupCredentials";
+import loginImage from "../../../assets/img/wall_paper_03.jpg";
 import GoogleLoginButton from "../../../shared/GoogleLoginButton";
+import ForgotPasswordModal from "../components/LearnerForgotPassword";
 
-interface AuthFormProps {
-  onSubmit?: (data: { name?: string; email: string; password: string }) => void;
-}
+// Imported the custom hooks
+import useLearnerAuth from "../hooks/useLearnerAuth";
 
-const LearnerLoginPage: React.FC<AuthFormProps> = () => {
-  const { loading, error, handleSignup, handleLogin } = useAuth();
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
-  const [showPassword, setShowPassword] = useState(false); // Show/hide password
+const LearnerLoginPage: React.FC = () => {
+  const {
+    loading,
+    error,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    showPassword,
+    setShowPassword,
+    isLogin,
+    setIsLogin,
+    errors,
+    handleSubmit,
+    forgotPasswordEmail,
+    setForgotPasswordEmail,
+    forgotPasswordModal,
+    setForgotPasswordModal,
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Confirm password for signup
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  const [errors, setErrors] = useState<string[]>([]); // Error state to hold validation errors
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (isLogin) {
-      // Login flow
-      const credentials = new AuthLoginCredentials();
-      credentials.email = email;
-      credentials.password = password;
-
-      // Validate the login credentials
-      const validationErrors = await validateCredentials<AuthLoginCredentials>(
-        credentials
-      );
-
-      console.log(validationErrors);
-      if (validationErrors.length > 0) {
-        setErrors(validationErrors); // Set errors based on validation
-      } else {
-        setErrors([]); // Clear errors if validation is successful
-        handleLogin(credentials, "learner"); // Dispatch login action
-      }
-    } else {
-      // Signup flow
-      const signupCredentials = new AuthSignupCredentials();
-      signupCredentials.lastName = lastName;
-      signupCredentials.firstName = firstName;
-      signupCredentials.email = email;
-      signupCredentials.password = password;
-      signupCredentials.confirmPassword = confirmPassword;
-
-      // Validate the signup credentials
-      const validationErrors = await validateCredentials<AuthSignupCredentials>(
-        signupCredentials
-      );
-
-      console.log(validationErrors);
-      if (validationErrors.length > 0) {
-        setErrors(validationErrors); // Set errors based on validation
-      } else {
-        setErrors([]); // Clear errors if validation is successful
-        handleSignup(signupCredentials, "learner"); // Dispatch signup action
-      }
-    }
-  };
+    handleForgotPasswordSubmit,
+    forgotErrors,
+  } = useLearnerAuth();
 
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-green-500">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-green-500 overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
           <p className="text-lg">Your journey starts here.</p>
         </div>
-        <img
-          src="/api/placeholder/800/600"
-          alt="Mentor"
-          className="object-cover w-full h-full opacity-75"
-        />
+        <div className="px-20 py-40">
+          <img
+            src={loginImage}
+            alt="Learner"
+            className="object-fit w-full h-full rounded-3xl opacity-100"
+          />
+        </div>
       </div>
 
       {/* Right side - Form Section */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16">
         <div className="max-w-md w-full mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold mb-2">Welcome to EazyDev</h1>
+            <h1 className="text-2xl font-semibold mb-2 text-green-600">
+              {isLogin ? "Learner Login" : "Learner Signup"}
+            </h1>
             <p className="text-gray-600">
-              Access the platform as a mentor or create an account to get
-              started.
+              {isLogin
+                ? "Access your learner dashboard."
+                : "Create a new account."}
             </p>
           </div>
-
-          {/* Auth Toggle Buttons */}
           <div className="flex bg-gray-100 rounded-lg p-1 mb-8">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors
-                ${isLogin ? "bg-blue-600 text-white" : "text-gray-600"}`}
+              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
+                isLogin ? "bg-green-600 text-white" : "text-gray-600"
+              }`}
             >
               Login
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors
-                ${!isLogin ? "bg-blue-600 text-white" : "text-gray-600"}`}
+              className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
+                !isLogin ? "bg-green-600 text-white" : "text-gray-600"
+              }`}
             >
               Register
             </button>
           </div>
-
-          {/* Show Errors if Any */}
-          {errors &&
-            errors.length > 0 &&
-            errors.map((error, index) => (
-              <div key={index}>
-                <label className="block text-sm font-medium text-red-700 mb-2">
-                  {error}
-                </label>
-              </div>
-            ))}
-
-          {/* Show Error or Loading State */}
           {loading && (
             <div className="text-center py-4">
-              <p className="text-blue-600">Processing...</p>
+              <p className="text-green-600">Processing...</p>
             </div>
           )}
-
           {error && !loading && (
             <div className="text-center py-4">
               <p className="text-red-600">{error}</p>
             </div>
           )}
-
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Mentor Name (Signup Only) */}
             {!isLogin && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Learner First Name
+                    First Name
                   </label>
                   <input
                     type="text"
-                    name="learnerFirstName"
-                    placeholder="Enter your First Name"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your first name"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
+                  {errors.firstName && (
+                    <div className="text-sm text-red-700">
+                      {errors.firstName.map((message, index) => (
+                        <p key={`${index}`} className="text-sm text-red-700">
+                          {message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Learner Last Name(optional)
+                    Last Name (optional)
                   </label>
                   <input
                     type="text"
-                    name="learnerLastName"
-                    placeholder="Enter your Last Name"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your last name"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
+                  {errors.lastName && (
+                    <div className="text-sm text-red-700">
+                      {errors.lastName.map((message, index) => (
+                        <p key={`${index}`} className="text-sm text-red-700">
+                          {message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </>
             )}
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
               </label>
               <input
                 type="text"
-                name="email"
-                placeholder="Enter your Email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your email"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <div className="text-sm text-red-700">
+                  {errors.email.map((message, index) => (
+                    <p key={`${index}`} className="text-sm text-red-700">
+                      {message}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -192,9 +170,8 @@ const LearnerLoginPage: React.FC<AuthFormProps> = () => {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Enter your Password"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -206,9 +183,17 @@ const LearnerLoginPage: React.FC<AuthFormProps> = () => {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {errors.password && (
+                <div className="text-sm text-red-700">
+                  {errors.password.map((message, index) => (
+                    <p key={`${index}`} className="text-sm text-red-700">
+                      {message}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Confirm Password (Signup Only) */}
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -216,42 +201,59 @@ const LearnerLoginPage: React.FC<AuthFormProps> = () => {
                 </label>
                 <input
                   type="password"
-                  name="confirmPassword"
-                  placeholder="Re-enter your Password"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Confirm your password"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+                {errors.confirmPassword && (
+                  <div className="text-sm text-red-700">
+                    {errors.confirmPassword.map((message, index) => (
+                      <p key={`${index}`} className="text-sm text-red-700">
+                        {message}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              disabled={loading} // Disable button while loading
+              className="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              disabled={loading}
             >
               {isLogin ? "Login" : "Sign up"}
             </button>
-
-            {/* Google Sign In */}
-            <div className="mt-6">
-              {/* <button
-                type="button"
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                <img
-                  src="/api/placeholder/24/24"
-                  alt="Google"
-                  className="w-6 h-6"
-                />
-                Sign up with Google
-              </button> */}
-              <GoogleLoginButton user="learner" />
-            </div>
           </form>
+          <div className="mt-6">
+            <GoogleLoginButton user="learner" />
+          </div>{" "}
+        </div>
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            className="text-green-600 font-medium hover:underline"
+            onClick={() => setForgotPasswordModal(true)}
+          >
+            Forgot Password?
+          </button>
         </div>
       </div>
+
+      {/* Forgot Password Modal Component */}
+      {forgotPasswordModal && (
+        <ForgotPasswordModal
+          forgotPasswordEmail={forgotPasswordEmail}
+          setForgotPasswordEmail={setForgotPasswordEmail}
+          forgotPasswordModal={forgotPasswordModal}
+          setForgotPasswordModal={setForgotPasswordModal}
+          handleForgotPasswordSubmit={handleForgotPasswordSubmit}
+          loading={loading}
+          error={error}
+          forgotErrors={forgotErrors}
+        />
+      )}
     </div>
   );
 };

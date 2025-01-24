@@ -8,12 +8,17 @@ export interface ILessons extends Document {
   materials: ObjectId[] | null;
 }
 
-const LessonsSchema: Schema = new Schema({
-  title: { type: String, required: true },
-  description: { type: String },
-  courseId: { type: Schema.Types.ObjectId, ref: "Courses", required: true },
-  materials: [{ type: Schema.Types.ObjectId }],
-});
+const LessonsSchema: Schema = new Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    courseId: { type: Schema.Types.ObjectId, ref: "Courses", required: true },
+    materials: [{ type: Schema.Types.ObjectId }],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const LessonModel = mongoose.model<ILessons>("Lessons", LessonsSchema);
 

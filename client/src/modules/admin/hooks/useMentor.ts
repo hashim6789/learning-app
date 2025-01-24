@@ -1,28 +1,27 @@
 import { useState } from "react";
-import useBlockUnblock from "./useBlockUnblock";
-import { useTableFunctionality } from "./useTable";
+import useBlockUnblock from "../../../hooks/useBlockUnblock";
+import { useTableFunctionality } from "../../../hooks/useTable";
 import { useNavigate } from "react-router-dom";
-
-interface Mentor {
-  id: string;
-  name: string;
-  email: string;
-  status: Status;
-  profilePicture: string;
-}
-
-type Status = "blocked" | "unblocked";
+import { Mentor } from "../../../shared/types/Mentor";
+import { UserStatus } from "../../../shared/types/UserStatus";
 
 const useMentor = (mentors: Mentor[]) => {
   const { handleBlockUnblock, isLoading } = useBlockUnblock();
   const navigate = useNavigate();
 
-  const [mentorStatus, setMentorStatus] = useState<{ [key: string]: Status }>(
-    mentors.reduce((acc, mentor) => {
-      acc[mentor.id] = mentor.status;
-      return acc;
-    }, {} as { [key: string]: Status })
+  const [mentorStatus, setMentorStatus] = useState<{
+    [key: string]: UserStatus;
+  }>(
+    mentors.reduce(
+      (acc, mentor) => ({ ...acc, [mentor.id]: mentor.status }),
+      {}
+    )
   );
+
+  const updatedMentors = mentors.map((mentor) => ({
+    ...mentor,
+    status: mentorStatus[mentor.id],
+  }));
 
   const {
     currentPage,
@@ -34,7 +33,7 @@ const useMentor = (mentors: Mentor[]) => {
     handleSearchChange,
     handleFilterChange,
   } = useTableFunctionality<Mentor>({
-    data: mentors,
+    data: updatedMentors,
     itemsPerPage: 5,
     filterField: "name",
   });
@@ -53,10 +52,8 @@ const useMentor = (mentors: Mentor[]) => {
     }
   };
 
-  const handleViewMentor = (mentorId: string) => {
+  const handleViewMentor = (mentorId: string) =>
     navigate(`/admin/mentors/${mentorId}`);
-    console.log(mentorId, "mentor");
-  };
 
   return {
     isLoading,

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../../shared/utils/jwt"; // Adjust the path to your jwt.ts
+import { verifyAccessToken } from "../../shared/utils/jwt";
+import session from "express-session";
 
 const authenticateToken = (
   req: Request,
@@ -7,8 +8,6 @@ const authenticateToken = (
   next: NextFunction
 ): void => {
   const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
-  // const token = req.cookies.Authorization;
-  // console.log("access", token);
 
   if (!token) {
     res.status(401).json({ success: false, message: "Access Token Required" });
@@ -24,7 +23,7 @@ const authenticateToken = (
     return;
   }
 
-  // req.user = decoded; // Assign the decoded payload directly
+  req.user = decoded;
   next();
 };
 

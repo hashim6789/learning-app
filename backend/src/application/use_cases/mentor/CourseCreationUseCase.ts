@@ -22,15 +22,32 @@ class CourseCreationUseCase {
   async execute(data: CreateCourseDTO): Promise<ResponseModel> {
     try {
       const mentor = await this.mentorRepository.fetchMentorById(data.mentorId);
-
       if (!mentor) {
         return {
           statusCode: 404,
           success: false,
-          message: "The mentor is doesn't exist",
+          message: "The mentor doesn't exist",
         };
       }
-      const createdCourse = await this.courseRepository.createCourse(data);
+
+      const title = data.title.trim().toLowerCase();
+
+      const existingCourse = await this.courseRepository.findCourseByTitle(
+        title
+      );
+      if (existingCourse) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The course title already exists!",
+        };
+      }
+
+      // Create course with uppercase title (if required)
+      const createdCourse = await this.courseRepository.createCourse({
+        ...data,
+        title: data.title.toUpperCase(), // Keeping uppercase as per your logic
+      });
 
       if (createdCourse) {
         return {
@@ -43,11 +60,13 @@ class CourseCreationUseCase {
         return {
           statusCode: 400,
           success: false,
-          message: "The course didn't create!",
+          message: "The course creation failed!",
         };
       }
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error(
+        "An error occurred while creating the course: " + (error as string)
+      );
     }
   }
 }

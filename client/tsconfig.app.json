@@ -26,6 +26,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false
+
+    //shard cn ui
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@/*": ["./src/*"]
+    // }
   },
   "include": ["src"]
 }

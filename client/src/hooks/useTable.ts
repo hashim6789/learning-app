@@ -35,15 +35,11 @@ export function useTableFunctionality<T>({
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
+  const handlePageChange = (page: number) => setCurrentPage(page);
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
   };
-
   const handleFilterChange = (status: "all" | "blocked" | "unblocked") => {
     setFilterStatus(status);
     setCurrentPage(1);

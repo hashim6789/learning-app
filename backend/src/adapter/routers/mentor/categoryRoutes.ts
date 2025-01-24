@@ -1,16 +1,16 @@
 import express from "express";
 import CategoryController from "../../controllers/CategoryController";
+import authenticateToken from "../../middleware/authenticateMiddlewares";
+import authorizeRole from "../../middleware/authorizationMiddlewares";
 
 const categoryRoutes = express.Router();
+const categoryController = new CategoryController();
 
-// categoryRoutes.post("/", CategoryController.createCategoryForAdmin);
 categoryRoutes.get(
-  "/"
-  // CategoryController.fetchAllAvailableCategoriesForMentor
+  "/",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  categoryController.fetchAllAvailableCategoriesForMentor
 );
-// categoryRoutes.patch(
-//   "/:categoryId/block-unblock",
-//   CategoryController.listUnlistCategoryForAdmin
-// );
 
 export default categoryRoutes;

@@ -33,6 +33,8 @@ class AdminLogoutUseCase {
       };
     }
 
+    unRefreshedAdmin.removeSensitive();
+
     return {
       statusCode: 200,
       success: true,

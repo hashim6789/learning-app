@@ -1,8 +1,6 @@
 import { User, Mail, LogOut } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { useState } from "react";
-import Logo from "../../../assets/svg/Logo";
-import logo from "../../../assets/img/logo.png";
 
 const Navbar: React.FC = () => {
   const { handleLogout } = useAuth();
@@ -27,7 +25,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-start">
-            <img src={logo} alt="EazyDev" className="h-20 w-auto" />
+            {/* <img src={logo} alt="EazyDev" className="h-20 w-auto" /> */}
           </div>
           {/* <Logo /> */}
           <div className="flex items-center space-x-4">

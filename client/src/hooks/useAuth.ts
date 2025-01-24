@@ -6,7 +6,9 @@ import { AuthSignupCredentials } from "../DTOS/AuthSignupCredentials";
 import { signup } from "../store/thunks/signup";
 import { login } from "../store/thunks/login";
 import { googleSignup } from "../store/thunks/googleSignup";
+import { forgotPassword } from "../store/thunks/forgotPassword";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../shared/utils/toastUtils";
 
 type User = "admin" | "learner" | "mentor";
 
@@ -18,40 +20,63 @@ const useAuth = () => {
     (state: RootState) => state.auth
   );
 
-  //for login
+  // for login
   const handleLogin = async (credentials: AuthLoginCredentials, user: User) => {
     try {
       await dispatch(login({ credentials, user })).unwrap();
-      navigate(`/${user}/dashboard`);
+      if (user === "learner") {
+        navigate("/");
+      } else {
+        navigate(`/${user}/dashboard`);
+      }
     } catch (err) {
       console.error("Login failed:", err);
     }
   };
 
-  //for signup
+  // for signup
   const handleSignup = async (
     credentials: AuthSignupCredentials,
     user: User
   ) => {
     try {
       await dispatch(signup({ credentials, user })).unwrap();
-      navigate(`/${user}/dashboard`);
+      navigate(`/${user}/otp`);
     } catch (err: any) {
       console.error("Signup failed:", err);
     }
   };
 
-  // //for google signup
-  const handleGoogleSignup = (token: string, user: User) => {
-    console.log("object", user);
-    dispatch(googleSignup({ token, user })); // Dispatch the google signup action
-    navigate(`/${user}/dashboard`);
+  // for google signup
+  const handleGoogleSignup = async (token: string, user: User) => {
+    try {
+      await dispatch(googleSignup({ token, user }));
+      if (user === "learner") {
+        navigate("/");
+      } else {
+        navigate(`/${user}/dashboard`);
+      }
+    } catch (err: any) {
+      console.error("Signup failed:", err);
+    }
   };
 
-  //for logout
+  // for forgot password
+  const handleForgotPassword = async (email: string, user: User) => {
+    try {
+      await dispatch(forgotPassword({ email, user })).unwrap();
+      showToast.success("Password reset link sent successfully.");
+      console.log("Password reset link sent successfully.");
+    } catch (err) {
+      showToast.error("Forgot password failed:");
+      console.error("Forgot password failed:", err);
+    }
+  };
+
+  // for logout
   const handleLogout = (user: User) => {
     dispatch(logout(user));
-    navigate("/learner/login");
+    navigate("/login");
   };
 
   return {
@@ -62,6 +87,7 @@ const useAuth = () => {
     handleLogin,
     handleSignup,
     handleGoogleSignup,
+    handleForgotPassword,
     handleLogout,
   };
 };

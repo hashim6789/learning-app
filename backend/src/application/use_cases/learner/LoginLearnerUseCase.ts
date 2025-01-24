@@ -15,8 +15,10 @@ class LoginLearnerUseCase {
 
   async execute(data: LoginDTO): Promise<ResponseModel> {
     await validateData(data, LoginDTO);
-    const learner = await this.learnerRepository.findByEmail(data.email);
-    if (!learner) {
+    const existingLearner = await this.learnerRepository.findByEmail(
+      data.email
+    );
+    if (!existingLearner) {
       return {
         statusCode: 404,
         success: false,
@@ -24,31 +26,62 @@ class LoginLearnerUseCase {
       };
     }
 
+    if (existingLearner.isBlocked) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The learner is blocked!",
+      };
+    }
+    if (!existingLearner.isVerified) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The learner is not verified can you re-register!",
+      };
+    }
+
     const isPasswordValid = await bcrypt.compare(
       data.password,
-      learner.password as string
+      existingLearner.password as string
     );
     if (!isPasswordValid) {
       return {
         statusCode: 401,
         success: false,
-        message: "Invalid credentials!",
+        message: "Invalid credentials or blocked!",
       };
     }
 
     const accessToken = generateAccessToken({
-      userId: learner.id,
-      role: "mentor",
+      userId: existingLearner.id,
+      role: "learner",
     });
     const refreshToken = generateRefreshToken();
+
+    const refreshedLearner = await this.learnerRepository.setRefreshToken(
+      existingLearner.id,
+      refreshToken
+    );
+
+    if (!refreshedLearner) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "The refreshed token can't be set.",
+      };
+    }
+
+    refreshedLearner.removeSensitive();
 
     return {
       statusCode: 200,
       success: true,
-      message: "Learner loginned successful",
+      message: "Learner login successful",
       data: {
         accessToken,
         refreshToken,
+        learner: refreshedLearner,
       },
     };
   }

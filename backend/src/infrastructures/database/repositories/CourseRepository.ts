@@ -5,12 +5,29 @@ import CourseModel, { ICourses } from "../models/CourseModel";
 import { ICategory } from "../models/CategoryModel";
 import Lesson from "../../../application/entities/Lesson";
 import { ILessons } from "../models/LessonModel";
+import { Category } from "../../../application/entities/Category";
 
 class CourseRepository implements ICourseRepository {
   //find a course by id
   async findCourseById(courseId: string): Promise<Course | null> {
     try {
-      const course = await CourseModel.findById(courseId);
+      const course = await CourseModel.findById(courseId)
+        .populate("categoryId", "_id title isListed")
+        .orFail();
+      console.log(course);
+      return course ? courseMapping(course) : null;
+    } catch (error) {
+      throw new Error("Failed to fetch the courses");
+    }
+  }
+
+  async findCourseByTitle(title: string): Promise<Course | null> {
+    try {
+      const course = await CourseModel.findOne({
+        title: { $regex: new RegExp(`^${title}$`, "i") },
+      });
+
+      console.log(course);
       return course ? courseMapping(course) : null;
     } catch (error) {
       throw new Error("Failed to fetch the courses");
@@ -21,8 +38,8 @@ class CourseRepository implements ICourseRepository {
   async fetchAllCourses(): Promise<Course[] | null> {
     try {
       const courses = await CourseModel.find()
-        .populate("categoryId", "title _id")
-        .exec();
+        .populate("categoryId", "_id title isListed")
+        .orFail();
       return courses ? courses.map((course) => courseMapping(course)) : null;
     } catch (error) {
       throw new Error("Failed to fetch the course");
@@ -39,7 +56,9 @@ class CourseRepository implements ICourseRepository {
         courseId,
         data,
         { new: true }
-      );
+      )
+        .populate("categoryId", "_id title isListed")
+        .orFail();
       return updatedCourse ? courseMapping(updatedCourse) : null;
     } catch (error) {
       throw new Error("Failed to fetch the course");
@@ -49,7 +68,9 @@ class CourseRepository implements ICourseRepository {
   //delete the existing course by id
   async deleteCourseById(courseId: string): Promise<Course | null> {
     try {
-      const deletedCourse = await CourseModel.findByIdAndDelete(courseId);
+      const deletedCourse = await CourseModel.findByIdAndDelete(courseId)
+        .populate("categoryId", "_id title isListed")
+        .orFail();
       return deletedCourse ? courseMapping(deletedCourse) : null;
     } catch (error) {
       throw new Error("Failed to fetch the course");
@@ -79,9 +100,12 @@ class CourseRepository implements ICourseRepository {
 
   async fetchAllCoursesByMentorId(mentorId: string): Promise<Course[] | null> {
     try {
-      const courses = await CourseModel.find({ mentorId });
-
-      return courses ? courses.map((course) => courseMapping(course)) : null;
+      const courses = await CourseModel.find({ mentorId })
+        .populate("categoryId", "_id title isListed")
+        .orFail();
+      console.log(courses);
+      if (courses.length === 0) return null;
+      return courses.map((course) => courseMapping(course));
     } catch (error) {
       throw new Error("Failed to fetch the course");
     }
@@ -108,41 +132,30 @@ class CourseRepository implements ICourseRepository {
   }
 }
 
-//for convert the course from ICourses to Course
-function courseMapping(course: ICourses): Course {
-  const lessons = course.lessons
-    ? course.lessons.map((lesson) => {
-        if (
-          typeof lesson === "object" &&
-          "_id" in lesson &&
-          "title" in lesson &&
-          "description" in lesson
-        ) {
-          // Explicit cast to Partial<ILessons>
-          const populatedLesson = lesson;
-          return {
-            id: populatedLesson._id?.toString() || null,
-            title: populatedLesson.title as string,
-            description: populatedLesson.description as string,
-          };
+// interface MappedLesson {
+//   id: string;
+//   title?: string;
+//   description?: string;
+// }
+
+export function courseMapping(course: ICourses): Course {
+  const category: Category =
+    course.categoryId && typeof course.categoryId === "object"
+      ? {
+          id: (course.categoryId as ICategory)._id.toString(),
+          title: (course.categoryId as ICategory).title,
+          isListed: (course.categoryId as ICategory).isListed,
         }
-        // If lesson is not populated, treat it as ObjectId
-        return {
-          id: lesson.toString(),
-          title: undefined,
-          description: undefined,
-        };
-      })
-    : [];
+      : { id: "", title: "Unknown", isListed: false };
 
   return {
     id: course._id.toString(),
     title: course.title,
     mentorId: course.mentorId.toString(),
-    category: (course.categoryId as ICategory).title || null,
+    category: category,
     description: course.description || null,
     thumbnail: course.thumbnail,
-    lessons: lessons,
+    lessons: [],
     duration: course.duration || null,
     status: course.status || null,
     rejectionReason: course.rejectionReason || null,

@@ -13,9 +13,7 @@ interface Mentor {
 }
 
 const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
-  const { data, loading, error } = useFetch<any[] | null>(
-    "http://localhost:3000/admin/mentors"
-  );
+  const { data, loading, error } = useFetch<any[] | null>("/admin/mentors");
 
   const mentors: Mentor[] = Array.isArray(data)
     ? data.map((item) => ({

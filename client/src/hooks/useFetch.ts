@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../shared/utils/api";
+import { config } from "../shared/configs/config";
 
 const useFetch = <T>(url: string, options?: RequestInit) => {
   const [data, setData] = useState<T | null>(null);
@@ -12,7 +13,7 @@ const useFetch = <T>(url: string, options?: RequestInit) => {
       setError(null);
 
       try {
-        const response = await api.get(url);
+        const response = await api.get(`${config.API_BASE_URL + url}`);
 
         if (!response.data) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);

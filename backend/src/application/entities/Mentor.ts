@@ -13,7 +13,9 @@ export class Mentor {
     public bankDetails: BankDetail[],
     public isBlocked: boolean,
     public password: string | null,
-    public refreshToken: string | null
+    public refreshToken: string | null,
+    public otp: string | null,
+    public otpExpiration: number | null
   ) {}
 }
 

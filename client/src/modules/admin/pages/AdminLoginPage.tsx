@@ -1,50 +1,39 @@
-import React, { useState } from "react";
+//imported the assets
 import { Eye, EyeOff } from "lucide-react";
-import useAuth from "../../../hooks/useAuth";
-import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
-import { validateCredentials } from "../../../DTOS/authValidator";
+import loginImage from "../../../assets/img/wall_paper_03.jpg";
+
+//imported the custom hooks
+import useAdminLogin from "../hooks/useAdminLogin";
 
 const AdminLoginPage: React.FC = () => {
-  const { loading, error, handleLogin } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const credentials = new AuthLoginCredentials();
-    credentials.email = email;
-    credentials.password = password;
-
-    // Validate the login credentials
-    const validationErrors = await validateCredentials<AuthLoginCredentials>(
-      credentials
-    );
-
-    console.log(validationErrors);
-    if (validationErrors.length > 0) {
-      setErrors(validationErrors);
-    } else {
-      setErrors([]);
-      handleLogin(credentials, "admin");
-    }
-  };
+  const {
+    loading,
+    error,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    errors,
+    handleSubmit,
+  } = useAdminLogin();
 
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-red-500">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-red-500 overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Admin Portal</h2>
           <p className="text-lg">Manage your platform with ease.</p>
         </div>
-        <img
-          src="/api/placeholder/800/600"
-          alt="Admin"
-          className="object-cover w-full h-full opacity-75"
-        />
+        <div className="px-20 py-40">
+          <img
+            src={loginImage}
+            alt="Admin"
+            className="object-fit w-full h-full rounded-3xl opacity-100"
+          />
+        </div>
       </div>
 
       {/* Right side - Form Section */}
@@ -56,17 +45,6 @@ const AdminLoginPage: React.FC = () => {
             </h1>
             <p className="text-gray-600">Access your admin dashboard.</p>
           </div>
-
-          {/* Show Errors if Any */}
-          {errors.length > 0 && (
-            <div className="mb-4">
-              {errors.map((error, index) => (
-                <p key={index} className="text-sm text-red-700">
-                  {error}
-                </p>
-              ))}
-            </div>
-          )}
 
           {loading && (
             <div className="text-center py-4">
@@ -94,6 +72,15 @@ const AdminLoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && (
+                <div className="text-sm text-red-700">
+                  {errors.email.map((message, index) => (
+                    <p key={`${index}`} className="text-sm text-red-700">
+                      {message}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Password */}
@@ -118,6 +105,15 @@ const AdminLoginPage: React.FC = () => {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {errors.password && (
+                <div className="text-sm text-red-700">
+                  {errors.password.map((message, index) => (
+                    <p key={`${index}`} className="text-sm text-red-700">
+                      {message}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Submit Button */}

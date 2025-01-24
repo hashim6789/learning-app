@@ -1,17 +1,35 @@
 import { validate, ValidationError } from "class-validator";
 
+interface ValidationErrors {
+  [key: string]: string[];
+}
+
+const mapValidationErrors = (
+  validationErrors: ValidationError[]
+): ValidationErrors => {
+  const errors: ValidationErrors = {};
+
+  validationErrors.forEach((error) => {
+    if (error.constraints) {
+      errors[error.property] = Object.values(error.constraints);
+    }
+  });
+
+  return errors;
+};
+
 export const validateCredentials = async <T>(
   credentials: T
-): Promise<string[]> => {
+): Promise<ValidationErrors> => {
   const validationErrors: ValidationError[] = await validate(
     credentials as object
   );
 
+  console.log("errors =", validationErrors);
+
   if (validationErrors.length > 0) {
-    // Map through validation errors and return error messages
-    return validationErrors.flatMap((error) =>
-      error.constraints ? Object.values(error.constraints) : []
-    );
+    return mapValidationErrors(validationErrors);
   }
-  return [];
+
+  return {};
 };

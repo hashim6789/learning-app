@@ -1,51 +1,51 @@
-// usecases/RefreshTokenUseCase.ts
-import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
-import {
-  generateAccessToken,
-  verifyRefreshToken,
-} from "../../../shared/utils/jwt";
+// // usecases/RefreshTokenUseCase.ts
+// import { ResponseModel } from "../../../shared/types/ResponseModel";
+// import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+// import {
+//   generateAccessToken,
 
-class RefreshTokenUseCase {
-  private mentorRepository: IMentorRepository;
+// } from "../../../shared/utils/jwt";
 
-  constructor(mentorRepository: IMentorRepository) {
-    this.mentorRepository = mentorRepository;
-  }
+// class RefreshTokenUseCase {
+//   private mentorRepository: IMentorRepository;
 
-  async execute(refreshToken: string): Promise<ResponseModel> {
-    const decoded = verifyRefreshToken(refreshToken);
+//   constructor(mentorRepository: IMentorRepository) {
+//     this.mentorRepository = mentorRepository;
+//   }
 
-    if (!decoded) {
-      return {
-        statusCode: 403,
-        success: false,
-        message: "Invalid or expired refresh token",
-      };
-    }
+//   async execute(refreshToken: string): Promise<ResponseModel> {
+//     const decoded = verifyRefreshToken(refreshToken);
 
-    const mentor = await this.mentorRepository.findByEmail(decoded.userId);
+//     if (!decoded) {
+//       return {
+//         statusCode: 403,
+//         success: false,
+//         message: "Invalid or expired refresh token",
+//       };
+//     }
 
-    if (!mentor || mentor.refreshToken !== refreshToken) {
-      return {
-        statusCode: 403,
-        success: false,
-        message: "Refresh token is not valid",
-      };
-    }
+//     const mentor = await this.mentorRepository.findByEmail(decoded.userId);
 
-    const newAccessToken = generateAccessToken({
-      userId: mentor.id,
-      role: "mentor",
-    });
+//     if (!mentor || mentor.refreshToken !== refreshToken) {
+//       return {
+//         statusCode: 403,
+//         success: false,
+//         message: "Refresh token is not valid",
+//       };
+//     }
 
-    return {
-      statusCode: 200,
-      success: true,
-      message: "New access token generated",
-      data: newAccessToken,
-    };
-  }
-}
+//     const newAccessToken = generateAccessToken({
+//       userId: mentor.id,
+//       role: "mentor",
+//     });
 
-export default RefreshTokenUseCase;
+//     return {
+//       statusCode: 200,
+//       success: true,
+//       message: "New access token generated",
+//       data: newAccessToken,
+//     };
+//   }
+// }
+
+// export default RefreshTokenUseCase;

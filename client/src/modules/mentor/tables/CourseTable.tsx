@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTableFunctionality } from "../../../hooks/useTable";
+import useCourseManagement from "../../../hooks/useCourseManagement";
+import { config } from "../../../shared/configs/config";
 
+interface Category {
+  id: string;
+  title: string;
+  isListed: boolean;
+}
 interface Course {
   id: string;
   status: "Approved" | "Rejected" | "Pending" | "Draft";
   title: string;
-  category: string;
+  category: Category;
   thumbnail: string;
 }
 
@@ -15,45 +23,32 @@ interface CourseTableProps {
 }
 
 const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
-  console.log("courses :", courses);
-  const [filterStatus, setFilterStatus] = useState<
-    "all" | "Approved" | "Rejected" | "Pending" | "Draft"
-  >("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [courseStatus, setCourseStatus] = useState<{
-    [key: string]: Course["status"];
-  }>(
-    courses.reduce((acc, course) => {
-      acc[course.id] = course.status;
-      return acc;
-    }, {} as { [key: string]: Course["status"] })
-  );
-
+  const { deleteCourse } = useCourseManagement(config.API_BASE_URL);
+  const [availableCourses, setCourses] = useState<Course[]>(courses);
   const navigate = useNavigate();
 
-  const handleStatusToggle = (courseId: string) => {
-    setCourseStatus((prevStatus) => ({
-      ...prevStatus,
-      [courseId]:
-        prevStatus[courseId] === "Approved"
-          ? "Rejected"
-          : prevStatus[courseId] === "Pending"
-          ? "Approved"
-          : "Pending",
-    }));
+  const handleDelete = async (courseId: string) => {
+    try {
+      await deleteCourse(courseId);
+      setCourses(availableCourses.filter((course) => course.id !== courseId));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const filteredCourses = courses.filter((course) => {
-    const matchesStatus =
-      filterStatus === "all" || courseStatus[course.id] === filterStatus;
-    const matchesSearch = course.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+  const {
+    searchQuery,
+    filterStatus,
+    paginatedData,
+    totalPages,
+    currentPage,
+    handlePageChange,
+    handleSearchChange,
+    handleFilterChange,
+  } = useTableFunctionality<Course>({
+    data: availableCourses,
+    itemsPerPage: 5,
+    filterField: "title",
   });
 
   return (
@@ -63,7 +58,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-semibold text-gray-800">Courses</h2>
           <span className="text-sm text-gray-500">
-            {filteredCourses.length} Courses
+            {paginatedData.length} Courses
           </span>
         </div>
       </div>
@@ -79,63 +74,28 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
             type="text"
             placeholder="Search course name..."
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">Filter by</span>
           <div className="flex gap-2">
-            <button
-              onClick={() => setFilterStatus("all")}
-              className={`px-3 py-1 rounded-full text-sm ${
-                filterStatus === "all"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setFilterStatus("Approved")}
-              className={`px-3 py-1 rounded-full text-sm ${
-                filterStatus === "Approved"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              Approved
-            </button>
-            <button
-              onClick={() => setFilterStatus("Pending")}
-              className={`px-3 py-1 rounded-full text-sm ${
-                filterStatus === "Pending"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setFilterStatus("Rejected")}
-              className={`px-3 py-1 rounded-full text-sm ${
-                filterStatus === "Rejected"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              Rejected
-            </button>
-            <button
-              onClick={() => setFilterStatus("Draft")}
-              className={`px-3 py-1 rounded-full text-sm ${
-                filterStatus === "Draft"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              Draft
-            </button>
+            {["all", "Approved", "Pending", "Rejected", "Draft"].map(
+              (status) => (
+                <button
+                  key={status}
+                  onClick={() => handleFilterChange(status as any)}
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    filterStatus === status
+                      ? "bg-purple-100 text-purple-600"
+                      : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -160,7 +120,7 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredCourses.map((course) => (
+            {paginatedData.map((course) => (
               <tr
                 key={course.id}
                 className="border-b border-gray-200 last:border-0"
@@ -172,32 +132,22 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
                 </td>
                 <td className="px-6 py-4">
                   <span className="text-sm text-gray-600">
-                    {course.category}
+                    {course.category.title}
                   </span>
                 </td>
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      courseStatus[course.id] === "Approved"
+                      course.status === "Approved"
                         ? "bg-green-100 text-green-600"
-                        : courseStatus[course.id] === "Pending"
+                        : course.status === "Pending"
                         ? "bg-purple-100 text-purple-600"
                         : "bg-red-100 text-red-600"
                     }`}
                   >
-                    {courseStatus[course.id]}
+                    {course.status}
                   </span>
                 </td>
-                {/* <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleStatusToggle(course.id)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Toggle Status
-                    </button>
-                  </div>
-                </td> */}
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <button
@@ -208,12 +158,47 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
                     >
                       Lessons
                     </button>
+                    <button
+                      onClick={() => handleDelete(course.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-4 flex justify-end items-center gap-2">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded border ${
+            currentPage === 1
+              ? "text-gray-400 cursor-not-allowed"
+              : "text-black"
+          }`}
+        >
+          Prev
+        </button>
+        <span className="text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded border ${
+            currentPage === totalPages
+              ? "text-gray-400 cursor-not-allowed"
+              : "text-black"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

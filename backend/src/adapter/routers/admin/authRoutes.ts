@@ -1,20 +1,37 @@
 import express from "express";
-import AuthControllers from "../../controllers/admin/AuthControllers";
-import AdminRepository from "../../../infrastructures/database/repositories/AdminRepository";
-import AdminLoginUseCase from "../../../application/use_cases/admin/AdminLoginUseCase";
-import AdminLogoutUseCase from "../../../application/use_cases/admin/AdminLogoutUseCase";
+import authenticateToken from "../../middleware/authenticateMiddlewares";
+import authorizeRole from "../../middleware/authorizationMiddlewares";
+import AdminAuthController from "../../controllers/AdminAuthControllers";
 
-const adminRepository = new AdminRepository();
-const adminLoginUseCase = new AdminLoginUseCase(adminRepository);
-const adminLogoutUseCase = new AdminLogoutUseCase(adminRepository);
-const authController = new AuthControllers(
-  adminLoginUseCase,
-  adminLogoutUseCase
-);
+//authController instance created.
+const authController = new AdminAuthController();
 
+//authRouter is created,
 const authRouter = express.Router();
 
-authRouter.post("/login", authController.AdminLogin.bind(authController));
-authRouter.post("/logout", authController.AdminLogout.bind(authController));
+//----------------------admin authentication routes------------------------------//
+
+/**
+ * admin login route
+ * endpoint - /admin/auth/login
+ * method -  post
+ * body - {email, password}
+ * response - {success, message, data?}
+ */
+authRouter.post("/login", authController.AdminLogin);
+
+/**
+ * admin logout route
+ * endpoint - /admin/auth/logout
+ * method -  post
+ * body - {}
+ * response - {success, user, message, data?}
+ */
+authRouter.post(
+  "/logout",
+  authenticateToken,
+  authorizeRole(["admin"]),
+  authController.AdminLogout
+);
 
 export default authRouter;

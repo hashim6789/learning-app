@@ -5,7 +5,13 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center space-y-6">
           <div className="flex items-center space-x-2">
-            <img src="/totc-logo.svg" alt="TOTC" className="h-8" />
+            <div className="h-10"></div>
+
+            {/* <img
+              src="https://www.canva.com/design/DAGc5urwc88/UNXhnJVSsb3zafIYhRLMKQ/view"
+              alt="dev"
+              className="h-8"
+            /> */}
             <span className="text-sm">Virtual Class for Zoom</span>
           </div>
 

@@ -15,43 +15,70 @@ class GoogleSignupLearnerUseCase {
       `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`
     );
 
-    let fetchedUser = await this.learnerRepository.findByGoogleId(data.sub);
-    console.log("user 1 :", fetchedUser);
-    if (!fetchedUser) {
-      fetchedUser = await this.learnerRepository.findByEmail(data.email);
-    }
-    console.log("user 2 :", fetchedUser);
+    const fetchedLearner = await this.learnerRepository.findByEmail(data.email);
 
-    if (!fetchedUser) {
+    let learner: Learner | null = null;
+    if (!fetchedLearner) {
       const googleId = data.sub;
       const firstName = data.given_name;
       const lastName = data.family_name || null;
       const email = data.email;
       const profilePicture = data.picture || null;
-      const isBlocked = false;
 
       const newLearner = new Learner(
-        googleId,
+        data.sub,
         "",
-        firstName,
-        lastName,
-        email,
-        null, // password
-        profilePicture,
-        [], // purchasedCourses
-        isBlocked
+        data.given_name,
+        data.family_name || null,
+        data.email,
+        null,
+        data.picture || null,
+        [],
+        false,
+        data.email_verified,
+        null,
+        null
       );
-      fetchedUser = await this.learnerRepository.createLearner(newLearner);
+      learner = await this.learnerRepository.createLearner(newLearner);
+    } else if (fetchedLearner.isBlocked) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "Learner is blocked",
+      };
+    } else if (!fetchedLearner.googleId) {
+      const updateData: Partial<Learner> = {
+        googleId: data.sub,
+        profilePicture: data.picture,
+        isVerified: true,
+      };
+
+      learner = await this.learnerRepository.updateLearner(
+        fetchedLearner.id,
+        updateData
+      );
+    } else {
+      learner = fetchedLearner;
     }
 
-    console.log("New User Created:", fetchedUser);
+    if (!learner) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "Learner is can't be created",
+      };
+    }
+
+    console.log("New User Created:", learner);
 
     // Generate tokens
     const accessToken = generateAccessToken({
-      userId: fetchedUser.id,
+      userId: learner.id,
       role: "learner",
     });
     const refreshToken = generateRefreshToken();
+
+    learner.removeSensitive();
 
     return {
       statusCode: 200,
@@ -60,6 +87,7 @@ class GoogleSignupLearnerUseCase {
       data: {
         accessToken,
         refreshToken,
+        learner,
       },
     };
   }

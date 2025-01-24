@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 // Custom configs
 import corsConfig from "../../shared/configs/corsConfig";
 import cookieConfig from "../../shared/configs/cookieConfig"; // Not used yet, so may be omitted if unnecessary
+import sessionConfig from "../../shared/configs/sessionConfig";
 
 // Importing router level routes
 import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
@@ -32,7 +33,17 @@ app.use(morgan("dev")); // Request logging
 app.use(corsConfig); // Enable CORS
 app.use(express.json()); // Parse incoming JSON payloads
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bodies
+app.use(sessionConfig); // Apply session configuration
 app.use(cookieParser()); // Parse cookies
+// app.use((req, res, next) => {
+//   if (!req.session.user) {
+//     req.session.user = {
+//       userId: "",
+//       role: "learner",
+//     }; // Default empty Payload
+//   }
+//   next();
+// });
 
 // Route-level middlewares
 app.use("/learner", learnerRouter);

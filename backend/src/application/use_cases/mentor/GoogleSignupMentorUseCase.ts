@@ -38,9 +38,11 @@ class GoogleSignupMentorUseCase {
         lastName,
         email,
         profilePicture,
-        [], // purchasedCourses
+        [],
         [],
         isBlocked,
+        null,
+        null,
         null,
         null
       );
@@ -83,6 +85,7 @@ class GoogleSignupMentorUseCase {
       data: {
         accessToken,
         refreshToken,
+        mentor: tokenSetMentor,
       },
     };
   }

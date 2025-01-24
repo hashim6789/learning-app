@@ -2,27 +2,26 @@ import { useState } from "react";
 import useBlockUnblock from "./useBlockUnblock";
 import { useTableFunctionality } from "./useTable";
 import { useNavigate } from "react-router-dom";
-
-interface Learner {
-  id: string;
-  name: string;
-  email: string;
-  status: Status;
-  profilePicture: string;
-}
-
-type Status = "blocked" | "unblocked";
+import { Learner } from "../shared/types/Learner";
+import { UserStatus } from "../shared/types/UserStatus";
 
 const useLearner = (learners: Learner[]) => {
   const { handleBlockUnblock, isLoading } = useBlockUnblock();
   const navigate = useNavigate();
 
-  const [learnerStatus, setLearnerStatus] = useState<{ [key: string]: Status }>(
-    learners.reduce((acc, learner) => {
-      acc[learner.id] = learner.status;
-      return acc;
-    }, {} as { [key: string]: Status })
+  const [learnerStatus, setLearnerStatus] = useState<{
+    [key: string]: UserStatus;
+  }>(
+    learners.reduce(
+      (acc, learner) => ({ ...acc, [learner.id]: learner.status }),
+      {}
+    )
   );
+
+  const updatedLearners = learners.map((learner) => ({
+    ...learner,
+    status: learnerStatus[learner.id],
+  }));
 
   const {
     currentPage,
@@ -34,8 +33,8 @@ const useLearner = (learners: Learner[]) => {
     handleSearchChange,
     handleFilterChange,
   } = useTableFunctionality<Learner>({
-    data: learners,
-    itemsPerPage: 5,
+    data: updatedLearners,
+    itemsPerPage: 10,
     filterField: "name",
   });
 
@@ -53,10 +52,8 @@ const useLearner = (learners: Learner[]) => {
     }
   };
 
-  const handleViewLearner = (learnerId: string) => {
+  const handleViewLearner = (learnerId: string) =>
     navigate(`/admin/learners/${learnerId}`);
-    console.log(learnerId, "learner");
-  };
 
   return {
     isLoading,

@@ -2,6 +2,7 @@ import { Category } from "../entities/Category";
 
 export interface ICategoryRepository {
   fetchAllCategories(): Promise<Category[] | null>;
+  fetchAllListedCategories(): Promise<Category[] | null>;
   toggleStatus(categoryId: string, isListed: boolean): Promise<Category | null>;
   updateCategory(
     categoryId: string,

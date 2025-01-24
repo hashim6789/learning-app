@@ -7,11 +7,16 @@ export interface IAdmin extends Document {
   refreshToken: string;
 }
 
-const AdminSchema: Schema = new Schema({
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  refreshToken: { type: String, required: true },
-});
+const AdminSchema: Schema = new Schema(
+  {
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    refreshToken: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const AdminModel = mongoose.model<IAdmin>("Admin", AdminSchema);
 

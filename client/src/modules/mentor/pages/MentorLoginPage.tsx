@@ -13,6 +13,7 @@ interface AuthFormProps {
 const MentorLoginPage: React.FC<AuthFormProps> = () => {
   const { loading, error, handleSignup, handleLogin } = useAuth();
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
+  // const [isSignupSuccess, setIsSignupSuccess] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false); // Show/hide password
 
   const [email, setEmail] = useState("");
@@ -63,7 +64,7 @@ const MentorLoginPage: React.FC<AuthFormProps> = () => {
         setErrors(validationErrors); // Set errors based on validation
       } else {
         setErrors([]); // Clear errors if validation is successful
-        handleSignup(signupCredentials, "mentor"); // Dispatch signup action
+        await handleSignup(signupCredentials, "mentor"); // Dispatch signup action
       }
     }
   };
@@ -236,17 +237,6 @@ const MentorLoginPage: React.FC<AuthFormProps> = () => {
 
             {/* Google Sign In */}
             <div className="mt-6">
-              {/* <button
-                type="button"
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                <img
-                  src="/api/placeholder/24/24"
-                  alt="Google"
-                  className="w-6 h-6"
-                />
-                Sign up with Google
-              </button> */}
               <GoogleLoginButton user="mentor" />
             </div>
           </form>

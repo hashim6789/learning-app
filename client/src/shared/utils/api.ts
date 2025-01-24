@@ -37,7 +37,7 @@ api.interceptors.request.use(
 
     // Get the token from cookies
     const token = getCookie("accessToken");
-    console.log(token);
+    // console.log(token);
     if (token) {
       // Attach the token to the Authorization header
       config.headers.authorization = `Bearer ${token}`;
@@ -68,8 +68,7 @@ api.interceptors.response.use(
           { withCredentials: true }
         );
 
-        const { accessToken, refreshToken: newRefreshToken } =
-          refreshResponse.data;
+        const { accessToken } = refreshResponse.data;
 
         // Store the new access token in cookies (not refresh token since it's httpOnly)
         document.cookie = `Authorization=${accessToken}; HttpOnly; Secure; SameSite=Strict; path=/`;
@@ -80,7 +79,6 @@ api.interceptors.response.use(
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
 
-        // Clear tokens from cookies and redirect to login
         document.cookie =
           "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         document.cookie =
@@ -88,12 +86,12 @@ api.interceptors.response.use(
         console.log("error found: Login required");
         const user =
           JSON.parse(localStorage.getItem("user") || "null") ?? "learner";
+
         console.log("object", user);
-        window.location.href = `/${user}/login`; // Update with your login route
+        window.location.href = `/${user}/login`;
       }
     }
 
-    // Propagate other errors
     return Promise.reject(error);
   }
 );

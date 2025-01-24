@@ -17,6 +17,7 @@ class MentorLoginUseCase {
     await validateData(data, LoginDTO);
 
     const existingMentor = await this.mentorRepository.findByEmail(data.email);
+    console.log(existingMentor);
 
     if (!existingMentor)
       return {
@@ -64,6 +65,7 @@ class MentorLoginUseCase {
     }
 
     tokenSetMentor.password = null;
+    tokenSetMentor.refreshToken = null;
 
     return {
       statusCode: 200,

@@ -4,7 +4,6 @@ import {
   IsOptional,
   IsString,
   MinLength,
-  Validate,
 } from "class-validator";
 import { Match } from "../shared/mathchDecorator"; // Create a custom Match decorator
 
@@ -17,6 +16,7 @@ export class AuthSignupCredentials {
   lastName: string;
 
   @IsEmail({}, { message: "Please provide a valid email address." })
+  @IsNotEmpty({ message: "Email cannot be empty." })
   email: string;
 
   @IsNotEmpty({ message: "Password cannot be empty." })

@@ -4,31 +4,44 @@ import authenticateToken from "../../middleware/authenticateMiddlewares";
 import authorizeRole from "../../middleware/authorizationMiddlewares";
 
 const coursesRouter = express.Router();
+const courseController = new CourseController();
 
 coursesRouter.post(
   "/",
   authenticateToken,
   authorizeRole(["mentor"]),
-  CourseController.createCourseForMentor
+  courseController.createCourseForMentor
+);
+coursesRouter.put(
+  "/:courseId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  courseController.updateCourseForMentor
+);
+coursesRouter.delete(
+  "/:courseId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  courseController.deleteCourseForMentor
 );
 coursesRouter.get(
   "/",
   authenticateToken,
   authorizeRole(["mentor"]),
-  CourseController.getAllCourseOfMentor
+  courseController.getAllCourseOfMentor
 );
 coursesRouter.get(
   "/:courseId",
   authenticateToken,
   authorizeRole(["mentor"]),
-  CourseController.getCourseOfMentorByCourseId
+  courseController.getCourseOfMentorByCourseId
 );
 
 coursesRouter.get(
   "/:courseId/lessons",
   authenticateToken,
   authorizeRole(["mentor"]),
-  CourseController.getLessonsOfCourseForMentor
+  courseController.getLessonsOfCourseForMentor
 );
 
 export default coursesRouter;
