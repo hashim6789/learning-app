@@ -3,7 +3,11 @@ import { useRoutes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
+//imported the protected route hoc and error handing components
 import ProtectedRoute from "./ProtectedRoutes";
+import { NotFoundPage, ServerErrorPage } from "../ErrorPage";
+
+//admin related components
 import AdminLoginPage from "../modules/admin/pages/AdminLoginPage";
 import AdminLayout from "../modules/admin/pages/AdminLayout";
 import AdminDashboard from "../modules/admin/pages/AdminDashboard";
@@ -14,6 +18,7 @@ import AdminCategoryManagement from "../modules/admin/pages/AdminCategoryManagem
 import AdminLearnerDetails from "../modules/admin/pages/AdminLernerDetails";
 import AdminMentorDetails from "../modules/admin/pages/AdminMentorDetails";
 
+//mentor related components
 import MentorLayout from "../modules/mentor/pages/MentorLayout";
 import MentorDashboard from "../modules/mentor/pages/MentorDashboard";
 import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
@@ -21,6 +26,7 @@ import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManage
 import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
 
+//Learner related components
 import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
 import LearnerDashboard from "../modules/learner/pages/LearnerDashboard";
 import LearnerLayout from "../modules/learner/pages/LearnerLayout";
@@ -28,8 +34,6 @@ import LessonsCreatePage from "../modules/mentor/pages/LessonsCreationPage";
 import LearnerOtpPage from "../modules/learner/pages/LearnerOtpPage";
 import LearnerChangePasswordPage from "../modules/learner/pages/LearnerChangePasswordPage";
 import LearnerLandingPage from "../modules/learner/pages/LearnerLandingPage";
-
-import { NotFoundPage, ServerErrorPage } from "../ErrorPage";
 
 const MainRoutes: React.FC = () => {
   const { isAuthenticated, user } = useSelector(

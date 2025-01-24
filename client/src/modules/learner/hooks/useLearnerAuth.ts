@@ -41,8 +41,8 @@ const useLearnerAuth = () => {
     if (isLogin) {
       // Login process
       const loginCredentials = new AuthLoginCredentials();
-      loginCredentials.email = email;
-      loginCredentials.password = password;
+      loginCredentials.email = email.trim();
+      loginCredentials.password = password.trim();
 
       const isValid = await validateCredentials(loginCredentials);
       if (!isValid) return;
@@ -50,11 +50,11 @@ const useLearnerAuth = () => {
       handleLogin(loginCredentials, "learner");
     } else {
       const signupCredentials = new AuthSignupCredentials();
-      signupCredentials.email = email;
-      signupCredentials.password = password;
-      signupCredentials.confirmPassword = confirmPassword;
-      signupCredentials.firstName = firstName;
-      signupCredentials.lastName = lastName;
+      signupCredentials.email = email.trim();
+      signupCredentials.password = password.trim();
+      signupCredentials.confirmPassword = confirmPassword.trim();
+      signupCredentials.firstName = firstName.trim();
+      signupCredentials.lastName = lastName.trim();
 
       const isValid = await validateCredentials(signupCredentials);
       if (!isValid) return;

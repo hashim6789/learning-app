@@ -19,12 +19,6 @@ class GoogleSignupLearnerUseCase {
 
     let learner: Learner | null = null;
     if (!fetchedLearner) {
-      const googleId = data.sub;
-      const firstName = data.given_name;
-      const lastName = data.family_name || null;
-      const email = data.email;
-      const profilePicture = data.picture || null;
-
       const newLearner = new Learner(
         data.sub,
         "",
@@ -44,7 +38,13 @@ class GoogleSignupLearnerUseCase {
       return {
         statusCode: 400,
         success: false,
-        message: "Learner is blocked",
+        message: "Learner is blocked!",
+      };
+    } else if (!fetchedLearner.isVerified) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "Learner is unverified!",
       };
     } else if (!fetchedLearner.googleId) {
       const updateData: Partial<Learner> = {
