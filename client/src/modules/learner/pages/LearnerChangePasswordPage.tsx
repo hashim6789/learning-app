@@ -121,7 +121,7 @@ const LearnerChangePasswordPage: React.FC = () => {
               <h2 className="text-2xl font-bold text-red-600">Error</h2>
               <p className="text-gray-600 mt-4">{errorMessage}</p>
               <a
-                onClick={() => navigate("/learner/login")}
+                onClick={() => navigate("/")}
                 className="text-green-600 mt-4 inline-block cursor-pointer"
               >
                 Go back to homepage

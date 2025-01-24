@@ -1,31 +1,45 @@
-// ProtectedRoute.tsx
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { User } from "../shared/types/User";
 
-interface ProtectedRouteProps {
-  requiredRole: string;
-  children?: React.ReactNode;
-}
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  requiredRole,
-  children,
-}) => {
-  const { isAuthenticated, user } = useSelector(
+const ProtectedRoute = ({ role }: { role: User }) => {
+  const { isAuthenticated, isBlocked, isVerified, user } = useSelector(
     (state: RootState) => state.auth
   );
 
+  const currentPath = window.location.pathname;
+
+  // Redirect to the login page if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to={`/${requiredRole}/login`} replace />;
+    return (
+      <Navigate to={role === "learner" ? "/login" : `/${role}/login`} replace />
+    );
   }
 
-  if (user !== requiredRole) {
-    return <Navigate to={`/${requiredRole}/dashboard`} replace />;
+  // Redirect to the blocked page if the user is blocked
+  if (isBlocked) {
+    return <Navigate to="/blocked" replace />;
   }
 
-  return children ? <>{children}</> : <Outlet />;
+  if (isVerified && currentPath === `/${role}/otp`) {
+    return (
+      <Navigate to={role === "learner" ? "/" : `/${role}/dashboard`} replace />
+    );
+  }
+
+  // Redirect to the OTP page if the user is not verified
+  if (!isVerified && currentPath !== `/${role}/otp`) {
+    return <Navigate to={`/${role}/otp`} replace />;
+  }
+
+  // Redirect to the correct dashboard if the role doesn't match
+  if (user !== role) {
+    return <Navigate to={`/${user}/dashboard`} replace />;
+  }
+
+  // Render the nested routes
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

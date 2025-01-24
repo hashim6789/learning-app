@@ -112,7 +112,7 @@ const useOtp = (onComplete?: (otp: string) => void) => {
       }, 1000);
     } else if (timer === 0) {
       setIsActive(false);
-      localStorage.removeItem("otpTimer");
+      // localStorage.removeItem("otpTimer");
       if (interval) clearInterval(interval);
     }
 
@@ -126,8 +126,20 @@ const useOtp = (onComplete?: (otp: string) => void) => {
     if (otpString.length === 6) {
       console.log(otpString);
       try {
-        await dispatch(verifyOtp({ otp: otpString, user }));
-        // navigate(`/${user}/dashboard`);
+        const resultAction = await dispatch(
+          verifyOtp({ otp: otpString, user })
+        );
+        if (verifyOtp.fulfilled.match(resultAction)) {
+          showToast.success("The OTP verified successfully!");
+
+          if (user === "learner") {
+            navigate("/");
+          } else {
+            navigate(`/${user}/dashboard`);
+          }
+        } else {
+          showToast.error("The OTP verification failed!");
+        }
       } catch (error) {
         console.error(error);
       }

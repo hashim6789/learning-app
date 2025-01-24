@@ -6,7 +6,6 @@ import { googleSignup } from "../thunks/googleSignup";
 import { decodeToken } from "../../shared/utils/decodeToken";
 import { User } from "../../shared/types/User";
 import { verifyOtp } from "../thunks/verifyOtp";
-import Cookies from "js-cookie";
 import { forgotPassword } from "../thunks/forgotPassword";
 
 // interface GoogleSignupError {
@@ -99,7 +98,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signup.fulfilled, (state, action) => {
-        const { message, user } = action.payload;
+        const { message, data, user } = action.payload;
 
         state.loading = false;
         state.isAuthenticated = true;
@@ -109,6 +108,13 @@ const authSlice = createSlice({
         state.error = null;
 
         console.log("Signup successful:", message);
+
+        try {
+          localStorage.setItem("data", JSON.stringify(data));
+          localStorage.setItem("user", JSON.stringify(user));
+        } catch (error) {
+          console.error("Failed to store data in localStorage:", error);
+        }
       })
       .addCase(signup.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -124,7 +130,8 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isVerified = true;
         state.isBlocked = false;
-        state.error = message;
+        state.error = null;
+        state.loading = false;
 
         try {
           localStorage.removeItem("otpTimer");
@@ -136,7 +143,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = false;
+        state.isAuthenticated = true;
         state.isVerified = false;
         state.error = action.payload || "otp verification failed!";
       })

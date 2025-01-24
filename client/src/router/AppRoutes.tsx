@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import { useRoutes, Navigate } from "react-router-dom";
+
+//error handling page
+
 import AdminLoginPage from "../modules/admin/pages/AdminLoginPage";
 // import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
 // import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
@@ -37,13 +40,6 @@ const AppRoutes: React.FC = () => {
   const { isAuthenticated, isBlocked, isVerified, user } = useSelector(
     (state: RootState) => state.auth
   );
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const response = await api.get(`${config.API_BASE_URL}/reload`);
-  //     console.log(response);
-  //   };
-  // });
 
   const isFullyValid =
     isAuthenticated === true && isBlocked === false && isVerified === true
