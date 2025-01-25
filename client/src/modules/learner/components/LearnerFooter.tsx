@@ -1,14 +1,13 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 interface FooterProps {
   className?: string;
 }
 
 // Footer Component
 const LearnerFooter: React.FC<FooterProps> = ({ className = "" }) => {
-  const handleSubscribe = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    // Add subscription logic here
-  };
+  // const handleSubscribe = (e: React.FormEvent<HTMLFormElement>): void => {
+  //   e.preventDefault();
+  // };
 
   return (
     <footer className={`bg-gray-900 text-white py-12 ${className}`}>
@@ -21,12 +20,14 @@ const LearnerFooter: React.FC<FooterProps> = ({ className = "" }) => {
                 d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
               />
             </svg>
-            <span className="text-white">Virtual Class for Zoom</span>
+            <span className="text-white">EazyDev</span>
           </div>
 
           <div className="text-center">
-            <h3 className="text-lg mb-4">Subscribe to get our Newsletter</h3>
-            <form onSubmit={handleSubscribe} className="flex space-x-2">
+            <h3 className="text-lg mb-4">
+              A Complete Development Learning Solution
+            </h3>
+            {/* <form onSubmit={handleSubscribe} className="flex space-x-2">
               <input
                 type="email"
                 placeholder="Your Email"
@@ -39,11 +40,11 @@ const LearnerFooter: React.FC<FooterProps> = ({ className = "" }) => {
               >
                 Subscribe
               </button>
-            </form>
+            </form> */}
           </div>
 
           <div className="flex space-x-6 text-sm text-gray-400">
-            <Link to="/careers" className="hover:text-white">
+            {/* <Link to="/careers" className="hover:text-white">
               Careers
             </Link>
             <Link to="/privacy" className="hover:text-white">
@@ -51,11 +52,11 @@ const LearnerFooter: React.FC<FooterProps> = ({ className = "" }) => {
             </Link>
             <Link to="/terms" className="hover:text-white">
               Terms & Conditions
-            </Link>
+            </Link> */}
           </div>
 
           <div className="text-sm text-gray-400">
-            © {new Date().getFullYear()} Class Technologies Inc.
+            © {new Date().getFullYear()} EazyDev Inc.
           </div>
         </div>
       </div>

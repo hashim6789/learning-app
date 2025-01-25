@@ -31,15 +31,12 @@ const useLearnerAuth = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
   const [forgotPasswordModal, setForgotPasswordModal] =
     useState<boolean>(false);
-  // const [forgotPasswordSuccess, setForgotPasswordSuccess] =
-  //   useState<string>("");
 
   // Handle form submission for login and signup
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isLogin) {
-      // Login process
       const loginCredentials = new AuthLoginCredentials();
       loginCredentials.email = email.trim();
       loginCredentials.password = password.trim();
@@ -100,7 +97,6 @@ const useLearnerAuth = () => {
     setForgotPasswordEmail,
     forgotPasswordModal,
     setForgotPasswordModal,
-    // forgotPasswordSuccess,
     handleForgotPasswordSubmit,
     forgotErrors,
   };

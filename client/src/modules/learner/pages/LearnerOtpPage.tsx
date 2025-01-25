@@ -1,6 +1,12 @@
 import React from "react";
+
+//imported build-in ui components
 import { Timer, ArrowRight } from "lucide-react";
+
+//imported custom hooks
 import useOtp from "../../../hooks/useOtp";
+
+//imported build-in hooks
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
@@ -14,7 +20,6 @@ const LearnerOtpPage: React.FC<OTPInputProps> = () =>
     const {
       otp,
       timer,
-      isActive,
       inputRefs,
       handleChange,
       handleKeyDown,

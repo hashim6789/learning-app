@@ -1,6 +1,10 @@
 import { Eye, EyeOff } from "lucide-react";
+
+//imported shared utilities
 import loginImage from "../../../assets/img/wall_paper_03.jpg";
 import GoogleLoginButton from "../../../shared/GoogleLoginButton";
+
+//imported child components
 import ForgotPasswordModal from "../components/LearnerForgotPassword";
 
 // Imported the custom hooks

@@ -1,10 +1,19 @@
+//imported build-in hooks
 import { FormEvent, useState, useEffect } from "react";
-import { ChangePasswordCredentials } from "../../../DTOS/ChangePasswordCredentials";
-import useFormErrors from "../../../hooks/useFormErrors";
-import { showToast } from "../../../shared/utils/toastUtils";
-import api from "../../../shared/utils/api";
-import { config } from "../../../shared/configs/config";
 import { useNavigate, useParams } from "react-router-dom";
+
+//imported custom hooks
+import useFormErrors from "../../../hooks/useFormErrors";
+
+//imported DTo's for validating the credentials
+import { ChangePasswordCredentials } from "../../../DTOS/ChangePasswordCredentials";
+
+//import shared utilities
+import { showToast } from "../../../shared/utils/toastUtils";
+import { config } from "../../../shared/configs/config";
+
+//imported api instance
+import api from "../../../shared/utils/api";
 
 const useChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");

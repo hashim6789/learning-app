@@ -1,9 +1,66 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
+//imported custom hooks
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store"; // Adjust import path as needed
+import { RootState } from "../../../store";
+
+//imported build-in hooks
 import useAuth from "../../../hooks/useAuth";
+
+//imported build-in ui components
 import { AlertCircle, AlertTriangle } from "lucide-react";
+
+//child components
+interface AlertProps {
+  type: "blocked" | "unverified";
+}
+
+const LearnerAlert: React.FC<AlertProps> = ({ type }) => {
+  const alertConfig = {
+    blocked: {
+      icon: AlertCircle,
+      bgColor: "bg-red-100",
+      textColor: "text-red-800",
+      borderColor: "border-red-400",
+      message: "Your account has been blocked. Please contact support.",
+    },
+    unverified: {
+      icon: AlertTriangle,
+      bgColor: "bg-yellow-100",
+      textColor: "text-yellow-800",
+      borderColor: "border-yellow-400",
+      message: "Please verify your email to access full platform features.",
+    },
+  };
+
+  const config = alertConfig[type];
+  const Icon = config.icon;
+
+  return (
+    <div
+      className={`
+        w-full 
+        ${config.bgColor} 
+        ${config.textColor} 
+        ${config.borderColor}
+        border 
+        p-4 
+        rounded-lg 
+        flex 
+        items-center 
+        space-x-4
+        shadow-md
+      `}
+      role="alert"
+    >
+      <Icon className="w-6 h-6" />
+      <div className="flex-1">
+        <p className="text-sm font-medium">{config.message}</p>
+      </div>
+    </div>
+  );
+};
 
 interface NavbarProps {
   className?: string;
@@ -13,40 +70,15 @@ const LearnerNavbar: React.FC<NavbarProps> = ({ className = "" }) => {
   const { handleLogout } = useAuth();
 
   // Redux state selectors
-  const { isAuthenticated, isVerified, isBlocked, loading, error } =
-    useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, isVerified, isBlocked } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const user = JSON.parse(localStorage.getItem("data") ?? "{}");
-
-  // Loading state
-  // if (loading) {
-  //   return (
-  //     <nav
-  //       className={`flex items-center justify-between px-6 py-3 bg-gray-100 shadow-md ${className}`}
-  //     >
-  //       <div className="w-full text-center py-4 text-gray-700 font-medium">
-  //         Loading your profile...
-  //       </div>
-  //     </nav>
-  //   );
-  // }
-
-  // // Error state
-  // if (error) {
-  //   return (
-  //     <nav
-  //       className={`flex items-center justify-between px-6 py-3 bg-red-100 shadow-md ${className}`}
-  //     >
-  //       <div className="w-full text-center py-4 text-red-700 font-medium">
-  //         Error: {error}. Please try again later.
-  //       </div>
-  //     </nav>
-  //   );
-  // }
 
   // Unauthenticated navbar
   if (!isAuthenticated) {
@@ -226,66 +258,3 @@ const LearnerNavbar: React.FC<NavbarProps> = ({ className = "" }) => {
 };
 
 export default LearnerNavbar;
-
-interface AlertProps {
-  type: "blocked" | "unverified";
-}
-
-const LearnerAlert: React.FC<AlertProps> = ({ type }) => {
-  const alertConfig = {
-    blocked: {
-      icon: AlertCircle,
-      bgColor: "bg-red-100",
-      textColor: "text-red-800",
-      borderColor: "border-red-400",
-      message: "Your account has been blocked. Please contact support.",
-    },
-    unverified: {
-      icon: AlertTriangle,
-      bgColor: "bg-yellow-100",
-      textColor: "text-yellow-800",
-      borderColor: "border-yellow-400",
-      message: "Please verify your email to access full platform features.",
-    },
-  };
-
-  const config = alertConfig[type];
-  const Icon = config.icon;
-
-  return (
-    <div
-      className={`
-        w-full 
-        ${config.bgColor} 
-        ${config.textColor} 
-        ${config.borderColor}
-        border 
-        p-4 
-        rounded-lg 
-        flex 
-        items-center 
-        space-x-4
-        shadow-md
-      `}
-      role="alert"
-    >
-      <Icon className="w-6 h-6" />
-      <div className="flex-1">
-        <p className="text-sm font-medium">{config.message}</p>
-      </div>
-    </div>
-  );
-};
-
-// Example usage in the Navbar component
-// const renderAlert = () => {
-//   if (isBlocked) {
-//     return <LearnerAlert type="blocked" />;
-//   }
-
-//   if (!isVerified) {
-//     return <LearnerAlert type="unverified" />;
-//   }
-
-//   return null;
-// };

@@ -1,6 +1,9 @@
 import { Eye, EyeOff } from "lucide-react";
+
+//imported custom hooks
 import useChangePassword from "../hooks/useChangePassword";
 
+//imported build-in hooks
 import { useNavigate } from "react-router-dom";
 
 const LearnerChangePasswordPage: React.FC = () => {

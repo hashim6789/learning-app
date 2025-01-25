@@ -1,5 +1,6 @@
 import { FormEvent } from "react";
 
+//subclasses
 interface ValidationError {
   [key: string]: string[];
 }
@@ -25,8 +26,6 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   forgotErrors: errors,
   handleForgotPasswordSubmit,
 }) => {
-  // const { handleForgotPasswordSubmit } = useLearnerAuth();
-  console.log(errors);
   if (!forgotPasswordModal) return null;
 
   return (
