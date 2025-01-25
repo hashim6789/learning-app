@@ -1,6 +1,11 @@
-import LearnersTable from "../tables/LearnerTable";
-import useFetch from "../../../hooks/useFetch";
+//imported sub classes
 import { Learner } from "../../../shared/types/Learner";
+
+//imported child components
+import LearnersTable from "../tables/LearnerTable";
+
+//imported custom hooks
+import useFetch from "../../../hooks/useFetch";
 
 interface Props {}
 
@@ -21,8 +26,7 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
       }))
     : [];
 
-  // console.log("learners", data);
-
+  //loading handling
   if (learnersLoading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -39,11 +43,11 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
     );
   }
 
+  //error handling
   if (learnersError) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          {/* <div className="animate-spin h-12 w-12 mb-4 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div> */}
           <h2 className="text-xl font-bold text-red-800">
             error fetch learner details...
           </h2>
@@ -52,9 +56,12 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
       </div>
     );
   }
+
+  //error handling (no learners found)
   if (data && data.length === 0) {
     return <div className="p-6 text-red-500">No learners exists!</div>;
   }
+
   return (
     <div>
       <LearnersTable learners={learners as Learner[]} />

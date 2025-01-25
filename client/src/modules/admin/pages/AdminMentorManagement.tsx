@@ -1,9 +1,12 @@
 import React from "react";
-import useFetch from "../../../hooks/useFetch";
+
+//imported child components
 import MentorsTable from "../tables/MentorTable";
 
-interface AdminMentorManagementProps {}
+//imported custom hooks
+import useFetch from "../../../hooks/useFetch";
 
+//subclasses
 interface Mentor {
   id: string;
   name: string;
@@ -11,6 +14,8 @@ interface Mentor {
   status: "blocked" | "unblocked";
   profilePicture: string;
 }
+
+interface AdminMentorManagementProps {}
 
 const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
   const { data, loading, error } = useFetch<any[] | null>("/admin/mentors");
@@ -25,6 +30,7 @@ const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
       }))
     : [];
 
+  //loading handling
   if (loading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -41,6 +47,7 @@ const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
     );
   }
 
+  //error handling
   if (error) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">

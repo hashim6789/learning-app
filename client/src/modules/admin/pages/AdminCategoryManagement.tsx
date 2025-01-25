@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import useCategory from "../../../hooks/useCategory";
+
+//imported child components
 import CategoriesTable from "../tables/CategoryTable";
+
+//imported custom hooks
+import useCategory from "../../../hooks/useCategory";
 import useFetch from "../../../hooks/useFetch";
 
 interface AdminCategoryManagementProps {}
@@ -9,7 +13,7 @@ interface Category {
   id: string;
   title: string;
   status: "blocked" | "unblocked";
-  isListed?: boolean; // Making isListed optional
+  isListed?: boolean;
 }
 
 const AdminCategoryManagement: React.FC<AdminCategoryManagementProps> = () => {
@@ -27,11 +31,7 @@ const AdminCategoryManagement: React.FC<AdminCategoryManagementProps> = () => {
       }))
     : [];
 
-  const {
-    loading: createLoading,
-    error: createError,
-    createCategory,
-  } = useCategory();
+  const { createCategory } = useCategory();
   const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [newCategoryTitle, setNewCategoryTitle] = useState("");
 

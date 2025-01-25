@@ -1,6 +1,8 @@
-import useLearner from "../../../hooks/useLearner";
-import { Learner } from "../../../shared/types/Learner";
+//imported custom hooks
+import useLearner from "../hooks/useLearner";
 
+//imported sub-classes
+import { Learner } from "../../../shared/types/Learner";
 interface LearnerTableProps {
   learners: Learner[];
 }

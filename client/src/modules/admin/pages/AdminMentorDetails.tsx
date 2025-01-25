@@ -1,7 +1,13 @@
+//imported build-in ui components
 import { BookOpen, Clock, Users } from "lucide-react";
-import useFetch from "../../../hooks/useFetch";
+
+//imported build-in hooks
 import { useParams } from "react-router-dom";
 
+//imported custom hooks
+import useFetch from "../../../hooks/useFetch";
+
+//imported child components
 interface ICourse {
   id: string;
   title: string;
@@ -33,6 +39,7 @@ const AdminMentorDetails = ({}: MentorDetailsProps) => {
     return `${firstName[0]}${lastName ? lastName[0] : ""}`.toUpperCase();
   };
 
+  //loading handling
   if (mentorLoading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -49,6 +56,7 @@ const AdminMentorDetails = ({}: MentorDetailsProps) => {
     );
   }
 
+  //error handling
   if (!mentor) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -61,8 +69,6 @@ const AdminMentorDetails = ({}: MentorDetailsProps) => {
       </div>
     );
   }
-
-  //   const mentor = testMentor;
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -182,33 +188,3 @@ const AdminMentorDetails = ({}: MentorDetailsProps) => {
 };
 
 export default AdminMentorDetails;
-
-// const testMentor: Mentor = {
-//   firstName: "Jane",
-//   lastName: "Smith",
-//   email: "jane.smith@example.com",
-//   profilePicture: "https://via.placeholder.com/150",
-//   createdCourses: [
-//     {
-//       id: "course1",
-//       title: "Mastering TypeScript",
-//       description:
-//         "A comprehensive course on TypeScript, from basics to advanced.",
-//       thumbnail: "https://via.placeholder.com/200",
-//       duration: "5 hours",
-//       purchaseCount: 120,
-//       status: "published",
-//     },
-//     {
-//       id: "course2",
-//       title: "React for Beginners",
-//       description:
-//         "Learn the fundamentals of React.js in this beginner-friendly course.",
-//       thumbnail: "https://via.placeholder.com/200",
-//       duration: "3 hours",
-//       purchaseCount: 200,
-//       status: "published",
-//     },
-//   ],
-//   isBlocked: false,
-// };

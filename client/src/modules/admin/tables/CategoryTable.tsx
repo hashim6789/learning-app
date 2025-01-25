@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { Search } from "lucide-react";
 import useBlockUnblock from "../../../hooks/useBlockUnblock";
 import api from "../../../shared/utils/api";
 

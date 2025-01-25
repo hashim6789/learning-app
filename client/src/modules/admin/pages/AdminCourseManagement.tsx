@@ -1,5 +1,9 @@
 import React from "react";
+
+//imported custom hooks
 import useFetch from "../../../hooks/useFetch";
+
+//imported child components
 import CoursesTable from "../tables/CourseTable";
 
 interface AdminCourseManagementProps {}

@@ -1,5 +1,9 @@
 import React from "react";
+
+//imported custom hooks
 import useMentor from "../hooks/useMentor";
+
+//imported sub-classes
 import { Mentor } from "../../../shared/types/Mentor";
 
 interface MentorTableProps {

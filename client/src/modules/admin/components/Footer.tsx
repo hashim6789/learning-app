@@ -1,4 +1,3 @@
-// components/Footer/Footer.tsx
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-white py-8">

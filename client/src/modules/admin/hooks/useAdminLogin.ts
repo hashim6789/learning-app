@@ -1,7 +1,12 @@
+//imported build-in hooks
 import { useState } from "react";
+
+//imported custom hooks
 import useAuth from "../../../hooks/useAuth";
-import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
 import useFormErrors from "../../../hooks/useFormErrors";
+
+//imported DTO's for validating authentication credentials
+import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
 
 const useAdminLogin = () => {
   const { loading, error, handleLogin } = useAuth();

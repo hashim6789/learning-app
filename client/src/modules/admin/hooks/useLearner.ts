@@ -1,9 +1,14 @@
+//imported build-in hooks
 import { useState } from "react";
-import useBlockUnblock from "./useBlockUnblock";
-import { useTableFunctionality } from "./useTable";
 import { useNavigate } from "react-router-dom";
-import { Learner } from "../shared/types/Learner";
-import { UserStatus } from "../shared/types/UserStatus";
+
+//imported custom hooks
+import useBlockUnblock from "../../../hooks/useBlockUnblock";
+import { useTableFunctionality } from "../../../hooks/useTable";
+
+//imported subclasses
+import { Learner } from "../../../shared/types/Learner";
+import { UserStatus } from "../../../shared/types/UserStatus";
 
 const useLearner = (learners: Learner[]) => {
   const { handleBlockUnblock, isLoading } = useBlockUnblock();

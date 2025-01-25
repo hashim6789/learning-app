@@ -1,7 +1,7 @@
-// src/modules/admin/components/Sidebar.tsx
 import React from "react";
 import { NavLink } from "react-router-dom";
 
+//interfaces
 interface SidebarItem {
   icon: React.ReactNode;
   label: string;

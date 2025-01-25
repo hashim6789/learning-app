@@ -1,16 +1,20 @@
+//imported build-in ui components
 import { User, Mail, LogOut } from "lucide-react";
+
+//imported custom hooks
 import useAuth from "../../../hooks/useAuth";
+
+//imported build-in hooks
 import { useState } from "react";
 
 const Navbar: React.FC = () => {
   const { handleLogout } = useAuth();
-  let userEmail = ""; // Replace with actual email from your auth system
+  let userEmail = "";
   const storedData = localStorage.getItem("data");
   if (storedData) {
     try {
-      // Parse the stored data and extract the email
       const parsedData = JSON.parse(storedData);
-      userEmail = parsedData?.email || ""; // Use optional chaining to handle undefined/null
+      userEmail = parsedData?.email || "";
     } catch (error) {
       console.error("Error parsing localStorage data:", error);
     }

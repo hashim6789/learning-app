@@ -1,7 +1,13 @@
+//imported build-in ui components
 import { BookOpen, Clock, Users } from "lucide-react";
-import useFetch from "../../../hooks/useFetch";
+
+//imported build-in hooks
 import { useParams } from "react-router-dom";
 
+//imported custom hooks
+import useFetch from "../../../hooks/useFetch";
+
+//imported child components
 interface IPopulatedCourse {
   _id: string;
   title: string;
@@ -29,11 +35,11 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
     `/admin/learners/${learnerId}`
   );
 
-  //   const learner = testLearner;
   const getInitials = (firstName: string, lastName: string | null) => {
     return `${firstName[0]}${lastName ? lastName[0] : ""}`.toUpperCase();
   };
 
+  //loading handling
   if (learnerLoading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -50,6 +56,7 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
     );
   }
 
+  //error handling
   if (!learner) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
@@ -63,6 +70,7 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
       </div>
     );
   }
+
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       {/* Profile Header */}
@@ -181,32 +189,3 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
 };
 
 export default AdminLearnerDetails;
-
-// const testLearner: Learner = {
-//   firstName: "John",
-//   lastName: "Doe",
-//   email: "john.doe@example.com",
-//   profilePicture: "https://via.placeholder.com/150",
-//   purchasedCourses: [
-//     {
-//       _id: "course1",
-//       title: "Introduction to JavaScript",
-//       description: "A beginner-friendly course to learn JavaScript.",
-//       thumbnail: "https://via.placeholder.com/200",
-//       duration: "4 hours",
-//       purchaseCount: 150,
-//       status: "active",
-//     },
-//     {
-//       _id: "course2",
-//       title: "Advanced React Development",
-//       description:
-//         "Master advanced concepts of React and build scalable applications.",
-//       thumbnail: "https://via.placeholder.com/200",
-//       duration: "6 hours",
-//       purchaseCount: 100,
-//       status: "inactive",
-//     },
-//   ],
-//   isBlocked: false,
-// };

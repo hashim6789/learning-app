@@ -1,9 +1,10 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import useAuth from "../hooks/useAuth";
+import { User } from "./types/User";
 
 interface GoogleLoginButtonProps {
-  user: "admin" | "mentor" | "learner";
+  user: User;
 }
 
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ user }) => {
@@ -14,7 +15,6 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ user }) => {
       const { credential } = response;
       console.log("Google Credential:", credential);
 
-      // Trigger the Google signup process using the Redux action
       handleGoogleSignup(credential, user);
     } catch (error) {
       console.log("Google login failed:", error);
@@ -27,13 +27,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ user }) => {
 
   return (
     <div>
-      {/* {error && <p style={{ color: "red" }}>Error: {error}</p>} */}
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={handleFailure}
         useOneTap
       />
-      {loading && <p>Loading...</p>} {/* Optionally display loading */}
+      {loading && <p>Loading...</p>}
     </div>
   );
 };

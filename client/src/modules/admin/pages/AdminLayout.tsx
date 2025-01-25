@@ -1,6 +1,7 @@
-// src/modules/admin/layouts/AdminLayout.tsx
 import React from "react";
 import { Outlet } from "react-router-dom";
+
+//imported child components
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/SideBar";
 import Footer from "../components/Footer";
@@ -22,7 +23,7 @@ const AdminLayout: React.FC = () => {
       <div className="flex w-screen h-screen">
         <Sidebar items={sidebarItems} />
         <main className="flex-1 p-6">
-          <Outlet /> {/* Render nested routes */}
+          <Outlet />
         </main>
       </div>
       <Footer />
