@@ -27,7 +27,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ user }) => {
 
   return (
     <div>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      {/* {error && <p style={{ color: "red" }}>Error: {error}</p>} */}
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={handleFailure}

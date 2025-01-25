@@ -16,6 +16,7 @@ class GoogleSignupLearnerUseCase {
     );
 
     const fetchedLearner = await this.learnerRepository.findByEmail(data.email);
+    const refreshToken = generateRefreshToken();
 
     let learner: Learner | null = null;
     if (!fetchedLearner) {
@@ -30,7 +31,7 @@ class GoogleSignupLearnerUseCase {
         [],
         false,
         data.email_verified,
-        null,
+        refreshToken,
         null
       );
       learner = await this.learnerRepository.createLearner(newLearner);
@@ -51,6 +52,7 @@ class GoogleSignupLearnerUseCase {
         googleId: data.sub,
         profilePicture: data.picture,
         isVerified: true,
+        refreshToken,
       };
 
       learner = await this.learnerRepository.updateLearner(
@@ -58,7 +60,9 @@ class GoogleSignupLearnerUseCase {
         updateData
       );
     } else {
-      learner = fetchedLearner;
+      learner = await this.learnerRepository.updateLearner(fetchedLearner.id, {
+        refreshToken,
+      });
     }
 
     if (!learner) {
@@ -76,7 +80,6 @@ class GoogleSignupLearnerUseCase {
       userId: learner.id,
       role: "learner",
     });
-    const refreshToken = generateRefreshToken();
 
     learner.removeSensitive();
 

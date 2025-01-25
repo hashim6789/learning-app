@@ -38,6 +38,10 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   }
   // Verify the refresh token
   if (!userData) {
+    // Set new refresh token and access token as cookies
+    res.cookie("refreshToken", "", { httpOnly: true });
+    res.cookie("accessToken", "", { httpOnly: false });
+    res.cookie("user", "", { httpOnly: true });
     res.status(403).json({ message: "Invalid refresh token" });
     return;
   }

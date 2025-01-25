@@ -16,6 +16,7 @@ class GoogleSignupMentorUseCase {
     );
 
     const fetchedMentor = await this.mentorRepository.findByEmail(data.email);
+    const refreshToken = generateRefreshToken();
 
     let mentor: Mentor | null = null;
     if (!fetchedMentor) {
@@ -31,7 +32,7 @@ class GoogleSignupMentorUseCase {
         [],
         false,
         data.email_verified,
-        null,
+        refreshToken,
         null
       );
       mentor = await this.mentorRepository.createMentor(newMentor);
@@ -52,6 +53,7 @@ class GoogleSignupMentorUseCase {
         googleId: data.sub,
         profilePicture: data.picture,
         isVerified: true,
+        refreshToken,
       };
 
       mentor = await this.mentorRepository.updateMentor(
@@ -59,7 +61,9 @@ class GoogleSignupMentorUseCase {
         updateData
       );
     } else {
-      mentor = fetchedMentor;
+      mentor = await this.mentorRepository.updateMentor(fetchedMentor.id, {
+        refreshToken,
+      });
     }
 
     if (!mentor) {
@@ -77,7 +81,6 @@ class GoogleSignupMentorUseCase {
       userId: mentor.id,
       role: "mentor",
     });
-    const refreshToken = generateRefreshToken();
 
     mentor.removeSensitive();
 

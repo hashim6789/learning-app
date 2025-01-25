@@ -50,7 +50,12 @@ const MainRoutes: React.FC = () => {
     //learner landing page route
     {
       path: "/",
-      element: <LearnerLayout />,
+      element:
+        user === "learner" ? (
+          <LearnerLayout />
+        ) : (
+          <Navigate to={`/${user}/login`} />
+        ),
       children: [{ path: "/", element: <LearnerLandingPage /> }],
     },
 
