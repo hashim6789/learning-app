@@ -46,11 +46,14 @@ const useCourseManagement = (baseUrl: string) => {
     setLoading(true);
     setError(null);
     try {
-      await api.post(`${baseUrl}/mentor/courses`, course);
-      navigate("/mentor/my-courses");
-      showToast.success("Course created successfully!");
+      const response = await api.post(`${baseUrl}/mentor/courses`, course);
+
+      if (response && response.data) {
+        // navigate("/mentor/my-courses");
+        showToast.success("Course created successfully!");
+      }
     } catch (err: any) {
-      showToast.error("Image upload failed");
+      showToast.error("Failed to add course");
       setError(err.response?.data?.message || "Failed to add course");
     } finally {
       setLoading(false);

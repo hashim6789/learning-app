@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { NavLink } from "react-router-dom";
 
 interface MentorSidebarItem {
@@ -13,21 +13,21 @@ interface MentorSidebarProps {
 
 const MentorSidebar: React.FC<MentorSidebarProps> = ({ items }) => {
   return (
-    <aside className="w-80 bg-white h-100 border-r">
-      <div className="py-4 h-100">
+    <aside className="w-64 bg-white h-full border-r border-purple-100 shadow-sm">
+      <div className="py-6 h-full">
         {items.map((item, index) => (
           <NavLink
             key={index}
             to={item.href}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-6 py-3 text-sm ${
+              `flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors duration-200 ${
                 isActive
-                  ? "bg-blue-500 text-white"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-purple-100 text-purple-800 border-r-4 border-purple-600"
+                  : "text-gray-600 hover:bg-purple-50 hover:text-purple-700"
               }`
             }
           >
-            {item.icon}
+            <span className="text-purple-500">{item.icon}</span>
             {item.label}
           </NavLink>
         ))}

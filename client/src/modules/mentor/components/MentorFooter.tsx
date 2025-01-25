@@ -1,12 +1,15 @@
-// components/Footer/Footer.tsx
+import type React from "react";
+
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-900 text-white py-8">
+    <footer className="bg-purple-900 text-white py-12">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col items-center space-y-6">
-          <div className="flex items-center space-x-2">
-            <img src="/totc-logo.svg" alt="TOTC" className="h-8" />
-            <span className="text-sm">Virtual Class for Zoom</span>
+        <div className="flex flex-col items-center space-y-8">
+          <div className="flex items-center space-x-3">
+            <img src="/totc-logo.svg" alt="TOTC" className="h-10" />
+            <span className="text-lg font-semibold">
+              Virtual Class for Zoom
+            </span>
           </div>
 
           <div className="w-full max-w-md">
@@ -14,28 +17,37 @@ const Footer: React.FC = () => {
               <input
                 type="email"
                 placeholder="Your Email"
-                className="flex-1 px-4 py-2 rounded-l bg-gray-800 text-white"
+                className="flex-1 px-4 py-3 rounded-l-lg bg-purple-800 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
-              <button className="bg-teal-500 text-white px-6 py-2 rounded-r">
+              <button className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-r-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900">
                 Subscribe
               </button>
             </div>
           </div>
 
-          <div className="flex space-x-6 text-sm text-gray-400">
-            <a href="/careers" className="hover:text-white">
+          <div className="flex space-x-8 text-sm text-purple-300">
+            <a
+              href="/careers"
+              className="hover:text-white transition-colors duration-200"
+            >
               Careers
             </a>
-            <a href="/privacy" className="hover:text-white">
+            <a
+              href="/privacy"
+              className="hover:text-white transition-colors duration-200"
+            >
               Privacy Policy
             </a>
-            <a href="/terms" className="hover:text-white">
+            <a
+              href="/terms"
+              className="hover:text-white transition-colors duration-200"
+            >
               Terms & Conditions
             </a>
           </div>
 
-          <div className="text-sm text-gray-400">
-            © 2021 Class Technologies Inc.
+          <div className="text-sm text-purple-400">
+            © 2023 Class Technologies Inc.
           </div>
         </div>
       </div>
