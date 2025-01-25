@@ -18,5 +18,9 @@ export const config = {
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASS: process.env.EMAIL_PASS,
 
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_PORT: process.env.REDIS_PORT,
+
   MONGO_URI: process.env.MONGO_URI || "mongodb://mongo:27017/myapp",
 };

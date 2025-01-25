@@ -19,8 +19,11 @@ import mentorRouter from "../../adapter/routers/mentor";
 // Custom middlewares
 import errorHandler from "../../adapter/middleware/errorHandler";
 
+// Redis connection setup
+import connectRedis from "../redis/redisSetup";
+
 // DB connection setup
-import connectDB from "../db/setup";
+import connectDB from "../db/dbSetup";
 
 // Load environment variables
 dotenv.config();
@@ -33,17 +36,14 @@ app.use(morgan("dev")); // Request logging
 app.use(corsConfig); // Enable CORS
 app.use(express.json()); // Parse incoming JSON payloads
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bodies
-app.use(sessionConfig); // Apply session configuration
+// app.use(sessionConfig); // Apply session configuration
 app.use(cookieParser()); // Parse cookies
-// app.use((req, res, next) => {
-//   if (!req.session.user) {
-//     req.session.user = {
-//       userId: "",
-//       role: "learner",
-//     }; // Default empty Payload
-//   }
-//   next();
-// });
+
+// Redis cache connection setup
+connectRedis();
+
+// Database connection setup
+connectDB();
 
 // Route-level middlewares
 app.use("/learner", learnerRouter);
@@ -53,9 +53,6 @@ app.use("/refresh", refreshTokenRouter);
 
 // Error handling middleware (after routes to catch any errors)
 app.use(errorHandler);
-
-// Database connection setup
-connectDB();
 
 // Server configuration
 const port = process.env.PORT || 3000;
