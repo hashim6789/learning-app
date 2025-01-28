@@ -59,7 +59,16 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
 
   //error handling (no learners found)
   if (data && data.length === 0) {
-    return <div className="p-6 text-red-500">No learners exists!</div>;
+    return (
+      <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-red-800">
+            No Learners Available...
+          </h2>
+          <p className="text-red-500 mt-2">Unavailable data (:</p>
+        </div>
+      </div>
+    );
   }
 
   return (

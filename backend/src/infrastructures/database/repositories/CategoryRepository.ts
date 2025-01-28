@@ -5,9 +5,16 @@ import CategoryModel, { ICategory } from "../../database/models/CategoryModel";
 class CategoryRepository implements ICategoryRepository {
   //get all categories
   async fetchAllCategories(): Promise<Category[] | null> {
-    const categories = await CategoryModel.find();
-    if (!categories || categories.length === 0) return null;
-    return categories.map(mappedCategory);
+    try {
+      const categories = await CategoryModel.find();
+      if (!categories) return null;
+      return categories.map(mappedCategory);
+    } catch (error) {
+      if (error instanceof Error && error.name === "DocumentNotFoundError") {
+        return [];
+      }
+      throw new Error("Failed to fetch the category!");
+    }
   }
   async fetchAllListedCategories(): Promise<Category[] | null> {
     const categories = await CategoryModel.find({ isListed: true });

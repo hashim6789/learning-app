@@ -9,7 +9,7 @@ class GetMentorsUseCase {
 
   async execute(): Promise<ResponseModel> {
     const mentors = await this.mentorRepository.fetchAllMentors();
-    if (mentors && mentors.length === 0) {
+    if (!mentors) {
       return {
         statusCode: 404,
         success: false,

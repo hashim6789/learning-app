@@ -42,7 +42,10 @@ class CourseRepository implements ICourseRepository {
         .orFail();
       return courses ? courses.map((course) => courseMapping(course)) : null;
     } catch (error) {
-      throw new Error("Failed to fetch the course");
+      if (error instanceof Error && error.name === "DocumentNotFoundError") {
+        return [];
+      }
+      throw new Error("Failed to fetch the courses!");
     }
   }
 
@@ -84,7 +87,7 @@ class CourseRepository implements ICourseRepository {
       const newCourse = new CourseModel({
         title: data.title,
         mentorId: data.mentorId,
-        categoryId: data.category,
+        categoryId: data.category.id,
         description: data.description || null,
         thumbnail: data.thumbnail,
       });
@@ -104,9 +107,12 @@ class CourseRepository implements ICourseRepository {
         .populate("categoryId", "_id title isListed")
         .orFail();
       console.log(courses);
-      if (courses.length === 0) return null;
+      if (!courses) return null;
       return courses.map((course) => courseMapping(course));
     } catch (error) {
+      if (error instanceof Error && error.name === "DocumentNotFoundError") {
+        return [];
+      }
       throw new Error("Failed to fetch the course");
     }
   }

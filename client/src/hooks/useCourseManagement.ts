@@ -3,27 +3,16 @@ import { useState, useCallback } from "react";
 
 import api from "../shared/utils/api";
 import { showToast } from "../shared/utils/toastUtils";
-import { useNavigate } from "react-router-dom";
+import { config } from "../shared/configs/config";
+import { Category } from "../shared/types/Category";
+import { Course } from "../shared/types/Course";
 
-interface Course {
-  id: string;
-  status: "Approved" | "Rejected" | "Pending" | "Draft";
-  title: string;
-  category: string;
-  description: string;
-  thumbnail: string;
-}
+const baseUrl = config.API_BASE_URL;
 
-interface Category {
-  id: string;
-  title: string;
-}
-
-const useCourseManagement = (baseUrl: string) => {
+const useCourseManagement = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   // Fetch categories (only if not already fetched)
   const fetchCategories = useCallback(async () => {
@@ -46,10 +35,16 @@ const useCourseManagement = (baseUrl: string) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.post(`${baseUrl}/mentor/courses`, course);
+      if (!course.category || !course.category.id) {
+        showToast.error("Course category not exist!");
+        return;
+      }
+      const response = await api.post(`${baseUrl}/mentor/courses`, {
+        ...course,
+        categoryId: course.category.id,
+      });
 
       if (response && response.data) {
-        // navigate("/mentor/my-courses");
         showToast.success("Course created successfully!");
       }
     } catch (err: any) {
@@ -60,8 +55,30 @@ const useCourseManagement = (baseUrl: string) => {
     }
   };
 
-  // Delete a course
+  // Edit a course
+  const editCourse = async (
+    courseId: string,
+    updatedCourse: Partial<Course>
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.put(
+        `${baseUrl}/mentor/courses/${courseId}`,
+        updatedCourse
+      );
+      if (response && response.data) {
+        showToast.success("Course updated successfully!");
+      }
+    } catch (err: any) {
+      showToast.error("Failed to update course");
+      setError(err.response?.data?.message || "Failed to update course");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Delete a course
   const deleteCourse = async (courseId: string) => {
     setLoading(true);
     setError(null);
@@ -96,6 +113,7 @@ const useCourseManagement = (baseUrl: string) => {
     categories,
     fetchCategories,
     addCourse,
+    editCourse,
     deleteCourse,
   };
 };

@@ -1,28 +1,26 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Trash2, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTableFunctionality } from "../../../hooks/useTable";
 import useCourseManagement from "../../../hooks/useCourseManagement";
 import { config } from "../../../shared/configs/config";
+import { CourseStatus } from "../../../shared/types/CourseStatus";
+import { useCourseTableFunctionality } from "../hooks/useCourseTableFunctionality";
+import { Category } from "../../../shared/types/Category";
 
-interface Category {
-  id: string;
-  title: string;
-  isListed: boolean;
-}
 interface Course {
   id: string;
-  status: "Approved" | "Rejected" | "Pending" | "Draft";
+  status: CourseStatus;
   title: string;
   category: Category;
   thumbnail: string;
 }
 
-interface CourseTableProps {
+interface CourseCardProps {
   courses: Course[];
 }
 
-const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
+const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
   const { deleteCourse } = useCourseManagement(config.API_BASE_URL);
   const [availableCourses, setCourses] = useState<Course[]>(courses);
   const navigate = useNavigate();
@@ -38,18 +36,31 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
 
   const {
     searchQuery,
-    filterStatus,
     paginatedData,
     totalPages,
     currentPage,
+    courseFilterStatus,
     handlePageChange,
     handleSearchChange,
     handleFilterChange,
-  } = useTableFunctionality<Course>({
+  } = useCourseTableFunctionality({
     data: availableCourses,
-    itemsPerPage: 5,
+    itemsPerPage: 6,
     filterField: "title",
   });
+
+  const getStatusColor = (status: Course["status"]) => {
+    switch (status) {
+      case "approved":
+        return "bg-green-100 text-green-600";
+      case "pending":
+        return "bg-purple-100 text-purple-600";
+      case "rejected":
+        return "bg-red-100 text-red-600";
+      case "draft":
+        return "bg-gray-100 text-gray-600";
+    }
+  };
 
   return (
     <div className="p-6">
@@ -81,13 +92,13 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">Filter by</span>
           <div className="flex gap-2">
-            {["all", "Approved", "Pending", "Rejected", "Draft"].map(
+            {["all", "approved", "pending", "rejected", "draft"].map(
               (status) => (
                 <button
                   key={status}
-                  onClick={() => handleFilterChange(status as any)}
+                  onClick={() => handleFilterChange(status as CourseStatus)}
                   className={`px-3 py-1 rounded-full text-sm ${
-                    filterStatus === status
+                    courseFilterStatus === status
                       ? "bg-purple-100 text-purple-600"
                       : "bg-gray-100 text-gray-600"
                   }`}
@@ -100,80 +111,69 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
-                Course Name
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
-                Category
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
-                Status
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.map((course) => (
-              <tr
-                key={course.id}
-                className="border-b border-gray-200 last:border-0"
-              >
-                <td className="px-6 py-4">
-                  <span className="text-sm font-medium text-gray-800">
+      {/* Courses Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {paginatedData.map((course) => (
+          <div
+            key={course.id}
+            className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden cursor-pointer"
+            onClick={() => navigate(`/mentor/courses/${course.id}`)}
+          >
+            {/* Thumbnail */}
+            <div className="h-48 overflow-hidden">
+              <img
+                src={course.thumbnail || "/api/placeholder/400/240"}
+                alt={course.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Course Details */}
+            <div className="p-4">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
                     {course.title}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span className="text-sm text-gray-600">
+                  </h3>
+                  <p className="text-sm text-gray-600">
                     {course.category.title}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      course.status === "Approved"
-                        ? "bg-green-100 text-green-600"
-                        : course.status === "Pending"
-                        ? "bg-purple-100 text-purple-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
-                  >
-                    {course.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() =>
-                        navigate(`/mentor/courses/${course.id}/lessons`)
-                      }
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Lessons
-                    </button>
-                    <button
-                      onClick={() => handleDelete(course.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </p>
+                </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                    course.status
+                  )}`}
+                >
+                  {course.status}
+                </span>
+              </div>
+
+              {/* Action Buttons */}
+              {/* <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() =>
+                    navigate(`/mentor/courses/${course.id}/lessons`)
+                  }
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                >
+                  <BookOpen size={16} />
+                  Lessons
+                </button>
+                <button
+                  onClick={() => handleDelete(course.id)}
+                  className="flex items-center gap-2 text-red-600 hover:text-red-800"
+                >
+                  <Trash2 size={16} />
+                  Delete
+                </button>
+              </div> */}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Pagination */}
-      <div className="mt-4 flex justify-end items-center gap-2">
+      <div className="mt-6 flex justify-end items-center gap-2">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -204,4 +204,4 @@ const CourseTable: React.FC<CourseTableProps> = ({ courses }) => {
   );
 };
 
-export default CourseTable;
+export default CourseCard;

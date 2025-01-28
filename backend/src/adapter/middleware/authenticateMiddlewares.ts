@@ -7,7 +7,7 @@ const authenticateToken = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     res.status(401).json({ success: false, message: "Access Token Required" });
@@ -15,7 +15,7 @@ const authenticateToken = (
   }
 
   const decoded = verifyAccessToken(token);
-  console.log(decoded);
+  // console.log(decoded);
   if (!decoded) {
     res
       .status(401)

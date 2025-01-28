@@ -27,6 +27,10 @@ import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManage
 import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
 import MentorChangePasswordPage from "../modules/mentor/pages/MentorChangePasswordPage";
+import MentorCourseDetailsPage from "../modules/mentor/pages/MentorCourseDetailsPage";
+import MentorMaterialManagement from "../modules/mentor/pages/MentorMaterialManagement";
+import MentorCreateMaterial from "../modules/mentor/pages/MentorCreateMaterial";
+import MentorMaterialDetailPage from "../modules/mentor/pages/MentorMaterialDeatailPage";
 
 //Learner related components
 import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
@@ -133,7 +137,20 @@ const MainRoutes: React.FC = () => {
               children: [
                 { path: "dashboard", element: <MentorDashboard /> },
                 { path: "my-courses", element: <MentorCoursesManagement /> },
+                { path: "my-materials", element: <MentorMaterialManagement /> },
+                {
+                  path: "my-materials/:materialId",
+                  element: <MentorMaterialDetailPage />,
+                },
+                {
+                  path: "my-materials/create",
+                  element: <MentorCreateMaterial />,
+                },
                 { path: "courses/create", element: <MentorCreateCoursePage /> },
+                {
+                  path: "courses/:courseId/",
+                  element: <MentorCourseDetailsPage />,
+                },
                 {
                   path: "courses/:courseId/lessons",
                   element: <LessonsCreatePage />,

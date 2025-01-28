@@ -26,7 +26,7 @@ const LearnerChangePasswordPage: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-green-500 overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-blue-700 overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Reset Your Password</h2>
           <p className="text-lg">Secure your account with a new password.</p>
@@ -38,7 +38,7 @@ const LearnerChangePasswordPage: React.FC = () => {
         <div className="max-w-md w-full mx-auto text-center">
           {isValid ? (
             <>
-              <h1 className="text-2xl font-semibold mb-2 text-green-600">
+              <h1 className="text-2xl font-semibold mb-2 text-blue-500">
                 Change Password
               </h1>
               <p className="text-gray-600 mb-6">
@@ -47,7 +47,7 @@ const LearnerChangePasswordPage: React.FC = () => {
 
               {loading && (
                 <div className="text-center py-4">
-                  <p className="text-green-600">Processing...</p>
+                  <p className="text-blue-600">Processing...</p>
                 </div>
               )}
 
@@ -62,7 +62,7 @@ const LearnerChangePasswordPage: React.FC = () => {
                       type={showPassword ? "text" : "password"}
                       name="newPassword"
                       placeholder="Enter new password"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />
@@ -75,9 +75,9 @@ const LearnerChangePasswordPage: React.FC = () => {
                     </button>
                   </div>
                   {errors.password && (
-                    <div className="text-sm text-green-700">
+                    <div className="text-sm text-blue-700">
                       {errors.password.map((message, index) => (
-                        <p key={index} className="text-sm text-green-700">
+                        <p key={index} className="text-sm text-blue-700">
                           {message}
                         </p>
                       ))}
@@ -94,14 +94,14 @@ const LearnerChangePasswordPage: React.FC = () => {
                     type="password"
                     name="confirmPassword"
                     placeholder="Confirm new password"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   {errors.confirmPassword && (
-                    <div className="text-sm text-green-700">
+                    <div className="text-sm text-blue-700">
                       {errors.confirmPassword.map((message, index) => (
-                        <p key={index} className="text-sm text-green-700">
+                        <p key={index} className="text-sm text-blue-700">
                           {message}
                         </p>
                       ))}
@@ -112,7 +112,7 @@ const LearnerChangePasswordPage: React.FC = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                  className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                   disabled={loading}
                 >
                   Reset Password
@@ -125,7 +125,7 @@ const LearnerChangePasswordPage: React.FC = () => {
               <p className="text-gray-600 mt-4">{errorMessage}</p>
               <a
                 onClick={() => navigate("/")}
-                className="text-green-600 mt-4 inline-block cursor-pointer"
+                className="text-blue-600 mt-4 inline-block cursor-pointer"
               >
                 Go back to homepage
               </a>

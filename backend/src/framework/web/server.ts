@@ -20,7 +20,7 @@ import mentorRouter from "../../adapter/routers/mentor";
 import errorHandler from "../../adapter/middleware/errorHandler";
 
 // Redis connection setup
-import connectRedis from "../redis/redisSetup";
+import { connectRedis } from "../redis/redisSetup";
 
 // DB connection setup
 import connectDB from "../db/dbSetup";
@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 app.use(cookieParser()); // Parse cookies
 
 // Redis cache connection setup
-connectRedis();
+// connectRedis();
 
 // Database connection setup
 connectDB();

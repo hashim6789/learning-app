@@ -9,7 +9,7 @@ class GetLearnersUseCase {
 
   async execute(): Promise<ResponseModel> {
     const learners = await this.learnerRepository.fetchAllLearners();
-    if (!learners || learners.length === 0) {
+    if (!learners) {
       return {
         statusCode: 404,
         success: false,

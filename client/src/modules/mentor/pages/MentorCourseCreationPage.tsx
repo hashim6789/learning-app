@@ -8,6 +8,7 @@ import api from "../../../shared/utils/api";
 import { config } from "../../../shared/configs/config";
 import { showToast } from "../../../shared/utils/toastUtils";
 import Breadcrumbs from "../components/BreadCrumbs";
+import { Category } from "../../../shared/types/Category";
 
 interface ImageState {
   src: string;
@@ -16,11 +17,11 @@ interface ImageState {
 
 const MentorCreateCoursePage = () => {
   const { addCourse, loading, error, categories, fetchCategories } =
-    useCourseManagement(config.API_BASE_URL);
+    useCourseManagement();
 
   const [courseTitle, setCourseTitle] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
-  const [courseCategory, setCourseCategory] = useState<string | null>(null);
+  const [courseCategory, setCourseCategory] = useState<Category | null>(null);
   const [courseThumbnail, setCourseThumbnail] = useState<string | null>(null);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
@@ -269,7 +270,7 @@ const MentorCreateCoursePage = () => {
           >
             <span className={courseCategory ? "text-black" : "text-purple-400"}>
               {courseCategory
-                ? categories.find((cat) => cat.id === courseCategory)?.title
+                ? categories.find((cat) => cat.id === courseCategory.id)?.title
                 : "Select Course Category"}
             </span>
             <ChevronDown
@@ -285,7 +286,7 @@ const MentorCreateCoursePage = () => {
                   key={category.id}
                   className="px-4 py-2 hover:bg-purple-100 cursor-pointer text-purple-700"
                   onClick={() => {
-                    setCourseCategory(category.id);
+                    setCourseCategory(category);
                     setIsSelectOpen(false);
                   }}
                 >

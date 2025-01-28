@@ -22,7 +22,7 @@ const checkBlocked = async (
     return next();
   }
 
-  console.log("user block status", user?.isBlocked);
+  // console.log("user block status", user?.isBlocked);
 
   if (!user || user.isBlocked) {
     res.status(403).json({

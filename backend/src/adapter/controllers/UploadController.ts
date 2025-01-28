@@ -8,6 +8,7 @@ export class UploadController {
     try {
       const file = req.file!;
       const url = await this.uploadFileUseCase.execute(file);
+      console.log("uploaded url");
       res.status(200).json({ url });
     } catch (error) {
       // Ensure error is of type `Error` to safely access `message`

@@ -193,9 +193,8 @@ const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(forgotPassword.rejected, (state, action: PayloadAction<any>) => {
-        const { message } = action.payload;
         state.error =
-          message || "an error when the forgot password generating!";
+          action.payload || "an error when the forgot password generating!";
         state.loading = false;
       });
   },

@@ -22,5 +22,9 @@ export const config = {
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PORT: process.env.REDIS_PORT,
 
+  CACHE_KEY_GET_ALL_COURSES: process.env.CACHE_KEY_GET_ALL_COURSES || "",
+  CACHE_KEY_GET_ALL_MENTOR_COURSES:
+    process.env.CACHE_KEY_GET_ALL_MENTOR_COURSES || "",
+
   MONGO_URI: process.env.MONGO_URI || "mongodb://mongo:27017/myapp",
 };

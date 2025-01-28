@@ -9,6 +9,11 @@ const MentorLayout: React.FC = () => {
     { icon: <span>📊</span>, label: "Dashboard", href: "/mentor/dashboard" },
     { icon: <span>👥</span>, label: "My Courses", href: "/mentor/my-courses" },
     {
+      icon: <span>👥</span>,
+      label: "My Materials",
+      href: "/mentor/my-materials",
+    },
+    {
       icon: <span>👨‍🏫</span>,
       label: "My Learners",
       href: "/mentor/my-learners",
@@ -20,12 +25,13 @@ const MentorLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-screen flex flex-col bg-gray-50">
       <Navbar mentorName="Hashim" profileImage="" />
 
-      <div className="flex w-screen h-screen">
+      <div className="flex flex-1 w-full h-full">
         <Sidebar items={sidebarItems} />
-        <main className="flex-1 p-6">
+
+        <main className="flex-1 min-h-screen max-w-full overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

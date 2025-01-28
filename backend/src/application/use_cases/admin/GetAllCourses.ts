@@ -17,20 +17,20 @@ class GetAllCourseUseCase {
     try {
       const courses = await this.courseRepository.fetchAllCourses();
 
-      if (courses) {
+      if (!courses) {
         return {
-          statusCode: 201,
-          success: true,
-          message: "The course is created successfully.",
-          data: courses,
-        };
-      } else {
-        return {
-          statusCode: 400,
+          statusCode: 404,
           success: false,
-          message: "The course didn't create!",
+          message: "The mentors doesn't exist!",
         };
       }
+
+      return {
+        statusCode: 200,
+        success: true,
+        message: "The mentors are fetched successfully.",
+        data: courses,
+      };
     } catch (error) {
       throw new Error(error as string);
     }

@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsIn,
 } from "class-validator";
+import { Category } from "../../application/entities/Category";
 
 export class CreateCourseDTO {
   @IsString()
@@ -18,7 +19,7 @@ export class CreateCourseDTO {
 
   @IsString()
   @IsNotEmpty({ message: "The category field is required." })
-  category: string;
+  category: Category;
 
   @IsString()
   @IsOptional()

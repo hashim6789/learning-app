@@ -20,7 +20,7 @@ categoriesRouter.post(
   categoryController.createCategoryForAdmin.bind(categoryController)
 );
 categoriesRouter.patch(
-  "/:categoryId/block-unblock",
+  "/:categoryId/list-unlist",
   authenticateToken,
   authorizeRole(["admin"]),
   categoryController.listUnlistCategoryForAdmin.bind(categoryController)

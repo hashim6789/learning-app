@@ -34,7 +34,7 @@ class GetAllCourseOfMentorUseCase {
         mentorId
       );
 
-      if (!courses || courses.length === 0) {
+      if (!courses) {
         return {
           statusCode: 400,
           success: false,

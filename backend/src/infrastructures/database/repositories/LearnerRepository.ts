@@ -26,9 +26,16 @@ class LearnerRepository implements ILearnerRepository {
 
   //to fetch all learners
   async fetchAllLearners(): Promise<Learner[] | null> {
-    const learners = await LearnerModel.find();
-    if (!learners || learners.length === 0) return null;
-    return learners.map(mappingLearner);
+    try {
+      const learners = await LearnerModel.find();
+      if (!learners) return null;
+      return learners.map(mappingLearner);
+    } catch (error) {
+      if (error instanceof Error && error.name === "DocumentNotFoundError") {
+        return [];
+      }
+      throw new Error("Failed to fetch the learners!");
+    }
   }
 
   async fetchLearnerById(learnerId: string): Promise<Learner | null> {

@@ -31,7 +31,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h2 className="text-2xl font-semibold text-green-600 text-center mb-4">
+        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-4">
           Forgot Password
         </h2>
         <p className="text-gray-600 text-center mb-6">
@@ -46,7 +46,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <input
               type="text"
               placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={forgotPasswordEmail}
               onChange={(e) => setForgotPasswordEmail(e.target.value)}
             />
@@ -66,7 +66,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
           <button
             type="submit"
-            className="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+            className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
             disabled={loading}
           >
             {loading ? "Processing..." : "Send Reset Link"}

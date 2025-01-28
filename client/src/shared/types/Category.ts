@@ -1,6 +1,7 @@
+export type CategoryStatus = "listed" | "unlisted";
 export interface Category {
   id: string;
   title: string;
-  status: "blocked" | "unblocked";
-  isListed?: boolean; // Making isListed optional
+  status: CategoryStatus;
+  isListed: Boolean;
 }

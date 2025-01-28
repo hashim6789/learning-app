@@ -23,7 +23,7 @@ class ListUnListCategoryUseCase {
           message: "The category is doesn't exist!",
         };
       return {
-        statusCode: 201,
+        statusCode: 200,
         success: true,
         message: data.change
           ? "The category is blocked successfully."

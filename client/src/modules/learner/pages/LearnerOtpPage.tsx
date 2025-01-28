@@ -86,7 +86,7 @@ const LearnerOtpPage: React.FC<OTPInputProps> = () =>
             ${
               !otp.every((digit) => digit !== "")
                 ? "bg-gray-400"
-                : "bg-green-500 hover:bg-green-600"
+                : "bg-blue-500 hover:bg-blue-600"
             }
             transition-colors`}
               disabled={!otp.every((digit) => digit !== "")}

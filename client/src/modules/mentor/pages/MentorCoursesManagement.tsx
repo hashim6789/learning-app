@@ -2,18 +2,13 @@ import { useNavigate } from "react-router-dom";
 import CourseTable from "../tables/CourseTable";
 import Breadcrumbs from "../components/BreadCrumbs";
 import useFetch from "../../../hooks/useFetch";
-import { config } from "../../../shared/configs/config";
 import { Path } from "../../../shared/types/Path";
+import { CourseStatus } from "../../../shared/types/CourseStatus";
+import { Category } from "../../../shared/types/Category";
 
-type Status = "Approved" | "Rejected" | "Pending" | "Draft";
-interface Category {
-  id: string;
-  title: string;
-  isListed: boolean;
-}
 interface Course {
   id: string;
-  status: Status;
+  status: CourseStatus;
   title: string;
   category: Category;
   thumbnail: string;
@@ -24,15 +19,13 @@ const paths: Path[] = [{ title: "my courses", link: "/mentor/my-courses" }];
 
 const MentorCoursesManagement = () => {
   const navigate = useNavigate();
-  const { data, loading, error } = useFetch<Course[]>(
-    `${config.API_BASE_URL}/mentor/courses`
-  );
+  const { data, loading, error } = useFetch<Course[]>(`/mentor/courses`);
 
   const courses: Course[] = Array.isArray(data)
     ? data.map((item) => ({
         id: item.id,
         title: `${item.title}`.trim(),
-        status: item.status as Status,
+        status: item.status as CourseStatus,
         thumbnail: item.thumbnail || "",
         category: item.category,
       }))

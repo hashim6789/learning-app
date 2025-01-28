@@ -26,9 +26,16 @@ class MentorRepository implements IMentorRepository {
 
   //to fetch all mentors
   async fetchAllMentors(): Promise<Mentor[] | null> {
-    const mentors = await MentorModel.find();
-    if (!mentors || mentors.length === 0) return null;
-    return mentors.map(mappingMentor);
+    try {
+      const mentors = await MentorModel.find();
+      if (!mentors) return null;
+      return mentors.map(mappingMentor);
+    } catch (error) {
+      if (error instanceof Error && error.name === "DocumentNotFoundError") {
+        return [];
+      }
+      throw new Error("Failed to fetch the learners!");
+    }
   }
 
   async fetchMentorById(mentorId: string): Promise<Mentor | null> {

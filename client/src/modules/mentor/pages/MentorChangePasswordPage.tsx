@@ -23,7 +23,7 @@ const MentorChangePasswordPage: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-purple overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-purple-500 overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Reset Your Password</h2>
           <p className="text-lg">Secure your account with a new password.</p>
@@ -35,7 +35,7 @@ const MentorChangePasswordPage: React.FC = () => {
         <div className="max-w-md w-full mx-auto text-center">
           {isValid ? (
             <>
-              <h1 className="text-2xl font-semibold mb-2 text-purple">
+              <h1 className="text-2xl font-semibold mb-2 text-purple-500">
                 Change Password
               </h1>
               <p className="text-gray-600 mb-6">
@@ -44,7 +44,7 @@ const MentorChangePasswordPage: React.FC = () => {
 
               {loading && (
                 <div className="text-center py-4">
-                  <p className="text-purple">Processing...</p>
+                  <p className="text-purple-500">Processing...</p>
                 </div>
               )}
 
@@ -59,7 +59,7 @@ const MentorChangePasswordPage: React.FC = () => {
                       type={showPassword ? "text" : "password"}
                       name="newPassword"
                       placeholder="Enter new password"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple focus:border-transparent"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />
@@ -72,9 +72,9 @@ const MentorChangePasswordPage: React.FC = () => {
                     </button>
                   </div>
                   {errors.password && (
-                    <div className="text-sm text-purple">
+                    <div className="text-sm text-purple-500">
                       {errors.password.map((message, index) => (
-                        <p key={index} className="text-sm text-purple">
+                        <p key={index} className="text-sm text-purple-500">
                           {message}
                         </p>
                       ))}
@@ -91,14 +91,14 @@ const MentorChangePasswordPage: React.FC = () => {
                     type="password"
                     name="confirmPassword"
                     placeholder="Confirm new password"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   {errors.confirmPassword && (
-                    <div className="text-sm text-purple">
+                    <div className="text-sm text-purple-500">
                       {errors.confirmPassword.map((message, index) => (
-                        <p key={index} className="text-sm text-purple">
+                        <p key={index} className="text-sm text-purple-500">
                           {message}
                         </p>
                       ))}
@@ -109,7 +109,7 @@ const MentorChangePasswordPage: React.FC = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-purple text-white rounded-lg font-medium hover:bg-purple transition-colors"
+                  className="w-full py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
                   disabled={loading}
                 >
                   Reset Password
@@ -122,7 +122,7 @@ const MentorChangePasswordPage: React.FC = () => {
               <p className="text-gray-600 mt-4">{errorMessage}</p>
               <a
                 onClick={() => navigate("/")}
-                className="text-purple mt-4 inline-block cursor-pointer"
+                className="text-purple-500 mt-4 inline-block cursor-pointer"
               >
                 Go back to homepage
               </a>

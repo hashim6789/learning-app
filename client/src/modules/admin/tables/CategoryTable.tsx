@@ -1,96 +1,54 @@
-import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-import useBlockUnblock from "../../../hooks/useBlockUnblock";
-import api from "../../../shared/utils/api";
-
-interface Category {
-  id: string;
-  status: "blocked" | "unblocked";
-  title: string;
-}
+import { useState } from "react";
+import { Category } from "../../../shared/types/Category";
+import useCategoryManagement from "../hooks/useCategoryManagement";
 
 interface CategoriesTableProps {
   categories: Category[];
 }
 
 const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories }) => {
-  const { handleBlockUnblock } = useBlockUnblock();
-  const [categoriesState, setCategoriesState] =
-    useState<Category[]>(categories);
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
-    null
-  );
-  const [newTitle, setNewTitle] = useState<string>("");
+  const {
+    editingCategoryId,
+    // newTitle,
+    currentPage,
+    searchQuery,
+    filterStatus,
+    paginatedData,
+    totalPages,
+    handlePageChange,
+    handleSearchChange,
+    handleFilterChange,
+    // handleEditClick,
+    // handleSaveEdit,
+    // handleCancelEdit,
+    // handleStatusChange,
+  } = useCategoryManagement(categories, 10);
 
-  useEffect(() => {
-    setCategoriesState(categories);
-  }, [categories]);
-
-  const handleEditClick = (category: Category) => {
-    setEditingCategoryId(category.id);
-    setNewTitle(category.title);
-  };
-
-  const handleSaveEdit = async (categoryId: string, currentTitle: string) => {
-    if (newTitle.trim() === currentTitle.trim()) {
-      Swal.fire({
-        title: "No changes detected",
-        text: "Please enter a different title to update.",
-        icon: "info",
-      });
-      return;
-    }
-
-    try {
-      await api.put(`http://localhost:3000/admin/categories/${categoryId}`, {
-        title: newTitle,
-      });
-
-      Swal.fire({ title: "Category updated successfully!", icon: "success" });
-
-      setCategoriesState((prevCategories) =>
-        prevCategories.map((category) =>
-          category.id === categoryId
-            ? { ...category, title: newTitle }
-            : category
-        )
-      );
-
-      setEditingCategoryId(null);
-    } catch (err) {
-      Swal.fire({
-        title: "Error updating category",
-        text: "Something went wrong",
-        icon: "error",
-      });
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingCategoryId(null);
-    setNewTitle("");
-  };
-
-  // Update category status locally after button click
-  const handleStatusChange = (
-    categoryId: string,
-    currentStatus: "blocked" | "unblocked"
-  ) => {
-    const newStatus = currentStatus === "blocked" ? "unblocked" : "blocked";
-    setCategoriesState((prevCategories) =>
-      prevCategories.map((category) =>
-        category.id === categoryId
-          ? { ...category, status: newStatus }
-          : category
-      )
-    );
-
-    // Call the backend API to update the status
-    handleBlockUnblock(categoryId, "categorie", newStatus);
-  };
+  const [newTitle, setNewTitle] = useState<string>();
 
   return (
     <div className="p-6">
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Search categories..."
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="border border-gray-300 rounded-md p-2"
+        />
+        <select
+          value={filterStatus}
+          onChange={(e) =>
+            handleFilterChange(e.target.value as "all" | "listed" | "unlisted")
+          }
+          className="border border-gray-300 rounded-md p-2"
+        >
+          <option value="all">All</option>
+          <option value="listed">Listed</option>
+          <option value="unlisted">Unlisted</option>
+        </select>
+      </div>
+
       <table className="w-full bg-white border border-gray-200">
         <thead>
           <tr className="border-b border-gray-200">
@@ -106,81 +64,86 @@ const CategoriesTable: React.FC<CategoriesTableProps> = ({ categories }) => {
           </tr>
         </thead>
         <tbody>
-          {categoriesState.map((category) => (
-            <tr
-              key={category.id}
-              className="border-b border-gray-200 last:border-0"
-            >
-              <td className="px-6 py-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    category.status === "blocked"
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {category.status === "blocked" ? "Unlisted" : "Listed"}
-                </span>
-              </td>
-              <td className="px-6 py-4">
-                {editingCategoryId === category.id ? (
-                  <input
-                    type="text"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
-                  />
-                ) : (
-                  <span className="text-sm font-medium text-gray-800">
-                    {category.title}
+          {paginatedData.map((category) => {
+            const isEditing = editingCategoryId === category.id;
+            return (
+              <tr
+                key={category.id}
+                className="border-b border-gray-200 last:border-0"
+              >
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      category.status === "unlisted"
+                        ? "bg-red-100 text-red-600"
+                        : "bg-green-100 text-green-600"
+                    }`}
+                  >
+                    {category.status === "unlisted" ? "Unlisted" : "Listed"}
                   </span>
-                )}
-              </td>
-              <td className="px-6 py-4">
-                {editingCategoryId === category.id ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        handleSaveEdit(category.id, category.title)
-                      }
-                      className="px-4 py-2 bg-green-500 text-white rounded-md"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => handleEditClick(category)}
-                      className="px-4 py-2 bg-yellow-500 text-white rounded-md"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleStatusChange(category.id, category.status)
-                      }
-                      className={`px-4 py-2 rounded-md ${
-                        category.status === "unblocked"
-                          ? "bg-red-100 text-red-600 hover:bg-red-200"
-                          : "bg-green-100 text-green-600 hover:bg-green-200"
-                      }`}
-                    >
-                      {category.status === "unblocked" ? "Unlist" : "List"}
-                    </button>
-                  </div>
-                )}
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="px-6 py-4">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="border border-gray-300 rounded-md p-2 w-full"
+                    />
+                  ) : (
+                    <span className="text-sm font-medium text-gray-800">
+                      {category.title}
+                    </span>
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  {isEditing ? (
+                    <div className="flex gap-2">
+                      <button className="px-4 py-2 bg-green-500 text-white rounded-md">
+                        Save
+                      </button>
+                      <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3">
+                      <button className="px-4 py-2 bg-yellow-500 text-white rounded-md">
+                        Edit
+                      </button>
+                      <button
+                        className={`px-4 py-2 rounded-md ${
+                          category.status === "listed"
+                            ? "bg-red-100 text-red-600 hover:bg-red-200"
+                            : "bg-green-100 text-green-600 hover:bg-green-200"
+                        }`}
+                      >
+                        {category.status === "listed" ? "Unlist" : "List"}
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+
+      <div className="mt-4 flex justify-center">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-1 px-4 py-2 rounded-md ${
+              currentPage === index + 1
+                ? "bg-gray-800 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

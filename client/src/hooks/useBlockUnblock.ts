@@ -4,9 +4,10 @@ import MySwal from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import api from "../shared/utils/api";
 import { showToast } from "../shared/utils/toastUtils";
+import { UserStatus } from "../shared/types/UserStatus";
 
 type EntityType = "learner" | "mentor" | "categorie";
-type Status = "blocked" | "unblocked";
+type Status = UserStatus;
 
 interface UseBlockUnblockResponse {
   isLoading: boolean;

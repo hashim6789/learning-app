@@ -42,7 +42,7 @@ const LearnerLoginPage: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-green-500 overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-blue-600 overflow-hidden">
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
           <p className="text-lg">Your journey starts here.</p>
@@ -60,7 +60,7 @@ const LearnerLoginPage: React.FC = () => {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16">
         <div className="max-w-md w-full mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold mb-2 text-green-600">
+            <h1 className="text-2xl font-semibold mb-2 text-blue-600">
               {isLogin ? "Learner Login" : "Learner Signup"}
             </h1>
             <p className="text-gray-600">
@@ -73,7 +73,7 @@ const LearnerLoginPage: React.FC = () => {
             <button
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-                isLogin ? "bg-green-600 text-white" : "text-gray-600"
+                isLogin ? "bg-blue-600 text-white" : "text-gray-600"
               }`}
             >
               Login
@@ -81,7 +81,7 @@ const LearnerLoginPage: React.FC = () => {
             <button
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-                !isLogin ? "bg-green-600 text-white" : "text-gray-600"
+                !isLogin ? "bg-blue-600 text-white" : "text-gray-600"
               }`}
             >
               Register
@@ -89,7 +89,7 @@ const LearnerLoginPage: React.FC = () => {
           </div>
           {loading && (
             <div className="text-center py-4">
-              <p className="text-green-600">Processing...</p>
+              <p className="text-blue-600">Processing...</p>
             </div>
           )}
           {error && !loading && (
@@ -107,7 +107,7 @@ const LearnerLoginPage: React.FC = () => {
                   <input
                     type="text"
                     placeholder="Enter your first name"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
@@ -128,7 +128,7 @@ const LearnerLoginPage: React.FC = () => {
                   <input
                     type="text"
                     placeholder="Enter your last name"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
@@ -152,7 +152,7 @@ const LearnerLoginPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -175,7 +175,7 @@ const LearnerLoginPage: React.FC = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -206,7 +206,7 @@ const LearnerLoginPage: React.FC = () => {
                 <input
                   type="password"
                   placeholder="Confirm your password"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
@@ -224,7 +224,7 @@ const LearnerLoginPage: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               disabled={loading}
             >
               {isLogin ? "Login" : "Sign up"}
@@ -237,7 +237,7 @@ const LearnerLoginPage: React.FC = () => {
         <div className="text-center mt-4">
           <button
             type="button"
-            className="text-green-600 font-medium hover:underline"
+            className="text-blue-600 font-medium hover:underline"
             onClick={() => setForgotPasswordModal(true)}
           >
             Forgot Password?

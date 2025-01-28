@@ -66,7 +66,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
           <button
             type="submit"
-            className="w-full py-3 bg-purple text-white rounded-lg font-medium hover:bg-purple transition-colors"
+            className="w-full py-3 bg-purple-500 hover:bg-purple-800 text-white rounded-lg font-medium hover:bg-purple transition-colors"
             disabled={loading}
           >
             {loading ? "Processing..." : "Send Reset Link"}

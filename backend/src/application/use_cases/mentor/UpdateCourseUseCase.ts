@@ -26,17 +26,17 @@ class UpdateCourseUseCase {
         };
       }
 
-      const duplicateCourse = await this.courseRepository.findCourseByTitle(
-        title
-      );
+      // const duplicateCourse = await this.courseRepository.findCourseByTitle(
+      //   title
+      // );
 
-      if (duplicateCourse && duplicateCourse !== existingCourse) {
-        return {
-          statusCode: 400,
-          success: false,
-          message: "The duplicate course is",
-        };
-      }
+      // if (duplicateCourse && duplicateCourse !== existingCourse) {
+      //   return {
+      //     statusCode: 400,
+      //     success: false,
+      //     message: "The duplicate course is",
+      //   };
+      // }
 
       const updatedCourse = await this.courseRepository.updateCourseById(
         courseId,

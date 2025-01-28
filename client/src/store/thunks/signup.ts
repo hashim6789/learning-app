@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../shared/utils/api";
+import { AuthSignupCredentials } from "../../DTOS/AuthSignupCredentials";
 
 interface SignupCredentials {
   firstName: string;
@@ -16,7 +17,7 @@ const host = "http://localhost:3000";
 export const signup = createAsyncThunk(
   "auth/signup",
   async (
-    { credentials, user }: { credentials: SignupCredentials; user: User },
+    { credentials, user }: { credentials: AuthSignupCredentials; user: User },
     thunkAPI
   ) => {
     try {
