@@ -7,7 +7,11 @@ import mongoose from "mongoose";
 class LessonRepository implements ILessonRepository {
   async fetchLessonById(lessonId: string): Promise<Lesson | null> {
     try {
-      const lesson = await LessonModel.findById(lessonId);
+      const lesson = await LessonModel.findById(lessonId).populate(
+        "materials",
+        "title _id"
+      );
+      console.log(lesson);
       return lesson ? mappedLesson(lesson) : null;
     } catch (error) {
       throw new Error("Failed to fetch the lesson");
@@ -67,11 +71,18 @@ class LessonRepository implements ILessonRepository {
   }
 }
 
+interface Material {
+  id: string;
+  title: string;
+}
+
 function mappedLesson(data: ILessons): Lesson {
   const id = data._id.toString();
   const mentorId = data.mentorId.toString();
   const materials = data.materials
-    ? data.materials.map((id) => id.toString())
+    ? data.materials.map<Material>((material: any) => {
+        return { id: material._id.toString(), title: material.title };
+      })
     : [];
 
   return new Lesson(id, data.title, mentorId, data.description, materials, 0);

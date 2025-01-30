@@ -5,7 +5,7 @@ import Lesson from "../../entities/Lesson";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 import ILessonRepository from "../../IRepositories/ILessonRepository";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
-import ValidateAccessTokenUseCase from "./ValidateAccessTokenUseCase"; // Import the access token validation use case
+// import ValidateAccessTokenUseCase from "./ValidateAccessTokenUseCase"; // Import the access token validation use case
 interface Payload {
   role: "admin" | "mentor" | "learner";
   email: string;

@@ -31,6 +31,6 @@ const materialSchema = new Schema<IMaterial>(
   }
 );
 
-const MaterialModel = mongoose.model<IMaterial>("Material", materialSchema);
+const MaterialModel = mongoose.model<IMaterial>("Materials", materialSchema);
 
 export default MaterialModel;

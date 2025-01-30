@@ -17,6 +17,25 @@ lessonRouter.get(
   authorizeRole(["mentor"]),
   LessonController.getAllLessonsOfMentor
 );
+
+lessonRouter.get(
+  "/:lessonId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  LessonController.getLessonById
+);
+lessonRouter.put(
+  "/:lessonId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  LessonController.updateLessonOfMentor
+);
+lessonRouter.delete(
+  "/:lessonId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  LessonController.deleteLessonOfMentor
+);
 // lessonRouter.get(
 //   "/",
 //   authenticateToken,

@@ -15,6 +15,7 @@ import { Lesson } from "../../../../shared/types/Lesson";
 import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../../../../shared/utils/toastUtils";
 
 const MentorLessonManagement: React.FC = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -47,6 +48,26 @@ const MentorLessonManagement: React.FC = () => {
       lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lesson.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleDelete = async (lessonId: string) => {
+    try {
+      const response = await api.delete(
+        `${config.API_BASE_URL}/mentor/lessons/${lessonId}`
+      );
+      if (response && response.status === 200 && response.data) {
+        showToast.success(response.data.message);
+        const filteredLessons = lessons.filter(
+          (lesson) => lesson.id !== lessonId
+        );
+        setLessons(filteredLessons);
+      } else {
+        showToast.error(response.data.message);
+      }
+    } catch (error: any) {
+      showToast.error(error.message);
+      console.error(error);
+    }
+  };
 
   const LessonCard: React.FC<{ lesson: Lesson }> = ({ lesson }) => {
     const [showMenu, setShowMenu] = useState(false);
@@ -84,7 +105,7 @@ const MentorLessonManagement: React.FC = () => {
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
                   <button
                     onClick={() => {
-                      /* Handle edit */
+                      navigate(`/mentor/my-lessons/${lesson.id}`);
                     }}
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-purple-50"
                   >
@@ -93,7 +114,7 @@ const MentorLessonManagement: React.FC = () => {
                   </button>
                   <button
                     onClick={() => {
-                      /* Handle delete */
+                      handleDelete(lesson.id);
                     }}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
@@ -107,7 +128,8 @@ const MentorLessonManagement: React.FC = () => {
         </div>
         <div className="px-6 py-4 bg-purple-50 rounded-b-lg">
           <button
-            onClick={() => setSelectedLesson(lesson.id)}
+            // onClick={() => setSelectedLesson(lesson.id)}
+            onClick={() => navigate(`/mentor/my-lessons/${lesson.id}`)}
             className="flex items-center text-purple-600 hover:text-purple-700 text-sm font-medium"
           >
             View Details

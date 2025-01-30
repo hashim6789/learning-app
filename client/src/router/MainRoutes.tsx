@@ -34,8 +34,8 @@ import MentorMaterialDetailPage from "../modules/mentor/pages/MentorMaterialDeat
 import MentorLessonManagement from "../modules/mentor/pages/lesson/MentorLessonManagement";
 import MentorLessonCreation from "../modules/mentor/pages/lesson/MentorLessonCreationPage";
 import LessonsCreatePage from "../modules/mentor/pages/lesson/LessonsCreationPage";
-import CreateLessonPage from "../modules/mentor/pages/lesson/CreateLessonPage";
 import CreateLesson from "../modules/mentor/pages/lesson/CreateLesson";
+import MentorLessonDetailsPage from "../modules/mentor/pages/lesson/MentorLessonDetaisPage";
 // import MaterialCreationForm from "../modules/mentor/pages/materials/creationPage";
 
 //Learner related components
@@ -142,6 +142,11 @@ const MainRoutes: React.FC = () => {
               children: [
                 { path: "dashboard", element: <MentorDashboard /> },
                 { path: "my-courses", element: <MentorCoursesManagement /> },
+                { path: "courses/create", element: <MentorCreateCoursePage /> },
+                {
+                  path: "courses/:courseId/",
+                  element: <MentorCourseDetailsPage />,
+                },
                 { path: "my-materials", element: <MentorMaterialManagement /> },
                 {
                   path: "my-materials/:materialId",
@@ -155,19 +160,16 @@ const MainRoutes: React.FC = () => {
                 { path: "my-lessons", element: <MentorLessonManagement /> },
                 {
                   path: "my-lessons/create",
-                  // element: <MentorLessonCreation />,
-                  // element: <CreateLessonPage />,
                   element: <CreateLesson />,
                 },
-                { path: "courses/create", element: <MentorCreateCoursePage /> },
                 {
-                  path: "courses/:courseId/",
-                  element: <MentorCourseDetailsPage />,
+                  path: "my-lessons/:lessonId",
+                  element: <MentorLessonDetailsPage />,
                 },
-                {
-                  path: "courses/:courseId/lessons",
-                  element: <LessonsCreatePage />,
-                },
+                // {
+                //   path: "courses/:courseId/lessons",
+                //   element: <LessonsCreatePage />,
+                // },
               ],
             },
           ],
