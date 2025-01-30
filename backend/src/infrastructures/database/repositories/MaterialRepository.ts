@@ -1,13 +1,7 @@
 import { CreateMaterialDTO } from "../../../shared/dtos/CreateMaterialDTO";
 import Material from "../../../application/entities/Material";
 import IMaterialRepository from "../../../application/IRepositories/IMaterialRepository";
-import {
-  MaterialModel,
-  IMaterial,
-  IReadingMaterial,
-  IAssessmentMaterial,
-  IVideoMaterial,
-} from "../models/MaterialModel";
+import MaterialModel, { IMaterial } from "../models/MaterialModel";
 
 class MaterialRepository implements IMaterialRepository {
   async fetchMaterialById(materialId: string): Promise<Material | null> {
@@ -42,52 +36,17 @@ class MaterialRepository implements IMaterialRepository {
     mentorId: string
   ): Promise<Material | null> {
     try {
-      let createdMaterial;
-
+      const newMaterial = await MaterialModel.create({
+        title: data.title,
+        description: data.description,
+        url: data.url,
+        duration: data.duration,
+        mentorId,
+        type: data.type,
+      });
       console.log(data.type);
 
-      switch (data.type) {
-        case "reading":
-          // Ensure the required fields for reading material are present
-          createdMaterial = await MaterialModel.create({
-            title: data.title,
-            description: data.description,
-            mentorId,
-            type: data.type,
-            content: data.content,
-            wordCount: data.wordCount,
-          });
-          break;
-
-        case "assessment":
-          // Ensure the required fields for assessment material are present
-          createdMaterial = await MaterialModel.create({
-            title: data.title,
-            description: data.description,
-            mentorId,
-            type: data.type,
-            questions: data.questions,
-            totalMarks: data.totalMarks,
-          });
-          break;
-
-        case "video":
-          // Ensure the required fields for video material are present
-          createdMaterial = await MaterialModel.create({
-            title: data.title,
-            description: data.description,
-            mentorId,
-            type: data.type,
-            url: data.url,
-            duration: data.duration,
-          });
-          break;
-
-        default:
-          throw new Error("Invalid material type");
-      }
-
-      return createdMaterial ? mapMaterial(createdMaterial) : null;
+      return newMaterial ? mapMaterial(newMaterial) : null;
     } catch (error: any) {
       throw new Error(`Failed to create the material: ${error.message}`);
     }
@@ -122,46 +81,14 @@ class MaterialRepository implements IMaterialRepository {
 function mapMaterial(data: IMaterial): Material {
   const id = data._id.toString();
 
-  switch (data.type) {
-    case "reading":
-      const readingData = data as IReadingMaterial;
-      return new Material(
-        id,
-        data.title,
-        data.description,
-        data.type,
-        readingData.content,
-        null,
-        null
-      );
-
-    case "assessment":
-      const assessmentData = data as IAssessmentMaterial;
-      return new Material(
-        id,
-        data.title,
-        data.description,
-        data.type,
-        null,
-        assessmentData.questions,
-        null
-      );
-
-    case "video":
-      const videoData = data as IVideoMaterial;
-      return new Material(
-        id,
-        data.title,
-        data.description,
-        data.type,
-        null,
-        null,
-        videoData.url
-      );
-
-    default:
-      throw new Error("Unknown material type");
-  }
+  return new Material(
+    id,
+    data.title,
+    data.description,
+    data.type,
+    data.url,
+    data.duration
+  );
 }
 
 export default MaterialRepository;

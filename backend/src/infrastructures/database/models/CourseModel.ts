@@ -27,7 +27,7 @@ const CoursesSchema: Schema = new Schema(
     description: { type: String },
     thumbnail: { type: String },
     lessons: [{ type: Schema.Types.ObjectId, ref: "Lessons" }],
-    duration: { type: String },
+    duration: { type: Number },
     status: {
       type: String,
       enum: ["draft", " pending", " published", " rejected"],

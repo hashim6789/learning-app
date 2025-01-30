@@ -31,12 +31,17 @@ import MentorCourseDetailsPage from "../modules/mentor/pages/MentorCourseDetails
 import MentorMaterialManagement from "../modules/mentor/pages/MentorMaterialManagement";
 import MentorCreateMaterial from "../modules/mentor/pages/MentorCreateMaterial";
 import MentorMaterialDetailPage from "../modules/mentor/pages/MentorMaterialDeatailPage";
+import MentorLessonManagement from "../modules/mentor/pages/lesson/MentorLessonManagement";
+import MentorLessonCreation from "../modules/mentor/pages/lesson/MentorLessonCreationPage";
+import LessonsCreatePage from "../modules/mentor/pages/lesson/LessonsCreationPage";
+import CreateLessonPage from "../modules/mentor/pages/lesson/CreateLessonPage";
+import CreateLesson from "../modules/mentor/pages/lesson/CreateLesson";
+// import MaterialCreationForm from "../modules/mentor/pages/materials/creationPage";
 
 //Learner related components
 import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
 import LearnerDashboard from "../modules/learner/pages/LearnerDashboard";
 import LearnerLayout from "../modules/learner/pages/LearnerLayout";
-import LessonsCreatePage from "../modules/mentor/pages/LessonsCreationPage";
 import LearnerOtpPage from "../modules/learner/pages/LearnerOtpPage";
 import LearnerChangePasswordPage from "../modules/learner/pages/LearnerChangePasswordPage";
 import LearnerLandingPage from "../modules/learner/pages/LearnerLandingPage";
@@ -145,6 +150,14 @@ const MainRoutes: React.FC = () => {
                 {
                   path: "my-materials/create",
                   element: <MentorCreateMaterial />,
+                  // element: <MaterialCreationForm />,
+                },
+                { path: "my-lessons", element: <MentorLessonManagement /> },
+                {
+                  path: "my-lessons/create",
+                  // element: <MentorLessonCreation />,
+                  // element: <CreateLessonPage />,
+                  element: <CreateLesson />,
                 },
                 { path: "courses/create", element: <MentorCreateCoursePage /> },
                 {

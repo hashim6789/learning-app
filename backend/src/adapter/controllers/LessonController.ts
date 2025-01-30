@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import LessonRepository from "../../infrastructures/database/repositories/LessonRepository";
-import GetAllLessonsOfCourseUseCase from "../../application/use_cases/mentor/GetAllLessonOfCourseUseCase";
 import CreateLessonUseCase from "../../application/use_cases/mentor/CreateLessonUseCase";
+import GetAllLessonsOfMentorUseCase from "../../application/use_cases/lesson/GetAllLessonofMentorUseCase";
 import CourseRepository from "../../infrastructures/database/repositories/CourseRepository";
+import Lesson from "../../application/entities/Lesson";
 const lessonRepository = new LessonRepository();
 const courseRepository = new CourseRepository();
 // const getAllLessonsOfCourse = new GetAllLessonsOfCourseUseCase(
@@ -14,14 +15,21 @@ const createLessonUseCase = new CreateLessonUseCase(
   courseRepository
 );
 
+const getAllLessonsOfMentorUseCase = new GetAllLessonsOfMentorUseCase(
+  lessonRepository
+);
+
 class LessonController {
   async createLessonForMentor(req: Request, res: Response, next: NextFunction) {
     try {
-      const response = await createLessonUseCase.execute(req.body);
+      const mentorId = req.user?.userId || "";
+      const data = req.body;
+      const response = await createLessonUseCase.execute(data, mentorId);
       if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
+        const { lesson } = response.data as {
+          lesson: Lesson;
+        };
+        res.status(201).json({ message: response.message, data: lesson });
       } else {
         res.status(400).json({ message: response.message });
       }
@@ -29,24 +37,20 @@ class LessonController {
       next(error);
     }
   }
-  //   async getAllLessonsOfCourse(req: Request, res: Response, next: NextFunction) {
-  //     try {
-  //       const response = await getAllLessonsOfCourse.execute({
-  //         ...req.body,
-  //         mentorId: req.user?.userId,
-  //       });
-
-  //       if (response.success && response.data) {
-  //         res
-  //           .status(200)
-  //           .json({ message: response.message, data: response.data });
-  //       } else {
-  //         res.status(400).json({ message: response.message });
-  //       }
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   }
+  async getAllLessonsOfMentor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const mentorId = req.user?.userId || "";
+      const response = await getAllLessonsOfMentorUseCase.execute(mentorId);
+      if (response.success && response.data) {
+        const { lessons } = response.data as { lessons: Lesson[] };
+        res.status(200).json({ message: response.message, data: lessons });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new LessonController();

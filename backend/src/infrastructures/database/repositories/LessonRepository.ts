@@ -2,6 +2,7 @@ import { CreateLessonDTO } from "../../../shared/dtos/createLessonDTO";
 import Lesson from "../../../application/entities/Lesson";
 import ILessonRepository from "../../../application/IRepositories/ILessonRepository";
 import LessonModel, { ILessons } from "../models/LessonModel";
+import mongoose from "mongoose";
 
 class LessonRepository implements ILessonRepository {
   async fetchLessonById(lessonId: string): Promise<Lesson | null> {
@@ -12,9 +13,9 @@ class LessonRepository implements ILessonRepository {
       throw new Error("Failed to fetch the lesson");
     }
   }
-  async fetchAllLessonsByCourseId(courseId: string): Promise<Lesson[] | null> {
+  async fetchAllLessonsByMentorId(mentorId: string): Promise<Lesson[] | null> {
     try {
-      const lessons = await LessonModel.find({ courseId });
+      const lessons = await LessonModel.find({ mentorId });
       return lessons ? lessons.map(mappedLesson) : null;
     } catch (error) {
       throw new Error("Failed to fetch the lessons");
@@ -42,23 +43,38 @@ class LessonRepository implements ILessonRepository {
       throw new Error("Failed to delete the lesson");
     }
   }
-  async createLesson(data: CreateLessonDTO): Promise<Lesson | null> {
+  async createLesson(
+    data: CreateLessonDTO,
+    mentorId: string
+  ): Promise<Lesson | null> {
     try {
-      const newLesson = new LessonModel(data);
+      const materials = data.materials.map(
+        (id) => new mongoose.Types.ObjectId(id)
+      );
+      const newLesson = new LessonModel({
+        title: data.title,
+        description: data.description,
+        duration: data.duration,
+        mentorId,
+        materials,
+      });
       const createdLesson = await newLesson.save();
 
       return createdLesson ? mappedLesson(createdLesson) : null;
-    } catch (error) {
-      throw new Error("Failed to created the lesson");
+    } catch (error: any) {
+      throw new Error(error);
     }
   }
 }
 
 function mappedLesson(data: ILessons): Lesson {
   const id = data._id.toString();
-  const courseId = data.courseId.toString();
+  const mentorId = data.mentorId.toString();
+  const materials = data.materials
+    ? data.materials.map((id) => id.toString())
+    : [];
 
-  return new Lesson(id, data.title, courseId, data.description, []);
+  return new Lesson(id, data.title, mentorId, data.description, materials, 0);
 }
 
 export default LessonRepository;

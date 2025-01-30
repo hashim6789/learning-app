@@ -4,7 +4,8 @@ export interface ILessons extends Document {
   _id: ObjectId;
   title: string;
   description: string | null;
-  courseId: ObjectId;
+  mentorId: ObjectId;
+  duration: number;
   materials: ObjectId[] | null;
 }
 
@@ -12,7 +13,8 @@ const LessonsSchema: Schema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    courseId: { type: Schema.Types.ObjectId, ref: "Courses", required: true },
+    mentorId: { type: Schema.Types.ObjectId, required: true },
+    duration: { type: Number, required: true },
     materials: [{ type: Schema.Types.ObjectId }],
   },
   {

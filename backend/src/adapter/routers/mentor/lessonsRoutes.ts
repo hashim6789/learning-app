@@ -11,6 +11,12 @@ lessonRouter.post(
   authorizeRole(["mentor"]),
   LessonController.createLessonForMentor
 );
+lessonRouter.get(
+  "/",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  LessonController.getAllLessonsOfMentor
+);
 // lessonRouter.get(
 //   "/",
 //   authenticateToken,

@@ -12,12 +12,26 @@ materialRouter.post(
   authorizeRole(["mentor"]),
   materialController.createMaterialForMentor
 );
+
+materialRouter.put(
+  "/:materialId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  materialController.updateMaterialForMentor
+);
+materialRouter.delete(
+  "/:materialId",
+  authenticateToken,
+  authorizeRole(["mentor"]),
+  materialController.deleteMaterialForMentor
+);
 materialRouter.get(
   "/",
   authenticateToken,
   authorizeRole(["mentor"]),
   materialController.getMaterialsOfMentor
 );
+
 materialRouter.get(
   "/:materialId",
   authenticateToken,

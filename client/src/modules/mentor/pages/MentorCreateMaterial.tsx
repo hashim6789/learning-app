@@ -1,28 +1,18 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Book, FileText, Video, Plus, X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Book, Video } from "lucide-react";
 import api from "../../../shared/utils/api";
 import { config } from "../../../shared/configs/config";
+import { showToast } from "../../../shared/utils/toastUtils";
 
-type MaterialType = "reading" | "assessment" | "video";
+type MaterialType = "reading" | "video";
 
 interface FormData {
   title: string;
   description: string;
   type: MaterialType;
-  // Reading specific
-  content?: string;
-  wordCount?: number;
-  // Assessment specific
-  questions?: {
-    question: string;
-    options: string[];
-    correctAnswer: string;
-  }[];
-  totalMarks?: number;
-  // Video specific
-  url?: string;
-  duration?: number;
+  duration: number;
+  url: string;
 }
 
 const MentorCreateMaterial: React.FC = () => {
@@ -30,33 +20,27 @@ const MentorCreateMaterial: React.FC = () => {
     register,
     handleSubmit,
     watch,
-    control,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: {
-      type: "reading",
-      questions: [
-        { question: "", options: ["", "", "", ""], correctAnswer: "" },
-      ],
-    },
+    defaultValues: { type: "reading" },
   });
 
   const selectedType = watch("type");
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Replace with your API endpoint
       const response = await api.post(
         `${config.API_BASE_URL}/mentor/materials`,
         { data }
       );
-
-      if (!response.data) throw new Error("Failed to create material");
-
-      // Handle success (e.g., redirect or show success message)
-    } catch (error) {
-      // Handle error
+      if (response.data) {
+        showToast.success("The material is created successfully.");
+        reset();
+      }
+    } catch (error: any) {
       console.error(error);
+      showToast.error(error.message);
     }
   };
 
@@ -67,19 +51,17 @@ const MentorCreateMaterial: React.FC = () => {
           Create New Material
         </h1>
         <p className="text-gray-600 mb-8">
-          Add new learning content for your students
+          Add new learning contents for your students
         </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="bg-white rounded-lg shadow-md p-6">
-            {/* Basic Information */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Material Type
                 </label>
-                <div className="grid grid-cols-3 gap-4">
-                  {["reading", "assessment", "video"].map((type) => (
+                <div className="grid grid-cols-2 gap-4">
+                  {["reading", "video"].map((type) => (
                     <label
                       key={type}
                       className={`
@@ -100,9 +82,6 @@ const MentorCreateMaterial: React.FC = () => {
                       {type === "reading" && (
                         <Book className="w-5 h-5 mr-2 text-purple-600" />
                       )}
-                      {type === "assessment" && (
-                        <FileText className="w-5 h-5 mr-2 text-purple-600" />
-                      )}
                       {type === "video" && (
                         <Video className="w-5 h-5 mr-2 text-purple-600" />
                       )}
@@ -111,14 +90,22 @@ const MentorCreateMaterial: React.FC = () => {
                   ))}
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Title
                 </label>
                 <input
-                  {...register("title", { required: "Title is required" })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  {...register("title", {
+                    required: "Title is required",
+                    validate: (value) =>
+                      value.trim().length > 5 ||
+                      "Title cannot be empty or just spaces",
+                    minLength: {
+                      value: 5,
+                      message: "Title must be at least 3 characters",
+                    },
+                  })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                   placeholder="Enter material title"
                 />
                 {errors.title && (
@@ -127,7 +114,6 @@ const MentorCreateMaterial: React.FC = () => {
                   </p>
                 )}
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
@@ -135,8 +121,15 @@ const MentorCreateMaterial: React.FC = () => {
                 <textarea
                   {...register("description", {
                     required: "Description is required",
+                    validate: (value) =>
+                      value.trim().length > 10 ||
+                      "Title cannot be empty or just spaces",
+                    minLength: {
+                      value: 10,
+                      message: "Description must be at least 10 characters",
+                    },
                   })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                   rows={3}
                   placeholder="Enter material description"
                 />
@@ -146,191 +139,76 @@ const MentorCreateMaterial: React.FC = () => {
                   </p>
                 )}
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Duration (minutes)
+                </label>
+                <input
+                  type="number"
+                  {...register("duration", {
+                    required: "Duration is required",
+                    min: {
+                      value: 1,
+                      message: "Duration must be at least 1 minute",
+                    },
+                    max: {
+                      value: 50,
+                      message: "Duration cannot exceed 50 minutes",
+                    },
+                  })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  placeholder="Enter duration"
+                />
+                {errors.duration && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.duration.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {selectedType === "reading" ? "Content" : "Video"} URL
+              </label>
+              <input
+                {...register("url", {
+                  required: "URL is required",
+                  pattern: {
+                    value: /^(https?:\/\/)?(www\.)?[\w-]+(\.[a-z]+)+(\/\S*)?$/,
+                    message: "Enter a valid URL",
+                  },
+                })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter URL"
+              />
+              {errors.url && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.url.message}
+                </p>
+              )}
             </div>
 
-            {/* Type Specific Fields */}
-            {selectedType === "reading" && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Content
-                  </label>
-                  <textarea
-                    {...register("content", {
-                      required: "Content is required",
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    rows={10}
-                    placeholder="Enter reading content"
-                  />
-                </div>
-              </div>
-            )}
-
-            {selectedType === "video" && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Video URL
-                  </label>
-                  <input
-                    {...register("url", { required: "Video URL is required" })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter video URL"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Duration (minutes)
-                  </label>
-                  <input
-                    type="number"
-                    {...register("duration", {
-                      required: "Duration is required",
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter video duration"
-                  />
-                </div>
-              </div>
-            )}
-
-            {selectedType === "assessment" && (
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Total Marks
-                  </label>
-                  <input
-                    type="number"
-                    {...register("totalMarks", {
-                      required: "Total marks is required",
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter total marks"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Questions
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const questions = watch("questions") || [];
-                        const newQuestion = {
-                          question: "",
-                          options: ["", "", "", ""],
-                          correctAnswer: "",
-                        };
-                        questions.push(newQuestion);
-                      }}
-                      className="flex items-center px-3 py-1 text-sm text-purple-600 hover:bg-purple-50 rounded-md"
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Add Question
-                    </button>
-                  </div>
-
-                  <Controller
-                    name="questions"
-                    control={control}
-                    render={({ field }) => (
-                      <div className="space-y-6">
-                        {field.value?.map((_, index) => (
-                          <div
-                            key={index}
-                            className="p-4 border border-gray-200 rounded-lg space-y-4"
-                          >
-                            <div className="flex justify-between items-start">
-                              <h4 className="text-sm font-medium text-gray-700">
-                                Question {index + 1}
-                              </h4>
-                              {index > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const questions = field.value
-                                      ? [...field.value]
-                                      : [];
-                                    questions.splice(index, 1);
-                                    field.onChange(questions);
-                                  }}
-                                  className="text-red-500 hover:text-red-700"
-                                >
-                                  <X className="w-4 h-4" />
-                                </button>
-                              )}
-                            </div>
-
-                            <input
-                              {...register(
-                                `questions.${index}.question` as const
-                              )}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                              placeholder="Enter question"
-                            />
-
-                            <div className="space-y-2">
-                              {[0, 1, 2, 3].map((optionIndex) => (
-                                <input
-                                  key={optionIndex}
-                                  {...register(
-                                    `questions.${index}.options.${optionIndex}` as const
-                                  )}
-                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                  placeholder={`Option ${optionIndex + 1}`}
-                                />
-                              ))}
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Correct Answer
-                              </label>
-                              <select
-                                {...register(
-                                  `questions.${index}.correctAnswer` as const
-                                )}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                              >
-                                <option value="">Select correct answer</option>
-                                {field &&
-                                  field.value &&
-                                  field.value[index].options.map(
-                                    (option, optIndex) => (
-                                      <option key={optIndex} value={option}>
-                                        {option || `Option ${optIndex + 1}`}
-                                      </option>
-                                    )
-                                  )}
-                              </select>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  />
-                </div>
-              </div>
-            )}
+            {/* <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Video URL
+              </label>
+              <input
+                {...register("url", { required: " URL is required" })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter URL"
+              />
+            </div> */}
           </div>
-
           <div className="flex justify-end space-x-4">
             <button
               type="button"
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-              onClick={() => {
-                // Handle cancel
-              }}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:ring-2 focus:ring-purple-500"
             >
               Create Material
             </button>

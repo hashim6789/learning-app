@@ -1,54 +1,14 @@
+import Swal from "sweetalert2";
 import React, { useEffect, useState } from "react";
-import { Book, FileText, Video, Clock, Hash } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import api from "../../../shared/utils/api";
 import { config } from "../../../shared/configs/config";
-import { sampleMaterials } from "../../../shared/sample/sampleMaterials";
+import { IMaterial } from "../../../shared/types/Material";
+import MaterialCard from "../components/materials/MaterialCard";
+import { showToast } from "../../../shared/utils/toastUtils";
 
-// Define the base Material type
-interface IMaterial {
-  id: string;
-  title: string;
-  description: string;
-  type: "reading" | "assessment" | "video";
-}
-
-// Type guard functions
-const isReadingMaterial = (
-  material: IMaterial
-): material is IMaterial & IReadingMaterial => {
-  return material.type === "reading";
-};
-
-const isAssessmentMaterial = (
-  material: IMaterial
-): material is IMaterial & IAssessmentMaterial => {
-  return material.type === "assessment";
-};
-
-const isVideoMaterial = (
-  material: IMaterial
-): material is IMaterial & IVideoMaterial => {
-  return material.type === "video";
-};
-
-interface IReadingMaterial {
-  content: string;
-}
-
-interface IAssessmentMaterial {
-  questions: {
-    question: string;
-    options: string[];
-    correctAnswer: string;
-  }[];
-  totalMarks: number;
-}
-
-interface IVideoMaterial {
-  url: string;
-  duration: number;
-}
+// Simplified MaterialType and IMaterial interface
 
 const MentorMaterialManagement: React.FC = () => {
   const [materials, setMaterials] = useState<IMaterial[]>([]);
@@ -67,7 +27,7 @@ const MentorMaterialManagement: React.FC = () => {
       // Replace with your actual API endpoint
       const response = await api(`${config.API_BASE_URL}/mentor/materials`);
       if (!response.data) throw new Error("Failed to fetch materials");
-      const data = response.data.data.materials;
+      const data = response.data.data;
       console.log("materials", data);
       setMaterials(data);
     } catch (err) {
@@ -77,67 +37,36 @@ const MentorMaterialManagement: React.FC = () => {
     }
   };
 
-  const getTypeIcon = (type: IMaterial["type"]) => {
-    switch (type) {
-      case "reading":
-        return <Book className="w-6 h-6 text-purple-600" />;
-      case "assessment":
-        return <FileText className="w-6 h-6 text-purple-600" />;
-      case "video":
-        return <Video className="w-6 h-6 text-purple-600" />;
+  const handleDelete = async (materialId: string) => {
+    // Show a confirmation dialog
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    // Proceed if the user confirmed
+    if (result.isConfirmed) {
+      try {
+        const response = await api.delete(
+          `${config.API_BASE_URL}/mentor/materials/${materialId}`
+        );
+        if (response.data) {
+          const newMaterials = materials.filter(
+            (material) => material.id !== materialId
+          );
+          setMaterials(newMaterials);
+          showToast.success("The material deleted successfully!");
+        }
+      } catch (error: any) {
+        console.log(error);
+        showToast.error(error.message);
+      }
     }
-  };
-
-  const MaterialCard: React.FC<{ material: IMaterial }> = ({ material }) => {
-    const navigate = useNavigate();
-    const materialId = material.id;
-    return (
-      <div
-        onClick={() => navigate(`/mentor/my-materials/${materialId}`)}
-        className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
-      >
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              {getTypeIcon(material.type)}
-              <h3 className="text-lg font-semibold text-purple-900">
-                {material.title}
-              </h3>
-            </div>
-            <span className="px-3 py-1 text-sm font-medium text-purple-700 bg-purple-100 rounded-full">
-              {material.type}
-            </span>
-          </div>
-
-          <p className="text-gray-600 mb-4">{material.description}</p>
-
-          <div className="border-t pt-4">
-            {isReadingMaterial(material) && (
-              <div className="flex items-center text-gray-500">
-                <Hash className="w-4 h-4 mr-2" />
-                <span>{material.content.split(" ").length || 0} words</span>
-              </div>
-            )}
-
-            {isAssessmentMaterial(material) && (
-              <div className="flex items-center text-gray-500">
-                <FileText className="w-4 h-4 mr-2" />
-                <span>{material.questions.length} questions</span>
-                <span className="mx-2">•</span>
-                <span>{material.totalMarks} marks</span>
-              </div>
-            )}
-
-            {isVideoMaterial(material) && (
-              <div className="flex items-center text-gray-500">
-                <Clock className="w-4 h-4 mr-2" />
-                <span>{material.duration} minutes</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   if (isLoading) {
@@ -179,7 +108,11 @@ const MentorMaterialManagement: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {materials.map((material) => (
-            <MaterialCard key={material.id} material={material} />
+            <MaterialCard
+              key={material.id}
+              material={material}
+              handleDelete={handleDelete}
+            />
           ))}
         </div>
 

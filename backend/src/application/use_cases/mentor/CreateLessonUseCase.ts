@@ -22,17 +22,24 @@ class CreateLessonUseCase {
     this.courseRepository = courseRepository;
   }
 
-  async execute(data: CreateLessonDTO): Promise<ResponseModel> {
+  async execute(
+    data: CreateLessonDTO,
+    mentorId: string
+  ): Promise<ResponseModel> {
     try {
-      const course = await this.courseRepository.findCourseById(data.courseId);
-      if (!course) {
-        return {
-          statusCode: 404,
-          success: false,
-          message: "The lesson's course is doesn't exist!",
-        };
-      }
-      const createdLesson = await this.lessonRepository.createLesson(data);
+      // const course = await this.courseRepository.findCourseById(data.courseId);
+      // if (!course) {
+      //   return {
+      //     statusCode: 404,
+      //     success: false,
+      //     message: "The lesson's course is doesn't exist!",
+      //   };
+      // }
+
+      const createdLesson = await this.lessonRepository.createLesson(
+        data,
+        mentorId
+      );
       if (!createdLesson) {
         return {
           statusCode: 400,
@@ -40,26 +47,32 @@ class CreateLessonUseCase {
           message: "The lesson creation is failed!",
         };
       }
+      return {
+        statusCode: 201,
+        success: true,
+        message: "The lesson is created successfully.",
+        data: { lesson: createdLesson },
+      };
 
-      const updatedCourse = await this.courseRepository.addLessonsToCourse(
-        data.courseId,
-        createdLesson.courseId
-      );
+      // const updatedCourse = await this.courseRepository.addLessonsToCourse(
+      //   data.courseId,
+      //   createdLesson.courseId
+      // );
 
-      if (updatedCourse) {
-        return {
-          statusCode: 201,
-          success: true,
-          message: "The lesson is created successfully.",
-          data: updatedCourse,
-        };
-      } else {
-        return {
-          statusCode: 400,
-          success: false,
-          message: "The lesson didn't create!",
-        };
-      }
+      // if (updatedCourse) {
+      //   return {
+      //     statusCode: 201,
+      //     success: true,
+      //     message: "The lesson is created successfully.",
+      //     data: updatedCourse,
+      //   };
+      // } else {
+      //   return {
+      //     statusCode: 400,
+      //     success: false,
+      //     message: "The lesson didn't create!",
+      //   };
+      // }
     } catch (error) {
       throw new Error(error as string);
     }

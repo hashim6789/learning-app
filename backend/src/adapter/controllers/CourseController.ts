@@ -4,7 +4,7 @@ import CourseRepository from "../../infrastructures/database/repositories/Course
 import GetAllCourseOfMentorUseCase from "../../application/use_cases/mentor/GetAllCoursesOfMentorUseCase";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import GetAllCourseUseCase from "../../application/use_cases/admin/GetAllCourses";
-import GetAllLessonsOfCourseUseCase from "../../application/use_cases/mentor/GetAllLessonOfCourseUseCase";
+// import GetAllLessonsOfCourseUseCase from "../../application/use_cases/mentor/GetAllLessonOfCourseUseCase";
 import LessonRepository from "../../infrastructures/database/repositories/LessonRepository";
 import GetCourseOfMentorUseCase from "../../application/use_cases/mentor/GetCourseByIdUseCase";
 import UpdateCourseUseCase from "../../application/use_cases/mentor/UpdateCourseUseCase";
@@ -25,9 +25,9 @@ const getAllCourseOfMentorUseCase = new GetAllCourseOfMentorUseCase(
 
 const getAllCourseUseCase = new GetAllCourseUseCase(courseRepository);
 
-const getAllLessonsOfCourseUseCase = new GetAllLessonsOfCourseUseCase(
-  lessonRepository
-);
+// const getAllLessonsOfCourseUseCase = new GetAllLessonsOfCourseUseCase(
+//   lessonRepository
+// );
 
 const getCourseOfMentorUseCase = new GetCourseOfMentorUseCase(
   courseRepository,
@@ -174,16 +174,16 @@ class CourseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { courseId } = req.params;
-      const mentorId = req.user?.userId || "";
-      const response = await getAllLessonsOfCourseUseCase.execute(courseId);
-      if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
-      } else {
-        res.status(400).json({ message: response.message });
-      }
+      // const { courseId } = req.params;
+      // const mentorId = req.user?.userId || "";
+      // const response = await getAllLessonsOfCourseUseCase.execute(courseId);
+      // if (response.success && response.data) {
+      //   res
+      //     .status(200)
+      //     .json({ message: response.message, data: response.data });
+      // } else {
+      //   res.status(400).json({ message: response.message });
+      // }
     } catch (error) {
       next(error);
     }

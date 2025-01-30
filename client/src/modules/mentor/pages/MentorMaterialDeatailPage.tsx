@@ -1,60 +1,80 @@
+//imported custom hooks
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Book,
-  FileText,
-  Video,
-  Clock,
-  Hash,
-  ArrowLeft,
-  CheckCircle,
-} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import useFetch from "../../../hooks/useFetch";
+import { useForm } from "react-hook-form";
 
+//import redux utilities
+import { AppDispatch, RootState } from "../../../store";
 import {
-  IReadingMaterial,
-  IVideoMaterial,
-  IAssessmentMaterial,
-  IMaterial,
-  isAssessmentMaterial,
-  isVideoMaterial,
-  isReadingMaterial,
-} from "../../../shared/types/Material";
-import { sampleMaterials } from "../../../shared/sample/sampleMaterials";
-import api from "../../../shared/utils/api";
-import { config } from "../../../shared/configs/config";
+  editMaterial,
+  resetForm,
+  setMaterial,
+} from "../../../store/slices/materialSlice";
+import { updateMaterial } from "../../../store/thunks/material/updateMaterial";
 
-// Interfaces and type guards as provided
+//imported sub components
+import MaterialDetailsHeader from "../components/materials/DetailsHeader";
+import MaterialDetailsContent from "../components/materials/MaterialDetailsContent";
+import EditForm from "../components/materials/EditForm";
+import MaterialActions from "../components/materials/MaterialAction";
+
+//imported other utilities
+import { showToast } from "../../../shared/utils/toastUtils";
+import { IMaterial } from "../../../shared/types/Material";
+import { ArrowLeft } from "lucide-react";
 
 const MentorMaterialDetailPage: React.FC = () => {
   const { materialId } = useParams<{ materialId: string }>();
-  const [material, setMaterial] = useState<IMaterial | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data } = useFetch<IMaterial>(`/mentor/materials/${materialId}`);
+  const dispatch = useDispatch<AppDispatch>();
+  const { material, error, loading } = useSelector(
+    (state: RootState) => state.material
+  );
+  const [isEditing, setIsEditing] = useState(false);
+
+  const { setValue } = useForm<IMaterial>();
 
   useEffect(() => {
-    fetchMaterialDetails();
-  }, [materialId]);
+    if (data) {
+      dispatch(setMaterial(data));
+    }
+  }, [data, dispatch]);
 
-  const fetchMaterialDetails = async () => {
+  const handleChange = (field: keyof IMaterial, value: any) => {
+    if (field === "duration") value = Number(value);
+    dispatch(editMaterial({ [field]: value }));
+    setValue(field, value);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(!isEditing);
+    console.log("reset");
+    dispatch(resetForm());
+  };
+
+  const onSubmit = async () => {
+    setIsEditing(false);
     try {
-      setIsLoading(true);
-      const response = await api.get(
-        `${config.API_BASE_URL}/mentor/materials/${materialId}`
+      if (!material) return null;
+      const resultAction = await dispatch(
+        updateMaterial({
+          data: material,
+          user: "mentor",
+        })
       );
-      if (!response.data) throw new Error("Failed to fetch material details");
-      const data = response.data.data;
-      setMaterial(data);
-      //   setMaterial(sampleMaterials[1]);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to load material details"
-      );
-    } finally {
-      setIsLoading(false);
+      if (updateMaterial.fulfilled.match(resultAction)) {
+        showToast.success("The course updated successfully.");
+      } else {
+        showToast.error("The course updated Failed!");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
@@ -73,94 +93,6 @@ const MentorMaterialDetailPage: React.FC = () => {
     );
   }
 
-  const ReadingContent: React.FC<{
-    material: IMaterial & IReadingMaterial;
-  }> = ({ material }) => (
-    <div className="prose max-w-none">
-      <div className="bg-purple-50 rounded-lg p-6 mb-6">
-        <div className="flex items-center text-purple-700 mb-4">
-          <Hash className="w-5 h-5 mr-2" />
-          <span>{material.content.split(" ").length || "N/A"} words</span>
-        </div>
-        <div className="whitespace-pre-wrap">{material.content}</div>
-      </div>
-    </div>
-  );
-
-  const VideoContent: React.FC<{ material: IMaterial & IVideoMaterial }> = ({
-    material,
-  }) => (
-    <div>
-      <div className="bg-purple-50 rounded-lg p-6 mb-6">
-        <div className="aspect-w-16 aspect-h-9 mb-4">
-          <iframe
-            src={material.url}
-            className="w-full h-full rounded-lg"
-            allowFullScreen
-          />
-        </div>
-        <div className="flex items-center text-purple-700">
-          <Clock className="w-5 h-5 mr-2" />
-          <span>{material.duration} minutes</span>
-        </div>
-      </div>
-    </div>
-  );
-
-  const AssessmentContent: React.FC<{
-    material: IMaterial & IAssessmentMaterial;
-  }> = ({ material }) => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between bg-purple-50 rounded-lg p-4 mb-6">
-        <div className="flex items-center text-purple-700">
-          <FileText className="w-5 h-5 mr-2" />
-          <span>{material.questions.length} Questions</span>
-        </div>
-        <div className="text-purple-700">
-          <span>Total Marks: {material.totalMarks}</span>
-        </div>
-      </div>
-
-      {material.questions.map((question, index) => (
-        <div key={index} className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-start justify-between mb-4">
-            <h3 className="text-lg font-semibold text-purple-900">
-              Question {index + 1}
-            </h3>
-          </div>
-          <p className="text-gray-800 mb-4">{question.question}</p>
-          <div className="space-y-3">
-            {question.options.map((option, optIndex) => (
-              <div
-                key={optIndex}
-                className={`p-3 rounded-lg border ${
-                  option === question.correctAnswer
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-200"
-                }`}
-              >
-                <div className="flex items-center">
-                  {option === question.correctAnswer && (
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-                  )}
-                  <span
-                    className={
-                      option === question.correctAnswer
-                        ? "text-green-700"
-                        : "text-gray-700"
-                    }
-                  >
-                    {option}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -173,36 +105,24 @@ const MentorMaterialDetailPage: React.FC = () => {
         </button>
 
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="border-b border-gray-200 bg-purple-50 p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              {material.type === "reading" && (
-                <Book className="w-6 h-6 text-purple-600" />
-              )}
-              {material.type === "video" && (
-                <Video className="w-6 h-6 text-purple-600" />
-              )}
-              {material.type === "assessment" && (
-                <FileText className="w-6 h-6 text-purple-600" />
-              )}
-              <span className="px-3 py-1 text-sm font-medium text-purple-700 bg-purple-100 rounded-full">
-                {material.type}
-              </span>
-            </div>
-            <h1 className="text-2xl font-bold text-purple-900 mb-2">
-              {material.title}
-            </h1>
-            <p className="text-gray-600">{material.description}</p>
+          <MaterialDetailsHeader material={material} />
+          <div className="p-6">
+            <MaterialDetailsContent material={material} />
           </div>
 
-          <div className="p-6">
-            {isReadingMaterial(material) && (
-              <ReadingContent material={material} />
-            )}
-            {isVideoMaterial(material) && <VideoContent material={material} />}
-            {isAssessmentMaterial(material) && (
-              <AssessmentContent material={material} />
-            )}
-          </div>
+          {isEditing && (
+            <EditForm
+              material={material}
+              onSubmit={onSubmit}
+              handleChange={handleChange}
+              handleEditClick={handleEditClick}
+            />
+          )}
+
+          <MaterialActions
+            isEditing={isEditing}
+            handleEditClick={handleEditClick}
+          />
         </div>
       </div>
     </div>

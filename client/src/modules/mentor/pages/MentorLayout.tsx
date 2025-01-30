@@ -8,6 +8,7 @@ const MentorLayout: React.FC = () => {
   const sidebarItems = [
     { icon: <span>📊</span>, label: "Dashboard", href: "/mentor/dashboard" },
     { icon: <span>👥</span>, label: "My Courses", href: "/mentor/my-courses" },
+    { icon: <span>👥</span>, label: "My lessons", href: "/mentor/my-lessons" },
     {
       icon: <span>👥</span>,
       label: "My Materials",
