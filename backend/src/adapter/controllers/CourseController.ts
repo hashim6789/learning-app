@@ -45,8 +45,9 @@ class CourseController {
   ): Promise<void> {
     try {
       const mentorId = req.user?.userId || "";
+      const data = req.body;
       const response = await courseCreationUseCase.execute({
-        ...req.body,
+        ...data,
         mentorId,
       });
 

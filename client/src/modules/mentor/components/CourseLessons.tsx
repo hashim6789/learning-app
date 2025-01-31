@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../../../store";
 import { setLesson } from "../../../store/slices/lessonsSlice";
 
 const CourseLessons: React.FC<{
-  lessons: Lesson[];
+  lessons: Omit<Lesson, "materials">[];
 }> = ({ lessons }) => {
   const dispatch = useDispatch<AppDispatch>();
   const lesson = useSelector((state: RootState) => state.lesson.lesson);
@@ -27,12 +27,11 @@ const CourseLessons: React.FC<{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newLesson: Lesson = {
+    const newLesson: Omit<Lesson, "materials"> = {
       id: "",
       title: formData.title,
       duration: parseInt(formData.duration, 10),
       description: formData.description,
-      isCompleted: false,
     };
 
     dispatch(setLesson(newLesson)); // Dispatch to Redux

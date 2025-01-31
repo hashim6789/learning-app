@@ -31,25 +31,36 @@ const useCourseManagement = () => {
   }, [baseUrl, categories]);
 
   // Add a new course
-  const addCourse = async (course: Partial<Course>) => {
+  const addCourse = async (course: Partial<Course>): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
       if (!course.category || !course.category.id) {
         showToast.error("Course category not exist!");
-        return;
+        return false;
       }
-      const response = await api.post(`${baseUrl}/mentor/courses`, {
+
+      const lessonIds = course.lessons
+        ? course.lessons.map((course) => course.id)
+        : [];
+
+      const postData = {
         ...course,
-        categoryId: course.category.id,
-      });
+        lessons: lessonIds,
+        category: course.category.id,
+      };
+      const response = await api.post(`${baseUrl}/mentor/courses`, postData);
 
       if (response && response.data) {
         showToast.success("Course created successfully!");
+        return true;
       }
+
+      return false;
     } catch (err: any) {
       showToast.error("Failed to add course");
       setError(err.response?.data?.message || "Failed to add course");
+      return false;
     } finally {
       setLoading(false);
     }

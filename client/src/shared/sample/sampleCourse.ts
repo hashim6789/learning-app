@@ -8,7 +8,7 @@ export const sampleCourse: Course = {
   category: {
     id: "cat-001",
     title: "Web Development",
-    status: "unblocked",
+    status: "unlisted",
     isListed: true,
   },
   thumbnail: "/api/placeholder/800/400",
@@ -16,26 +16,26 @@ export const sampleCourse: Course = {
     {
       id: "lesson-1",
       title: "Introduction to React",
-      duration: 45,
-      isCompleted: true,
+      // duration: 45,
+      // isCompleted: true,
     },
     {
       id: "lesson-2",
       title: "Components and Props",
-      duration: 60,
-      isCompleted: false,
+      // duration: 60,
+      // isCompleted: false,
     },
     {
       id: "lesson-3",
       title: "State and Hooks",
-      duration: 75,
-      isCompleted: false,
+      // duration: 75,
+      // isCompleted: false,
     },
     {
       id: "lesson-4",
       title: "Advanced TypeScript",
-      duration: 90,
-      isCompleted: false,
+      // duration: 90,
+      // isCompleted: false,
     },
   ],
   description:

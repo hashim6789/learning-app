@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import CourseTable from "../tables/CourseTable";
-import Breadcrumbs from "../components/BreadCrumbs";
-import useFetch from "../../../hooks/useFetch";
-import { Path } from "../../../shared/types/Path";
-import { CourseStatus } from "../../../shared/types/CourseStatus";
-import { Category } from "../../../shared/types/Category";
+import CourseTable from "../../tables/CourseTable";
+import Breadcrumbs from "../../components/BreadCrumbs";
+import useFetch from "../../../../hooks/useFetch";
+import { Path } from "../../../../shared/types/Path";
+import { CourseStatus } from "../../../../shared/types/CourseStatus";
+import { Category } from "../../../../shared/types/Category";
 
 interface Course {
   id: string;

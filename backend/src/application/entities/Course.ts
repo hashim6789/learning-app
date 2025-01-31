@@ -8,7 +8,7 @@ export default class Course {
   category: string | Category;
   description: string | null;
   thumbnail: string | null;
-  lessons: Lesson[] | null;
+  lessons: { id: string; title: string }[] | null;
   duration: number | null;
   status: string | null;
   rejectionReason: string | null;
@@ -21,7 +21,7 @@ export default class Course {
     category: string | Category,
     description: string | null,
     thumbnail: string | null,
-    lessons: Lesson[] | null,
+    lessons: { id: string; title: string }[] | null,
     duration: number | null,
     status: string | null,
     rejectionReason: string | null,

@@ -29,6 +29,8 @@ export class CreateCourseDTO {
   @IsOptional()
   description?: string;
 
+  lessons: string[];
+
   //   @IsArray()
   //   @IsString({ each: true, message: 'Each lesson must be a string.' })
   //   @IsOptional()

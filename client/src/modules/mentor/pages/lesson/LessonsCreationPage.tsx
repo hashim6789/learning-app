@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../../../hooks/useFetch";
 import LessonStructure from "../../components/LessonStructure";
 import Swal from "sweetalert2";
-import axios from "axios";
 import LessonList from "../../components/LessonList";
 import api from "../../../../shared/utils/api";
 import { showToast } from "../../../../shared/utils/toastUtils";
-import CourseDetails from "./../MentorCourseDetailsPage";
 import useCourseManagement from "../../../../hooks/useCourseManagement";
 import { config } from "../../../../shared/configs/config";
 import { Category } from "../../../../shared/types/Category";

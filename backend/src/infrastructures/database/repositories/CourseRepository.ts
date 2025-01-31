@@ -3,9 +3,10 @@ import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
 import Course from "../../../application/entities/Course";
 import CourseModel, { ICourses } from "../models/CourseModel";
 import { ICategory } from "../models/CategoryModel";
-import Lesson from "../../../application/entities/Lesson";
+// import Lesson from "../../../application/entities/Lesson";
 import { ILessons } from "../models/LessonModel";
 import { Category } from "../../../application/entities/Category";
+import mongoose from "mongoose";
 
 class CourseRepository implements ICourseRepository {
   //find a course by id
@@ -13,8 +14,9 @@ class CourseRepository implements ICourseRepository {
     try {
       const course = await CourseModel.findById(courseId)
         .populate("categoryId", "_id title isListed")
+        .populate("lessons", "_id title")
         .orFail();
-      console.log(course);
+      console.log("fetched course", course);
       return course ? courseMapping(course) : null;
     } catch (error) {
       throw new Error("Failed to fetch the courses");
@@ -27,7 +29,7 @@ class CourseRepository implements ICourseRepository {
         title: { $regex: new RegExp(`^${title}$`, "i") },
       });
 
-      console.log(course);
+      // console.log(course);
       return course ? courseMapping(course) : null;
     } catch (error) {
       throw new Error("Failed to fetch the courses");
@@ -84,16 +86,18 @@ class CourseRepository implements ICourseRepository {
   async createCourse(data: CreateCourseDTO): Promise<Course | null> {
     console.log(data);
     try {
+      const lessons = data.lessons.map((id) => new mongoose.Types.ObjectId(id));
       const newCourse = new CourseModel({
         title: data.title,
-        mentorId: data.mentorId,
-        categoryId: data.category.id,
         description: data.description || null,
+        mentorId: data.mentorId,
+        categoryId: data.category,
+        lessons,
         thumbnail: data.thumbnail,
       });
 
       const createdCourse = await newCourse.save();
-      console.log("Saved Course:", createdCourse);
+      // console.log("Saved Course:", createdCourse);
 
       return createdCourse ? courseMapping(createdCourse) : null;
     } catch (error) {
@@ -106,7 +110,7 @@ class CourseRepository implements ICourseRepository {
       const courses = await CourseModel.find({ mentorId })
         .populate("categoryId", "_id title isListed")
         .orFail();
-      console.log(courses);
+      // console.log(courses);
       if (!courses) return null;
       return courses.map((course) => courseMapping(course));
     } catch (error) {
@@ -144,6 +148,11 @@ class CourseRepository implements ICourseRepository {
 //   description?: string;
 // }
 
+interface Lesson {
+  id: string;
+  title: string;
+}
+
 export function courseMapping(course: ICourses): Course {
   const category: Category =
     course.categoryId && typeof course.categoryId === "object"
@@ -154,6 +163,12 @@ export function courseMapping(course: ICourses): Course {
         }
       : { id: "", title: "Unknown", isListed: false };
 
+  const lessons = course.lessons
+    ? course.lessons.map<Lesson>((lesson: any) => {
+        return { id: lesson._id.toString(), title: lesson.title };
+      })
+    : [];
+
   return {
     id: course._id.toString(),
     title: course.title,
@@ -161,7 +176,7 @@ export function courseMapping(course: ICourses): Course {
     category: category,
     description: course.description || null,
     thumbnail: course.thumbnail,
-    lessons: [],
+    lessons,
     duration: course.duration || null,
     status: course.status || null,
     rejectionReason: course.rejectionReason || null,

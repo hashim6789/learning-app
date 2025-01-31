@@ -8,6 +8,6 @@ export interface Course {
   title: string;
   category: Category;
   thumbnail: string;
-  lessons: Lesson[];
+  lessons: { id: string; title: string }[];
   description: string;
 }

@@ -21,7 +21,7 @@ import AdminMentorDetails from "../modules/admin/pages/AdminMentorDetails";
 import MentorLayout from "../modules/mentor/pages/MentorLayout";
 import MentorDashboard from "../modules/mentor/pages/MentorDashboard";
 import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
-import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManagement";
+import MentorCoursesManagement from "../modules/mentor/pages/course/MentorCoursesManagement";
 import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
 //learner module

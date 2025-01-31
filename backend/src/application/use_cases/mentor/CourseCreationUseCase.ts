@@ -30,37 +30,34 @@ class CourseCreationUseCase {
         };
       }
 
-      const title = data.title.trim().toLowerCase();
+      // const title = data.title.trim().toLowerCase();
 
-      const existingCourse = await this.courseRepository.findCourseByTitle(
-        title
-      );
-      if (existingCourse) {
+      // const existingCourse = await this.courseRepository.findCourseByTitle(
+      //   title
+      // );
+      // if (existingCourse) {
+      //   return {
+      //     statusCode: 400,
+      //     success: false,
+      //     message: "The course title already exists!",
+      //   };
+      // }
+
+      // Create course with uppercase title (if required)
+      const createdCourse = await this.courseRepository.createCourse(data);
+
+      if (!createdCourse) {
         return {
           statusCode: 400,
           success: false,
-          message: "The course title already exists!",
+          message: "The course creation failed!",
         };
-      }
-
-      // Create course with uppercase title (if required)
-      const createdCourse = await this.courseRepository.createCourse({
-        ...data,
-        title: data.title.toUpperCase(), // Keeping uppercase as per your logic
-      });
-
-      if (createdCourse) {
+      } else {
         return {
           statusCode: 201,
           success: true,
           message: "The course is created successfully.",
           data: createdCourse,
-        };
-      } else {
-        return {
-          statusCode: 400,
-          success: false,
-          message: "The course creation failed!",
         };
       }
     } catch (error) {

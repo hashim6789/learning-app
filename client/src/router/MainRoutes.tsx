@@ -23,11 +23,13 @@ import MentorLayout from "../modules/mentor/pages/MentorLayout";
 import MentorDashboard from "../modules/mentor/pages/MentorDashboard";
 // import MentorLoginPage from "../modules/mentor/pages/MentorLoginPage";
 import MentorLogin from "../modules/mentor/pages/MentorLogin";
-import MentorCoursesManagement from "../modules/mentor/pages/MentorCoursesManagement";
-import MentorCreateCoursePage from "../modules/mentor/pages/MentorCourseCreationPage";
+import MentorCoursesManagement from "../modules/mentor/pages/course/MentorCoursesManagement";
+import MentorCreateCoursePage from "../modules/mentor/pages/course/MentorCourseCreationPage";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
 import MentorChangePasswordPage from "../modules/mentor/pages/MentorChangePasswordPage";
-import MentorCourseDetailsPage from "../modules/mentor/pages/MentorCourseDetailsPage";
+// import MentorCourseDetailsPage from "../modules/mentor/pages/course/MentorCourseDetailsPage";
+// import CourseDetailsPage from "../modules/mentor/pages/lesson/CourseDetailsPage";
+import MentorCourseDetailsPage from "../modules/mentor/pages/course/CourseDetailsPage";
 import MentorMaterialManagement from "../modules/mentor/pages/MentorMaterialManagement";
 import MentorCreateMaterial from "../modules/mentor/pages/MentorCreateMaterial";
 import MentorMaterialDetailPage from "../modules/mentor/pages/MentorMaterialDeatailPage";
@@ -146,6 +148,7 @@ const MainRoutes: React.FC = () => {
                 {
                   path: "courses/:courseId/",
                   element: <MentorCourseDetailsPage />,
+                  // element: <CourseDetailsPage />,
                 },
                 { path: "my-materials", element: <MentorMaterialManagement /> },
                 {
