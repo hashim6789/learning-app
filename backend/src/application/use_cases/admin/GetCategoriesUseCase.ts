@@ -8,7 +8,7 @@ class GetCategoriesUseCase {
   }
 
   async execute(): Promise<ResponseModel> {
-    const categories = await this.categoryRepository.fetchAllListedCategories();
+    const categories = await this.categoryRepository.fetchAllCategories();
     if (!categories)
       return {
         statusCode: 404,

@@ -54,7 +54,7 @@ class UpdateCategoryUseCase {
         statusCode: 200,
         success: true,
         message: "The category is updated successfully!",
-        data: { category: updatedCategory },
+        data: updatedCategory,
       };
     } catch (error) {
       console.error("Error updating category:", error);

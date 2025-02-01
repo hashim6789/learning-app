@@ -13,7 +13,6 @@ import {
 import { Cropper, CropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 import { Course } from "../../../../shared/types/Course";
-import { CourseStatus } from "../../hooks/useCourseTableFunctionality";
 import { Category } from "../../../../shared/types/Category";
 import useCourseManagement from "../../../../hooks/useCourseManagement";
 interface CourseDetailsProps {

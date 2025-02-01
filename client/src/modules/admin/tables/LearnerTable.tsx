@@ -7,6 +7,8 @@ interface LearnerTableProps {
   learners: Learner[];
 }
 
+import userImage from "../../../assets/img/user_image.avif";
+
 const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
   const {
     isLoading,
@@ -72,8 +74,15 @@ const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
                   <div className="flex-shrink-0 h-10 w-10">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={learner.profilePicture || "/placeholder.svg"}
-                      alt=""
+                      src={learner.profilePicture || userImage}
+                      onError={(
+                        e: React.SyntheticEvent<HTMLImageElement, Event>
+                      ) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null; // Prevent infinite loop
+                        target.src = userImage;
+                      }}
+                      alt="Profile"
                     />
                   </div>
                   <div className="ml-4">

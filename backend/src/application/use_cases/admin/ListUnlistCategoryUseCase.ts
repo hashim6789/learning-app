@@ -26,8 +26,8 @@ class ListUnListCategoryUseCase {
         statusCode: 200,
         success: true,
         message: data.change
-          ? "The category is blocked successfully."
-          : "The category is unblocked successfully.",
+          ? "The category is unlisted successfully."
+          : "The category is listed successfully.",
         data: category,
       };
     } catch (err) {

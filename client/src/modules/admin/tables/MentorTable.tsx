@@ -6,6 +6,8 @@ import useMentor from "../hooks/useMentor";
 //imported sub-classes
 import { Mentor } from "../../../shared/types/Mentor";
 
+import userImage from "../../../assets/img/user_image.avif";
+
 interface MentorTableProps {
   mentors: Mentor[];
 }
@@ -75,8 +77,15 @@ const MentorsTable: React.FC<MentorTableProps> = ({ mentors }) => {
                   <div className="flex-shrink-0 h-10 w-10">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={mentor.profilePicture || "/placeholder.svg"}
-                      alt=""
+                      src={mentor.profilePicture || userImage}
+                      onError={(
+                        e: React.SyntheticEvent<HTMLImageElement, Event>
+                      ) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = userImage;
+                      }}
+                      alt="Profile"
                     />
                   </div>
                   <div className="ml-4">

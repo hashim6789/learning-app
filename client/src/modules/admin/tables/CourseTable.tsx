@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
-
-interface Course {
-  id: string;
-  status: "Approved" | "Rejected" | "Pending" | "Draft";
-  title: string;
-  category: string;
-  thumbnail: string;
-}
+import { Course } from "../../../shared/types/Course";
+import { CourseStatus } from "../../mentor/hooks/useCourseTableFunctionality";
 
 const defaultThumbnail = "https://via.placeholder.com/150";
 
@@ -16,9 +10,7 @@ interface CoursesTableProps {
 }
 
 const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
-  const [filterStatus, setFilterStatus] = useState<
-    "all" | "Approved" | "Rejected" | "Pending" | "Draft"
-  >("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | CourseStatus>("all");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [coursesPerPage] = useState(5); // Number of courses per page
@@ -118,11 +110,11 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-sm ${
-                        course.status === "Approved"
+                        course.status === "approved"
                           ? "bg-green-100 text-green-600"
-                          : course.status === "Rejected"
+                          : course.status === "rejected"
                           ? "bg-red-100 text-red-600"
-                          : course.status === "Pending"
+                          : course.status === "pending"
                           ? "bg-yellow-100 text-yellow-600"
                           : "bg-gray-100 text-gray-600"
                       }`}
@@ -137,7 +129,7 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-gray-600">
-                      {course.category}
+                      {course.category.title}
                     </span>
                   </td>
                   <td className="px-6 py-4">

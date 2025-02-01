@@ -1,9 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Book, Video } from "lucide-react";
-import api from "../../../shared/utils/api";
-import { config } from "../../../shared/configs/config";
-import { showToast } from "../../../shared/utils/toastUtils";
+import { ArrowLeft, Book, Video } from "lucide-react";
+import api from "../../../../shared/utils/api";
+import { config } from "../../../../shared/configs/config";
+import { showToast } from "../../../../shared/utils/toastUtils";
 
 type MaterialType = "reading" | "video";
 
@@ -46,6 +46,13 @@ const MentorCreateMaterial: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <button
+        onClick={() => window.history.back()}
+        className="flex items-center text-purple-600 hover:text-purple-700 mb-6"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back to Materials
+      </button>
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold text-purple-900 mb-2">
           Create New Material
@@ -97,12 +104,21 @@ const MentorCreateMaterial: React.FC = () => {
                 <input
                   {...register("title", {
                     required: "Title is required",
-                    validate: (value) =>
-                      value.trim().length > 5 ||
-                      "Title cannot be empty or just spaces",
+                    validate: {
+                      isValid: (value) =>
+                        /^[a-zA-Z0-9\s]+$/.test(value) ||
+                        "Title must be alphanumeric only",
+                      isNotEmpty: (value) =>
+                        value.trim().length > 5 ||
+                        "Title cannot be empty or just spaces",
+                    },
                     minLength: {
                       value: 5,
-                      message: "Title must be at least 3 characters",
+                      message: "Title must be at least 5 characters",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Title must be at most 50 characters",
                     },
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
@@ -128,6 +144,10 @@ const MentorCreateMaterial: React.FC = () => {
                       value: 10,
                       message: "Description must be at least 10 characters",
                     },
+                    maxLength: {
+                      value: 300,
+                      message: "Description must be at most 300 characters",
+                    },
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                   rows={3}
@@ -148,8 +168,8 @@ const MentorCreateMaterial: React.FC = () => {
                   {...register("duration", {
                     required: "Duration is required",
                     min: {
-                      value: 1,
-                      message: "Duration must be at least 1 minute",
+                      value: 2,
+                      message: "Duration must be at least 2 minute",
                     },
                     max: {
                       value: 50,
@@ -187,17 +207,6 @@ const MentorCreateMaterial: React.FC = () => {
                 </p>
               )}
             </div>
-
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Video URL
-              </label>
-              <input
-                {...register("url", { required: " URL is required" })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                placeholder="Enter URL"
-              />
-            </div> */}
           </div>
           <div className="flex justify-end space-x-4">
             <button

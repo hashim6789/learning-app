@@ -1,10 +1,12 @@
 import React from "react";
 
 //imported child components
-import MentorsTable from "../tables/MentorTable";
+import MentorsTable from "../../tables/MentorTable";
 
 //imported custom hooks
-import useFetch from "../../../hooks/useFetch";
+import useFetch from "../../../../hooks/useFetch";
+import { ChevronRight, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 //subclasses
 interface Mentor {
@@ -19,6 +21,8 @@ interface AdminMentorManagementProps {}
 
 const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
   const { data, loading, error } = useFetch<any[] | null>("/admin/mentors");
+
+  const navigate = useNavigate();
 
   const mentors: Mentor[] = Array.isArray(data)
     ? data.map((item) => ({
@@ -75,7 +79,34 @@ const AdminMentorManagement: React.FC<AdminMentorManagementProps> = () => {
     );
   }
 
-  return <MentorsTable mentors={mentors} />;
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumbs */}
+      <nav className="flex items-center space-x-2 text-sm text-gray-600">
+        <a
+          onClick={() => navigate("/admin/dashboard")}
+          className="hover:text-red-600 transition-colors"
+        >
+          Dashboard
+        </a>
+        <ChevronRight className="h-4 w-4" />
+        <span className="text-red-600 font-medium">Mentors</span>
+      </nav>
+
+      {/* Title Section */}
+      <div className="flex items-center space-x-3">
+        <div className="p-2 bg-red-100 rounded-lg">
+          <Users className="h-6 w-6 text-red-600" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900">Mentors Overview</h1>
+      </div>
+
+      {/* Content */}
+      <div>
+        <MentorsTable mentors={mentors} />
+      </div>
+    </div>
+  );
 };
 
 export default AdminMentorManagement;

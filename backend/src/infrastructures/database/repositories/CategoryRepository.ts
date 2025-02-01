@@ -66,9 +66,13 @@ class CategoryRepository implements ICategoryRepository {
     categoryId: string,
     isListed: boolean
   ): Promise<Category | null> {
-    const category = await CategoryModel.findByIdAndUpdate(categoryId, {
-      isListed,
-    });
+    const category = await CategoryModel.findByIdAndUpdate(
+      categoryId,
+      {
+        isListed,
+      },
+      { new: true }
+    );
     if (!category) return null;
     return mappedCategory(category);
   }

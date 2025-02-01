@@ -2,27 +2,27 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import useFetch from "../../../hooks/useFetch";
+import useFetch from "../../../../hooks/useFetch";
 import { useForm } from "react-hook-form";
 
 //import redux utilities
-import { AppDispatch, RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../../store";
 import {
   editMaterial,
   resetForm,
   setMaterial,
-} from "../../../store/slices/materialSlice";
-import { updateMaterial } from "../../../store/thunks/material/updateMaterial";
+} from "../../../../store/slices/materialSlice";
+import { updateMaterial } from "../../../../store/thunks/material/updateMaterial";
 
 //imported sub components
-import MaterialDetailsHeader from "../components/materials/DetailsHeader";
-import MaterialDetailsContent from "../components/materials/MaterialDetailsContent";
-import EditForm from "../components/materials/EditForm";
-import MaterialActions from "../components/materials/MaterialAction";
+import MaterialDetailsHeader from "../../components/materials/DetailsHeader";
+import MaterialDetailsContent from "../../components/materials/MaterialDetailsContent";
+import EditForm from "../../components/materials/EditForm";
+import MaterialActions from "../../components/materials/MaterialAction";
 
 //imported other utilities
-import { showToast } from "../../../shared/utils/toastUtils";
-import { IMaterial } from "../../../shared/types/Material";
+import { showToast } from "../../../../shared/utils/toastUtils";
+import { IMaterial } from "../../../../shared/types/Material";
 import { ArrowLeft } from "lucide-react";
 
 const MentorMaterialDetailPage: React.FC = () => {
@@ -95,15 +95,14 @@ const MentorMaterialDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <button
+        onClick={() => window.history.back()}
+        className="flex items-center text-purple-600 hover:text-purple-700 mb-6"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back to Materials
+      </button>
       <div className="max-w-4xl mx-auto">
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center text-purple-600 hover:text-purple-700 mb-6"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Materials
-        </button>
-
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <MaterialDetailsHeader material={material} />
           <div className="p-6">

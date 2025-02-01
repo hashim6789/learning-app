@@ -1,4 +1,13 @@
-import { Book, Clock, Edit, Hash, MoreVertical, Trash2 } from "lucide-react";
+import {
+  Book,
+  ChevronRight,
+  Clock,
+  Edit,
+  Hash,
+  MoreVertical,
+  Trash2,
+  Video,
+} from "lucide-react";
 import { useState } from "react";
 import { IMaterial, MaterialType } from "../../../../shared/types/Material";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +28,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({
 
   return (
     <div
+      key={material.id}
       // onClick={() => navigate(`/mentor/my-materials/${materialId}`)}
       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
     >
@@ -64,22 +74,20 @@ const MaterialCard: React.FC<MaterialCardProps> = ({
         </div>
 
         <p className="text-gray-600 mb-4">{material.description}</p>
-
-        <div className="border-t pt-4">
-          {material.type === "reading" && (
-            <div className="flex items-center text-gray-500">
-              <Hash className="w-4 h-4 mr-2" />
-              <span>{material.description.split(" ").length || 0} words</span>
-            </div>
-          )}
-
-          {material.type === "video" && (
-            <div className="flex items-center text-gray-500">
-              <Clock className="w-4 h-4 mr-2" />
-              <span>{material.duration} minutes</span>
-            </div>
-          )}
+        <div className="flex items-center text-gray-500">
+          <Clock className="w-4 h-4 mr-2" />
+          <span>{material.duration} minutes</span>
         </div>
+      </div>
+      <div className="px-6 py-4 bg-purple-50 rounded-b-lg">
+        <button
+          // onClick={() => setSelectedLesson(lesson.id)}
+          onClick={() => navigate(`/mentor/my-materials/${material.id}`)}
+          className="flex items-center text-purple-600 hover:text-purple-700 text-sm font-medium"
+        >
+          View Details
+          <ChevronRight className="w-4 h-4 ml-1" />
+        </button>
       </div>
     </div>
   );
@@ -92,7 +100,7 @@ const getTypeIcon = (type: MaterialType) => {
     case "reading":
       return <Book className="w-6 h-6 text-purple-600" />;
     case "video":
-      return <video className="w-6 h-6 text-purple-600" />;
+      return <Video className="w-6 h-6 text-purple-600" />;
     default:
       return null;
   }

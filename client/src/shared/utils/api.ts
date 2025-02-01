@@ -90,6 +90,17 @@ api.interceptors.response.use(
         console.log("object", user);
         window.location.href = `/${user}/login`;
       }
+    } else if (error.response?.status === 403) {
+      document.cookie =
+        "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie =
+        "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      console.log("error found: User Blocked");
+      const user =
+        JSON.parse(localStorage.getItem("user") || "null") ?? "learner";
+
+      console.log("object", user);
+      window.location.href = `/${user}/login`;
     }
 
     return Promise.reject(error);

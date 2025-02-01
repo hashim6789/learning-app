@@ -1,39 +1,38 @@
-//imported sub classes
-import { Learner } from "../../../shared/types/Learner";
-
-//imported child components
-import LearnersTable from "../tables/LearnerTable";
+import React from "react";
 
 //imported custom hooks
-import useFetch from "../../../hooks/useFetch";
+import useFetch from "../../../../hooks/useFetch";
 
-interface Props {}
+//imported child components
+import CoursesTable from "../../tables/CourseTable";
 
-const AdminLearnerManagement: React.FC<Props> = ({}) => {
-  const {
-    data,
-    loading: learnersLoading,
-    error: learnersError,
-  } = useFetch<any[] | null>("/admin/learners");
+import { Course } from "../../../../shared/types/Course";
 
-  const learners: Learner[] = Array.isArray(data)
+interface AdminCourseManagementProps {}
+
+const AdminCourseManagement: React.FC<AdminCourseManagementProps> = () => {
+  const { data, loading, error } = useFetch<any[] | null>("/admin/courses");
+
+  const courses: Course[] = Array.isArray(data)
     ? data.map((item) => ({
         id: item.id,
-        name: `${item.firstName} ${item.lastName || ""}`.trim(),
-        email: item.email,
-        status: item.isBlocked ? "blocked" : "unblocked",
-        profilePicture: item.profilePicture || "",
+        title: item.title,
+        category: item.category,
+        status: item.status,
+        lessons: item.lessons,
+        thumbnail: item.thumbnail || "",
+        description: item.description,
       }))
     : [];
 
   //loading handling
-  if (learnersLoading) {
+  if (loading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 mb-4 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
           <h2 className="text-xl font-semibold text-gray-700">
-            Loading learner details...
+            Loading courses details...
           </h2>
           <p className="text-gray-500 mt-2">
             Please wait while we fetch the information
@@ -44,12 +43,12 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
   }
 
   //error handling
-  if (learnersError) {
+  if (error) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-bold text-red-800">
-            error fetch learner details...
+            error fetch courses details...
           </h2>
           <p className="text-red-500 mt-2">Please try again (:</p>
         </div>
@@ -57,13 +56,13 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
     );
   }
 
-  //error handling (no learners found)
+  //error handling (no courses found)
   if (data && data.length === 0) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-bold text-red-800">
-            No Learners Available...
+            No Courses Available...
           </h2>
           <p className="text-red-500 mt-2">Unavailable data (:</p>
         </div>
@@ -71,11 +70,7 @@ const AdminLearnerManagement: React.FC<Props> = ({}) => {
     );
   }
 
-  return (
-    <div>
-      <LearnersTable learners={learners as Learner[]} />
-    </div>
-  );
+  return <CoursesTable courses={courses} />;
 };
 
-export default AdminLearnerManagement;
+export default AdminCourseManagement;

@@ -3,5 +3,5 @@ export interface Category {
   id: string;
   title: string;
   status: CategoryStatus;
-  isListed: Boolean;
+  isListed: boolean;
 }

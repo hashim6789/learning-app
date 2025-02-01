@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { CheckCircle2, PlayCircle, Plus } from "lucide-react";
-import { Lesson } from "../../../shared/types/Lesson";
+import { Lesson } from "../../../../shared/types/Lesson";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store";
-import { setLesson } from "../../../store/slices/lessonsSlice";
+import { AppDispatch, RootState } from "../../../../store";
+import { setLesson } from "../../../../store/slices/lessonsSlice";
 
 const CourseLessons: React.FC<{
   lessons: Omit<Lesson, "materials">[];

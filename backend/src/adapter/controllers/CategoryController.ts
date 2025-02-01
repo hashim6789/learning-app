@@ -58,6 +58,7 @@ class CategoryController {
     next: NextFunction
   ) {
     try {
+      console.log(req.body);
       const { title, isListed } = req.body;
       const response = await createCategoryUseCase.execute({
         title,

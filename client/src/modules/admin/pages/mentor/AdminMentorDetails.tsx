@@ -5,11 +5,11 @@ import { BookOpen, Clock, Users } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 //imported custom hooks
-import useFetch from "../../../hooks/useFetch";
+import useFetch from "../../../../hooks/useFetch";
 
 //imported child components
-interface IPopulatedCourse {
-  _id: string;
+interface ICourse {
+  id: string;
   title: string;
   description: string | null;
   thumbnail: string | null;
@@ -18,21 +18,21 @@ interface IPopulatedCourse {
   status: string | null;
 }
 
-interface LearnerDetailsProps {}
+interface MentorDetailsProps {}
 
-interface Learner {
+interface Mentor {
   firstName: string;
   lastName: string | null;
   email: string;
   profilePicture: string | null;
-  purchasedCourses: IPopulatedCourse[];
+  createdCourses: ICourse[];
   isBlocked: boolean | null;
 }
 
-const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
-  const { learnerId } = useParams();
-  const { data: learner, loading: learnerLoading } = useFetch<Learner>(
-    `/admin/learners/${learnerId}`
+const AdminMentorDetails = ({}: MentorDetailsProps) => {
+  const { mentorId } = useParams();
+  const { data: mentor, loading: mentorLoading } = useFetch<Mentor>(
+    `/admin/mentors/${mentorId}`
   );
 
   const getInitials = (firstName: string, lastName: string | null) => {
@@ -40,13 +40,13 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
   };
 
   //loading handling
-  if (learnerLoading) {
+  if (mentorLoading) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 mb-4 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
           <h2 className="text-xl font-semibold text-gray-700">
-            Loading learner details...
+            Loading mentor details...
           </h2>
           <p className="text-gray-500 mt-2">
             Please wait while we fetch the information
@@ -57,13 +57,12 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
   }
 
   //error handling
-  if (!learner) {
+  if (!mentor) {
     return (
       <div className="container mx-auto p-6 max-w-7xl h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          {/* <div className="animate-spin h-12 w-12 mb-4 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div> */}
           <h2 className="text-xl font-bold text-red-800">
-            error fetch learner details...
+            Error fetching mentor details...
           </h2>
           <p className="text-red-500 mt-2">Please try again (:</p>
         </div>
@@ -78,15 +77,15 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Avatar */}
           <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-            {learner.profilePicture ? (
+            {mentor.profilePicture ? (
               <img
-                src={learner.profilePicture}
-                alt={`${learner.firstName}'s profile`}
+                src={mentor.profilePicture}
+                alt={`${mentor.firstName}'s profile`}
                 className="w-full h-full object-cover"
               />
             ) : (
               <span className="text-2xl font-semibold text-gray-600">
-                {getInitials(learner.firstName, learner.lastName)}
+                {getInitials(mentor.firstName, mentor.lastName)}
               </span>
             )}
           </div>
@@ -95,44 +94,44 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
           <div className="flex-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
               <h1 className="text-2xl font-bold">
-                {learner.firstName} {learner.lastName}
+                {mentor.firstName} {mentor.lastName}
               </h1>
-              {learner.isBlocked && (
+              {mentor.isBlocked && (
                 <span className="px-2 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-md">
                   Blocked
                 </span>
               )}
             </div>
-            <p className="text-gray-500">{learner.email}</p>
+            <p className="text-gray-500">{mentor.email}</p>
           </div>
 
           {/* Stats */}
           <div className="flex items-center gap-4">
             <div className="text-center">
               <p className="text-2xl font-bold">
-                {learner.purchasedCourses.length}
+                {mentor.createdCourses.length}
               </p>
-              <p className="text-sm text-gray-500">Courses</p>
+              <p className="text-sm text-gray-500">Courses Created</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Purchased Courses */}
+      {/* Created Courses */}
       <div className="bg-white rounded-lg shadow-md">
         <div className="p-6 border-b">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <BookOpen className="h-5 w-5" />
-            Purchased Courses
+            Created Courses
           </h2>
         </div>
 
         <div className="p-6">
           <div className="h-[600px] overflow-y-auto pr-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {learner.purchasedCourses.map((course) => (
+              {mentor.createdCourses.map((course) => (
                 <div
-                  key={course._id}
+                  key={course.id}
                   className="bg-white rounded-lg shadow-md overflow-hidden"
                 >
                   {course.thumbnail && (
@@ -188,4 +187,4 @@ const AdminLearnerDetails = ({}: LearnerDetailsProps) => {
   );
 };
 
-export default AdminLearnerDetails;
+export default AdminMentorDetails;
