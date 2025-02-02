@@ -16,7 +16,6 @@ class CourseRepository implements ICourseRepository {
         .populate("categoryId", "_id title isListed")
         .populate("lessons", "_id title")
         .orFail();
-      console.log("fetched course", course);
       return course ? courseMapping(course) : null;
     } catch (error) {
       throw new Error("Failed to fetch the courses");
@@ -29,7 +28,6 @@ class CourseRepository implements ICourseRepository {
         title: { $regex: new RegExp(`^${title}$`, "i") },
       });
 
-      // console.log(course);
       return course ? courseMapping(course) : null;
     } catch (error) {
       throw new Error("Failed to fetch the courses");
@@ -41,7 +39,10 @@ class CourseRepository implements ICourseRepository {
     try {
       const courses = await CourseModel.find()
         .populate("categoryId", "_id title isListed")
-        .orFail();
+        .orFail()
+        .sort({
+          createdAt: -1,
+        });
       return courses ? courses.map((course) => courseMapping(course)) : null;
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
@@ -84,7 +85,6 @@ class CourseRepository implements ICourseRepository {
 
   //create the new course with minimal credentials
   async createCourse(data: CreateCourseDTO): Promise<Course | null> {
-    console.log(data);
     try {
       const lessons = data.lessons.map((id) => new mongoose.Types.ObjectId(id));
       const newCourse = new CourseModel({
@@ -97,7 +97,6 @@ class CourseRepository implements ICourseRepository {
       });
 
       const createdCourse = await newCourse.save();
-      // console.log("Saved Course:", createdCourse);
 
       return createdCourse ? courseMapping(createdCourse) : null;
     } catch (error) {
@@ -109,8 +108,10 @@ class CourseRepository implements ICourseRepository {
     try {
       const courses = await CourseModel.find({ mentorId })
         .populate("categoryId", "_id title isListed")
-        .orFail();
-      // console.log(courses);
+        .orFail()
+        .sort({
+          createdAt: -1,
+        });
       if (!courses) return null;
       return courses.map((course) => courseMapping(course));
     } catch (error) {

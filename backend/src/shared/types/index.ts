@@ -1,1 +1,2 @@
-export type MaterialType = "reading" | "assessment" | "video";
+export type MaterialType = "reading" | "video";
+// "assessment"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { GripVertical, X, Plus, Loader2 } from "lucide-react";
 import {
@@ -12,6 +12,36 @@ import { IMaterial } from "../../../../shared/types/Material";
 import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const lessonSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  materials: z
+    .array(
+      z.object({
+        id: z.string().nonempty("Material ID is required"),
+        title: z.string().nonempty("Material title is required"),
+      })
+    )
+    .refine(
+      (materials) => {
+        const ids = materials.map((material) => material.id);
+        const uniqueIds = new Set(ids);
+        console.log("Checking materials: ", ids, uniqueIds);
+
+        // Check for duplicate IDs or empty IDs
+        if (uniqueIds.size !== ids.length) {
+          showToast.error("Duplicate or empty material IDs are not allowed");
+          return false; // Trigger validation failure
+        }
+        return true; // No duplicates and no empty IDs
+      },
+      { message: "Duplicate or empty material IDs are not allowed" }
+    ),
+  duration: z.number().min(1, "Duration must be at least 1 minute"),
+});
 
 type FormValues = {
   title: string;
@@ -22,22 +52,45 @@ type FormValues = {
 
 const CreateLesson = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [materials, setMaterials] = useState<IMaterial[]>([]);
 
   // Fetch materials from the API
   const {
-    data: materials,
-    loading,
-    error,
+    data,
+    loading: materialsLoading,
+    error: materialsError,
   } = useFetch<IMaterial[]>("/mentor/materials");
+
+  useEffect(() => {
+    // Check if the data is fetched and no errors
+    if (data && !materialsLoading && !materialsError) {
+      // Map the fetched data to the required format
+      const mappedMaterials = data.map<IMaterial>((material: IMaterial) => ({
+        id: material.id,
+        title: material.title,
+        description: material.description,
+        fileKey: material.fileKey,
+        duration: material.duration,
+        type: material.type,
+      }));
+
+      // Store the mapped materials in state
+      setMaterials(mappedMaterials);
+    }
+  }, [data, materialsError, materialsLoading]); // The effect runs whenever data, loading, or error changes
+
+  console.log("materials", materials);
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-    setValue,
     reset,
+    setValue,
+    watch,
   } = useForm<FormValues>({
+    resolver: zodResolver(lessonSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -60,6 +113,12 @@ const CreateLesson = () => {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
+    const result = lessonSchema.safeParse(data);
+    if (!result.success) {
+      showToast.error("Validation failed:");
+      console.log("Validation failed:", result.error.errors); // Check errors here
+      return;
+    }
     try {
       console.log("Lesson Created:", data);
       const titleRemovedMaterials = data.materials.map(
@@ -84,6 +143,8 @@ const CreateLesson = () => {
     }
   };
 
+  const selectedMaterials: { title: string; id?: string }[] =
+    watch("materials") || [];
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
       <div className="p-6 border-b border-purple-100">
@@ -103,13 +164,7 @@ const CreateLesson = () => {
             <input
               id="title"
               type="text"
-              {...register("title", {
-                required: "Title is required",
-                minLength: {
-                  value: 3,
-                  message: "Title must be at least 3 characters",
-                },
-              })}
+              {...register("title")}
               className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="Enter lesson title"
             />
@@ -127,13 +182,7 @@ const CreateLesson = () => {
             </label>
             <textarea
               id="description"
-              {...register("description", {
-                required: "Description is required",
-                minLength: {
-                  value: 10,
-                  message: "Description must be at least 10 characters",
-                },
-              })}
+              {...register("description")}
               className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-[100px]"
               placeholder="Enter lesson description"
             />
@@ -150,84 +199,77 @@ const CreateLesson = () => {
             </label>
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="materials">
-                {(provided) => {
-                  return (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className="space-y-2"
-                    >
-                      {fields.map((field, index) => (
-                        <Draggable
-                          key={field.id}
-                          draggableId={field.id}
-                          index={index}
-                        >
-                          {(provided) => (
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-2"
+                  >
+                    {fields.map((field, index) => (
+                      <Draggable
+                        key={field.id}
+                        draggableId={field.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="flex items-center gap-2 bg-purple-50 p-2 rounded-md"
+                          >
                             <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              className="flex items-center gap-2 bg-purple-50 p-2 rounded-md group"
+                              {...provided.dragHandleProps}
+                              className="text-purple-400"
                             >
-                              <div
-                                {...provided.dragHandleProps}
-                                className="text-purple-400"
-                              >
-                                <GripVertical className="h-5 w-5" />
-                              </div>
-                              <select
-                                {...register(`materials.${index}.title`, {
-                                  required: "Material selection is required",
-                                  onChange: (e) => {
-                                    const selectedMaterial = materials
-                                      ? materials.find(
-                                          (material) =>
-                                            material.title === e.target.value
-                                        )
-                                      : { id: "", title: "" };
-                                    if (selectedMaterial) {
-                                      setValue(
-                                        `materials.${index}.id`,
-                                        selectedMaterial.id
-                                      );
-                                    }
-                                  },
-                                })}
-                                className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                              >
-                                <option value="">Select Material</option>
-                                {loading ? (
-                                  <option>Loading...</option>
-                                ) : error ? (
-                                  <option>Error loading materials</option>
-                                ) : materials ? (
-                                  materials.map((material) => (
-                                    <option
-                                      key={material.id}
-                                      value={material.title}
-                                    >
-                                      {material.title}
-                                    </option>
-                                  ))
-                                ) : (
-                                  <option>No materials left</option>
-                                )}
-                              </select>
-                              <button
-                                type="button"
-                                onClick={() => remove(index)}
-                                className="p-2 text-purple-400 hover:text-purple-600 hover:bg-purple-100 rounded-md transition-colors"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
+                              <GripVertical className="h-5 w-5" />
                             </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
+                            <select
+                              {...register(`materials.${index}.title`, {
+                                required: "Material selection is required",
+                                onChange: (e) => {
+                                  const selectedMaterial = materials?.find(
+                                    (m) => m.title === e.target.value
+                                  );
+                                  if (selectedMaterial) {
+                                    setValue(
+                                      `materials.${index}.id`,
+                                      selectedMaterial.id
+                                    );
+                                  }
+                                },
+                              })}
+                              className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            >
+                              <option value="">Select Material</option>
+                              {materialsLoading ? (
+                                <option>Loading...</option>
+                              ) : materialsError ? (
+                                <option>Error loading materials</option>
+                              ) : materials ? (
+                                materials.map((material) => (
+                                  <option
+                                    key={material.id}
+                                    value={material.title}
+                                  >
+                                    {material.title}
+                                  </option>
+                                ))
+                              ) : null}
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="p-2 text-purple-400 hover:text-purple-600 hover:bg-purple-100 rounded-md transition-colors"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
               </Droppable>
             </DragDropContext>
 
@@ -239,8 +281,15 @@ const CreateLesson = () => {
               <Plus className="h-4 w-4" />
               Add Material
             </button>
-            {errors.materials && (
-              <p className="text-red-500 text-sm">{errors.materials.message}</p>
+
+            {/* Show validation errors */}
+            {fields.map(
+              (_, index) =>
+                errors.materials?.[index]?.title && (
+                  <p key={index} className="text-red-500 text-sm">
+                    {errors.materials[index].title.message}
+                  </p>
+                )
             )}
           </div>
 
@@ -254,14 +303,7 @@ const CreateLesson = () => {
             <input
               id="duration"
               type="number"
-              {...register("duration", {
-                required: "Duration is required",
-                min: {
-                  value: 1,
-                  message: "Duration must be at least 1 minute",
-                },
-                valueAsNumber: true,
-              })}
+              {...register("duration")}
               className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             {errors.duration && (

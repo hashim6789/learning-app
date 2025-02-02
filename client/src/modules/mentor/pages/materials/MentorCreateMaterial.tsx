@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ArrowLeft, Book, Video } from "lucide-react";
 import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type MaterialType = "reading" | "video";
 
@@ -12,7 +14,7 @@ interface FormData {
   description: string;
   type: MaterialType;
   duration: number;
-  url: string;
+  fileKey: string;
 }
 
 const MentorCreateMaterial: React.FC = () => {
@@ -21,12 +23,67 @@ const MentorCreateMaterial: React.FC = () => {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: { type: "reading" },
   });
 
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [preview, setPreview] = useState<string | null>(null); // Store the preview URL
   const selectedType = watch("type");
+
+  const navigate = useNavigate();
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (
+      (selectedType === "reading" && file.type !== "application/pdf") ||
+      (selectedType === "video" && file.type !== "video/mp4")
+    ) {
+      alert("Invalid file type!");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // Request signed URL from backend
+      const response = await api.post(
+        `${config.API_BASE_URL}/mentor/upload/signed-url`,
+        {
+          fileName: file.name,
+          fileType: file.type,
+          materialType: selectedType,
+        }
+      );
+
+      const { signedUrl, fileKey } = response.data.data;
+
+      // Upload file to S3
+      const uploadResponse = await axios.put(signedUrl, file);
+      showToast.success(`The ${selectedType} uploaded successfully...`);
+
+      console.log("response =", uploadResponse);
+
+      // Store file key in form
+      setValue("fileKey", fileKey);
+
+      // Set preview URL (if it's a video or reading)
+      if (selectedType === "reading") {
+        setPreview(URL.createObjectURL(file)); // For reading, we can create a preview URL for the PDF
+      } else if (selectedType === "video") {
+        setPreview(URL.createObjectURL(file)); // For video, we can also create a preview URL
+      }
+    } catch (error) {
+      console.error("File upload failed", error);
+    }
+    setUploading(false);
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -37,6 +94,8 @@ const MentorCreateMaterial: React.FC = () => {
       if (response.data) {
         showToast.success("The material is created successfully.");
         reset();
+        setPreview(null); // Reset preview after successful submission
+        navigate("/mentor/my-materials");
       }
     } catch (error: any) {
       console.error(error);
@@ -85,6 +144,7 @@ const MentorCreateMaterial: React.FC = () => {
                         value={type}
                         {...register("type")}
                         className="sr-only"
+                        disabled={!!preview}
                       />
                       {type === "reading" && (
                         <Book className="w-5 h-5 mr-2 text-purple-600" />
@@ -186,27 +246,51 @@ const MentorCreateMaterial: React.FC = () => {
                 )}
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {selectedType === "reading" ? "Content" : "Video"} URL
-              </label>
-              <input
-                {...register("url", {
-                  required: "URL is required",
-                  pattern: {
-                    value: /^(https?:\/\/)?(www\.)?[\w-]+(\.[a-z]+)+(\/\S*)?$/,
-                    message: "Enter a valid URL",
-                  },
-                })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                placeholder="Enter URL"
-              />
-              {errors.url && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.url.message}
-                </p>
-              )}
-            </div>
+
+            {/* File upload field */}
+            {!preview && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {selectedType === "reading" ? "Upload PDF" : "Upload Video"}
+                </label>
+                <input
+                  type="file"
+                  accept={
+                    selectedType === "reading" ? "application/pdf" : "video/mp4"
+                  }
+                  onChange={handleFileUpload}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                />
+                {uploading && (
+                  <p className="text-sm text-gray-600">Uploading...</p>
+                )}
+              </div>
+            )}
+
+            {/* File preview */}
+            {preview && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Preview
+                </label>
+                {selectedType === "reading" && (
+                  <embed
+                    src={preview}
+                    type="application/pdf"
+                    width="100%"
+                    height="500px"
+                  />
+                )}
+                {selectedType === "video" && (
+                  <video controls width="100%" height="500px">
+                    <source src={preview} type="video/mp4" />
+                  </video>
+                )}
+              </div>
+            )}
+
+            {/* Hidden Input for File Key */}
+            <input type="hidden" {...register("fileKey")} />
           </div>
           <div className="flex justify-end space-x-4">
             <button

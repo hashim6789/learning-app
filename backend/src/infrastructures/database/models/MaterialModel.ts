@@ -9,7 +9,7 @@ export interface IMaterial extends Document {
   mentorId: ObjectId;
   type: MaterialType;
   duration: number;
-  url: string;
+  fileKey: string;
 }
 
 // Base schema
@@ -24,7 +24,7 @@ const materialSchema = new Schema<IMaterial>(
       enum: ["reading", "assessment", "video"],
     },
     duration: { type: Number, required: true },
-    url: { type: String, required: true },
+    fileKey: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -15,7 +15,9 @@ class MaterialRepository implements IMaterialRepository {
 
   async fetchAllMaterialsByType(type: string): Promise<Material[] | null> {
     try {
-      const materials = await MaterialModel.find({ type });
+      const materials = await MaterialModel.find({ type }).sort({
+        createdAt: -1,
+      });
       return materials ? materials.map(mapMaterial) : null;
     } catch (error) {
       throw new Error("Failed to fetch materials by type");
@@ -23,7 +25,9 @@ class MaterialRepository implements IMaterialRepository {
   }
   async fetchMaterialsByMentorId(mentorId: string): Promise<Material[] | null> {
     try {
-      const materials = await MaterialModel.find({ mentorId });
+      const materials = await MaterialModel.find({ mentorId }).sort({
+        createdAt: -1,
+      });
       if (!materials) return null;
       return materials ? materials.map(mapMaterial) : null;
     } catch (error) {
@@ -39,12 +43,11 @@ class MaterialRepository implements IMaterialRepository {
       const newMaterial = await MaterialModel.create({
         title: data.title,
         description: data.description,
-        url: data.url,
+        fileKey: data.fileKey,
         duration: data.duration,
         mentorId,
         type: data.type,
       });
-      console.log(data.type);
 
       return newMaterial ? mapMaterial(newMaterial) : null;
     } catch (error: any) {
@@ -86,7 +89,7 @@ function mapMaterial(data: IMaterial): Material {
     data.title,
     data.description,
     data.type,
-    data.url,
+    data.fileKey,
     data.duration
   );
 }

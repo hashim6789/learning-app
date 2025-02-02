@@ -4,7 +4,7 @@ export default class Material {
     public title: string,
     public description: string,
     public type: string,
-    public url: string | null,
+    public fileKey: string | null,
     public duration: number
   ) {}
 }

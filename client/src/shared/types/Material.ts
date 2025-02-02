@@ -7,5 +7,5 @@ export interface IMaterial {
   description: string;
   type: MaterialType;
   duration: number;
-  url: string;
+  fileKey: string;
 }

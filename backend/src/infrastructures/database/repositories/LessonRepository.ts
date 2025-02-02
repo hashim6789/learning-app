@@ -11,7 +11,6 @@ class LessonRepository implements ILessonRepository {
         "materials",
         "title _id"
       );
-      console.log(lesson);
       return lesson ? mappedLesson(lesson) : null;
     } catch (error) {
       throw new Error("Failed to fetch the lesson");
@@ -19,7 +18,9 @@ class LessonRepository implements ILessonRepository {
   }
   async fetchAllLessonsByMentorId(mentorId: string): Promise<Lesson[] | null> {
     try {
-      const lessons = await LessonModel.find({ mentorId });
+      const lessons = await LessonModel.find({ mentorId }).sort({
+        createdAt: -1,
+      });
       return lessons ? lessons.map(mappedLesson) : null;
     } catch (error) {
       throw new Error("Failed to fetch the lessons");

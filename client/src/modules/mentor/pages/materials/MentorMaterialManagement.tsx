@@ -16,7 +16,7 @@ const paths: Path[] = [{ title: "my materials", link: "" }];
 const MentorMaterialManagement: React.FC = () => {
   const navigate = useNavigate();
   const { data, loading, error } = useFetch<any[]>("/mentor/materials");
-  const [mateials, setMaterials] = useState<IMaterial[]>([]);
+  const [materials, setMaterials] = useState<IMaterial[]>([]);
 
   const fetchedMaterials: IMaterial[] = Array.isArray(data)
     ? data.map((item: IMaterial) => ({
@@ -25,7 +25,7 @@ const MentorMaterialManagement: React.FC = () => {
         description: item.description,
         type: item.type,
         duration: item.duration,
-        url: item.url,
+        fileKey: item.fileKey,
       }))
     : [];
 
@@ -37,14 +37,14 @@ const MentorMaterialManagement: React.FC = () => {
         description: item.description,
         type: item.type,
         duration: item.duration,
-        url: item.url,
+        fileKey: item.fileKey,
       }));
       setMaterials(fetchedMaterials);
     }
   }, [data]);
 
   const {
-    paginatedData: paginatedLessons,
+    paginatedData: paginatedMaterials,
     searchQuery,
     filterStatus,
     handleSearchChange,
@@ -52,7 +52,7 @@ const MentorMaterialManagement: React.FC = () => {
     handlePageChange,
     handleFilterChange,
     totalPages,
-  } = useTableFunctionalityOfMaterial(fetchedMaterials, 9);
+  } = useTableFunctionalityOfMaterial(materials, 9);
 
   const handleDelete = async (lessonId: string) => {
     const result = await Swal.fire({
@@ -67,7 +67,7 @@ const MentorMaterialManagement: React.FC = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`${config.API_BASE_URL}/mentor/materials  /${lessonId}`);
+        await api.delete(`${config.API_BASE_URL}/mentor/materials/${lessonId}`);
         showToast.success("The lesson was deleted successfully!");
 
         // Remove the deleted lesson from the state
@@ -76,7 +76,7 @@ const MentorMaterialManagement: React.FC = () => {
         );
 
         // Adjust the current page if necessary
-        if (paginatedLessons.length === 1 && currentPage > 1) {
+        if (paginatedMaterials.length === 1 && currentPage > 1) {
           handlePageChange(currentPage - 1);
         }
       } catch (error: any) {
@@ -173,9 +173,9 @@ const MentorMaterialManagement: React.FC = () => {
         </div>
 
         {/* Material List */}
-        {paginatedLessons.length > 0 ? (
+        {paginatedMaterials.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {paginatedLessons.map((material) => (
+            {paginatedMaterials.map((material) => (
               <MaterialCard
                 key={material.id}
                 material={material}
