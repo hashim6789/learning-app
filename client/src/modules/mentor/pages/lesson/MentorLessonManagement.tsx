@@ -39,7 +39,7 @@ const MentorLessonManagement: React.FC = () => {
     currentPage,
     handlePageChange,
     totalPages,
-  } = useTableFunctionalityOfLesson(lessons, 6);
+  } = useTableFunctionalityOfLesson(lessons, 9);
 
   const handleDelete = async (lessonId: string) => {
     const result = await Swal.fire({

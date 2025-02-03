@@ -23,6 +23,8 @@ import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import { useParams } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 interface Lesson {
   id: string;
@@ -31,6 +33,36 @@ interface Lesson {
   materials: { id: string; title: string }[];
   duration: number;
 }
+
+const lessonSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  materials: z
+    .array(
+      z.object({
+        id: z.string().nonempty("Material ID is required"),
+        title: z.string().nonempty("Material title is required"),
+      })
+    )
+    .refine(
+      (materials) => {
+        const ids = materials.map((material) => material.id);
+        const uniqueIds = new Set(ids);
+        console.log("Checking materials: ", ids, uniqueIds);
+
+        // Check for duplicate IDs or empty IDs
+        if (uniqueIds.size !== ids.length) {
+          showToast.error("Duplicate or empty material IDs are not allowed");
+          return false; // Trigger validation failure
+        }
+        return true; // No duplicates and no empty IDs
+      },
+      { message: "Duplicate or empty material IDs are not allowed" }
+    ),
+  duration: z
+    .number({ invalid_type_error: "Duration must be a number" })
+    .min(15, "Duration must be at least 15 minute"),
+});
 
 const MentorLessonDetailsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -60,11 +92,12 @@ const MentorLessonDetailsPage = () => {
     setValue,
     reset,
   } = useForm<Lesson>({
+    resolver: zodResolver(lessonSchema),
     defaultValues: lesson || {
       title: "",
       description: "",
       materials: [],
-      duration: 30,
+      duration: 20,
     },
   });
 
@@ -166,13 +199,7 @@ const MentorLessonDetailsPage = () => {
                   Lesson Title
                 </label>
                 <input
-                  {...register("title", {
-                    required: "Title is required",
-                    minLength: {
-                      value: 3,
-                      message: "Title must be at least 3 characters",
-                    },
-                  })}
+                  {...register("title")}
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 {errors.title && (
@@ -185,13 +212,7 @@ const MentorLessonDetailsPage = () => {
                   Description
                 </label>
                 <textarea
-                  {...register("description", {
-                    required: "Description is required",
-                    minLength: {
-                      value: 10,
-                      message: "Description must be at least 10 characters",
-                    },
-                  })}
+                  {...register("description")}
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-[100px]"
                 />
                 {errors.description && (
@@ -292,19 +313,20 @@ const MentorLessonDetailsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-purple-700">
+                <label
+                  htmlFor="duration"
+                  className="block text-sm font-medium text-purple-700"
+                >
                   Duration (minutes)
                 </label>
                 <input
+                  id="duration"
                   type="number"
-                  {...register("duration", {
-                    required: "Duration is required",
-                    min: {
-                      value: 1,
-                      message: "Duration must be at least 1 minute",
-                    },
-                    valueAsNumber: true,
-                  })}
+                  defaultValue={lesson.duration}
+                  {...(register("duration"), { valueAsNumber: true })}
+                  onChange={(e) =>
+                    setValue("duration", Number(e.target.value) || 0)
+                  }
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 {errors.duration && (

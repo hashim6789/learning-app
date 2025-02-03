@@ -23,6 +23,8 @@ import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import { useParams } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 interface Course {
   id: string;
@@ -31,6 +33,46 @@ interface Course {
   lessons: { id: string; title: string }[];
   duration: number;
 }
+
+const courseSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  thumbnail: z.string().url("The thumbnail must be a valid URL"),
+  category: z
+    .object({
+      id: z.string().min(1, "Category ID is required"),
+      title: z.string().min(1, "Category title is required"),
+    })
+    .nullable() // Allows category to be null initially
+    .refine((data) => data !== null, {
+      message: "Please select a valid category",
+    }),
+
+  lessons: z
+    .array(
+      z.object({
+        id: z.string().nonempty("Lesson ID is required"),
+        title: z.string().nonempty("Lesson title is required"),
+      })
+    )
+    .refine(
+      (materials) => {
+        const ids = materials.map((material) => material.id);
+        const uniqueIds = new Set(ids);
+        console.log("Checking Lesson: ", ids, uniqueIds);
+
+        if (uniqueIds.size !== ids.length) {
+          showToast.error("Duplicate or empty lesson IDs are not allowed");
+          return false;
+        }
+        return true;
+      },
+      { message: "Duplicate or empty lesson IDs are not allowed" }
+    ),
+  duration: z
+    .number({ invalid_type_error: "Duration must be a number" })
+    .min(15, "Duration must be at least 15 minute"),
+});
 
 const MentorCourseDetailsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -60,10 +102,13 @@ const MentorCourseDetailsPage = () => {
     setValue,
     reset,
   } = useForm<Course>({
+    resolver: zodResolver(courseSchema),
     defaultValues: course || {
       title: "",
       description: "",
-      lessons: [],
+      lessons: lessons
+        ? lessons.map((lesson) => ({ id: "", title: lesson.title }))
+        : [],
       duration: 30,
     },
   });
@@ -164,13 +209,7 @@ const MentorCourseDetailsPage = () => {
                   Course Title
                 </label>
                 <input
-                  {...register("title", {
-                    required: "Title is required",
-                    minLength: {
-                      value: 3,
-                      message: "Title must be at least 3 characters",
-                    },
-                  })}
+                  {...register("title")}
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 {errors.title && (
@@ -183,13 +222,7 @@ const MentorCourseDetailsPage = () => {
                   Description
                 </label>
                 <textarea
-                  {...register("description", {
-                    required: "Description is required",
-                    minLength: {
-                      value: 10,
-                      message: "Description must be at least 10 characters",
-                    },
-                  })}
+                  {...register("description")}
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-[100px]"
                 />
                 {errors.description && (
@@ -231,7 +264,6 @@ const MentorCourseDetailsPage = () => {
                                 </div>
                                 <select
                                   {...register(`lessons.${index}.title`, {
-                                    required: "Lesson selection is required",
                                     onChange: (e) => {
                                       const selectedLesson = lessons?.find(
                                         (m) => m.title === e.target.value
@@ -287,6 +319,14 @@ const MentorCourseDetailsPage = () => {
                   <Plus className="h-4 w-4" />
                   Add Lesson
                 </button>
+                {fields.map(
+                  (_, index) =>
+                    errors.lessons?.[index]?.title && (
+                      <p key={index} className="text-red-500 text-sm">
+                        {errors.lessons[index].title.message}
+                      </p>
+                    )
+                )}
               </div>
 
               <div className="space-y-2">
@@ -294,15 +334,13 @@ const MentorCourseDetailsPage = () => {
                   Duration (minutes)
                 </label>
                 <input
+                  id="duration"
                   type="number"
-                  {...register("duration", {
-                    required: "Duration is required",
-                    min: {
-                      value: 1,
-                      message: "Duration must be at least 1 minute",
-                    },
-                    valueAsNumber: true,
-                  })}
+                  defaultValue={course.duration}
+                  {...(register("duration"), { valueAsNumber: true })}
+                  onChange={(e) =>
+                    setValue("duration", Number(e.target.value) || 0)
+                  }
                   className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 {errors.duration && (

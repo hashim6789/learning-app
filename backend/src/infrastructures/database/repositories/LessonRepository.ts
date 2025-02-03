@@ -86,7 +86,14 @@ function mappedLesson(data: ILessons): Lesson {
       })
     : [];
 
-  return new Lesson(id, data.title, mentorId, data.description, materials, 0);
+  return new Lesson(
+    id,
+    data.title,
+    mentorId,
+    data.description,
+    materials,
+    data.duration
+  );
 }
 
 export default LessonRepository;

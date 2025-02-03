@@ -65,7 +65,7 @@ const useChangePassword = () => {
         "The password changed successfully",
         response.data?.message
       );
-      navigate("/learner/login");
+      navigate("/login");
     } catch (error) {
       showToast.error(error as string);
     } finally {

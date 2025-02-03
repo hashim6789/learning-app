@@ -13,8 +13,8 @@ interface MentorSidebarProps {
 
 const MentorSidebar: React.FC<MentorSidebarProps> = ({ items }) => {
   return (
-    <aside className="w-64 bg-white h-full border-r border-purple-100 shadow-sm">
-      <div className="py-6 h-full">
+    <aside className="w-80 bg-white h-100 border-r">
+      <div className="py-4 h-100">
         {items.map((item, index) => (
           <NavLink
             key={index}

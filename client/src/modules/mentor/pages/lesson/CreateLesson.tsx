@@ -14,6 +14,7 @@ import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
 
 const lessonSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -40,7 +41,9 @@ const lessonSchema = z.object({
       },
       { message: "Duplicate or empty material IDs are not allowed" }
     ),
-  duration: z.number().min(1, "Duration must be at least 1 minute"),
+  duration: z
+    .number({ invalid_type_error: "Duration must be a number" })
+    .min(15, "Duration must be at least 15 minute"),
 });
 
 type FormValues = {
@@ -53,6 +56,8 @@ type FormValues = {
 const CreateLesson = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [materials, setMaterials] = useState<IMaterial[]>([]);
+
+  const navigate = useNavigate();
 
   // Fetch materials from the API
   const {
@@ -97,7 +102,7 @@ const CreateLesson = () => {
       materials: materials
         ? materials.map((material) => ({ id: "", title: material.title }))
         : [],
-      duration: 30,
+      duration: 20,
     },
   });
 
@@ -132,6 +137,7 @@ const CreateLesson = () => {
       if (response && response.status === 201 && response.data) {
         showToast.success(response.data.message);
         reset();
+        navigate("/mentor/my-lessons");
       } else {
         showToast.error(response.data.message);
       }
@@ -143,8 +149,7 @@ const CreateLesson = () => {
     }
   };
 
-  const selectedMaterials: { title: string; id?: string }[] =
-    watch("materials") || [];
+  watch("materials") || [];
   return (
     <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
       <div className="p-6 border-b border-purple-100">
@@ -303,7 +308,11 @@ const CreateLesson = () => {
             <input
               id="duration"
               type="number"
-              {...register("duration")}
+              defaultValue={20}
+              {...(register("duration"), { valueAsNumber: true })}
+              onChange={(e) =>
+                setValue("duration", Number(e.target.value) || 0)
+              }
               className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             {errors.duration && (

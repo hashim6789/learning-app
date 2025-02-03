@@ -6,23 +6,20 @@ import Footer from "../components/MentorFooter";
 
 const MentorLayout: React.FC = () => {
   const sidebarItems = [
-    { icon: <span>📊</span>, label: "Dashboard", href: "/mentor/dashboard" },
-    { icon: <span>👥</span>, label: "My Courses", href: "/mentor/my-courses" },
-    { icon: <span>👥</span>, label: "My lessons", href: "/mentor/my-lessons" },
-    {
-      icon: <span>👥</span>,
-      label: "My Materials",
-      href: "/mentor/my-materials",
-    },
-    {
-      icon: <span>👨‍🏫</span>,
-      label: "My Learners",
-      href: "/mentor/my-learners",
-    },
-    { icon: <span>📚</span>, label: "Earnings", href: "/mentor/earnings" },
-    { icon: <span>🏷️</span>, label: "Profile", href: "/mentor/profile" },
-    { icon: <span>💰</span>, label: "Requests", href: "/mentor/requests" },
-    { icon: <span>📋</span>, label: "Meetings", href: "/mentor/meetings" },
+    { icon: "📊", label: "Dashboard", href: "/mentor/dashboard" },
+    { icon: "👥", label: "My Courses", href: "/mentor/my-courses" },
+    { icon: "📚", label: "My Lessons", href: "/mentor/my-lessons" },
+    { icon: "📝", label: "My Materials", href: "/mentor/my-materials" },
+
+    // {
+    //   icon: <span>👨‍🏫</span>,
+    //   label: "My Learners",
+    //   href: "/mentor/my-learners",
+    // },
+    // { icon: <span>📚</span>, label: "Earnings", href: "/mentor/earnings" },
+    // { icon: <span>🏷️</span>, label: "Profile", href: "/mentor/profile" },
+    // { icon: <span>💰</span>, label: "Requests", href: "/mentor/requests" },
+    // { icon: <span>📋</span>, label: "Meetings", href: "/mentor/meetings" },
   ];
 
   return (

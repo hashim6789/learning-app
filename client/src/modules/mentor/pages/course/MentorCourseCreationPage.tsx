@@ -19,6 +19,9 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate } from "react-router-dom";
 
 interface ImageState {
   src: string;
@@ -33,6 +36,46 @@ interface FormInputs {
   lessons: { id: string; title: string }[];
 }
 
+const courseSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  thumbnail: z.string().url("The thumbnail must be a valid URL"),
+  category: z
+    .object({
+      id: z.string().min(1, "Category ID is required"),
+      title: z.string().min(1, "Category title is required"),
+    })
+    .nullable() // Allows category to be null initially
+    .refine((data) => data !== null, {
+      message: "Please select a valid category",
+    }),
+
+  lessons: z
+    .array(
+      z.object({
+        id: z.string().nonempty("Lesson ID is required"),
+        title: z.string().nonempty("Lesson title is required"),
+      })
+    )
+    .refine(
+      (materials) => {
+        const ids = materials.map((material) => material.id);
+        const uniqueIds = new Set(ids);
+        console.log("Checking Lesson: ", ids, uniqueIds);
+
+        if (uniqueIds.size !== ids.length) {
+          showToast.error("Duplicate or empty lesson IDs are not allowed");
+          return false;
+        }
+        return true;
+      },
+      { message: "Duplicate or empty lesson IDs are not allowed" }
+    ),
+  // duration: z
+  //   .number({ invalid_type_error: "Duration must be a number" })
+  //   .min(15, "Duration must be at least 15 minute"),
+});
+
 const MentorCreateCoursePage = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [image, setImage] = React.useState<ImageState | null>(null);
@@ -40,6 +83,8 @@ const MentorCreateCoursePage = () => {
   const [isSelectOpen, setIsSelectOpen] = React.useState(false);
   const cropperRef = useRef<CropperRef>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const navigate = useNavigate();
 
   const { addCourse, loading, error, categories, fetchCategories } =
     useCourseManagement();
@@ -58,6 +103,8 @@ const MentorCreateCoursePage = () => {
     reset,
     formState: { errors },
   } = useForm<FormInputs>({
+    resolver: zodResolver(courseSchema),
+
     defaultValues: {
       title: "",
       description: "",
@@ -128,9 +175,18 @@ const MentorCreateCoursePage = () => {
   };
 
   const onSubmit = async (data: FormInputs) => {
+    console.log(
+      "datas",
+      data.title,
+      data.category,
+      data.description,
+      data.thumbnail,
+      data.lessons
+    );
     if (
       !data.title ||
-      !data.category ||
+      !data.category?.id || // Ensures category is not null and has an id
+      !data.category?.title || // Ensures category has a valid title
       !data.description ||
       !data.thumbnail ||
       !data.lessons
@@ -143,6 +199,7 @@ const MentorCreateCoursePage = () => {
       const result = await addCourse(data as Partial<Course>);
       if (result) {
         reset();
+        navigate("/mentor/my-courses");
       }
     } catch (err) {
       console.error("Error creating course:", err);
@@ -298,6 +355,9 @@ const MentorCreateCoursePage = () => {
               />
             </label>
           </div>
+          {errors.thumbnail && (
+            <p className="text-red-500 text-sm">{errors.thumbnail.message}</p>
+          )}
         </div>
 
         {/* Course Title */}
@@ -309,7 +369,7 @@ const MentorCreateCoursePage = () => {
             Course Title
           </label>
           <input
-            {...register("title", { required: "Course title is required" })}
+            {...register("title")}
             id="title"
             className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder="Course Name"
@@ -328,9 +388,7 @@ const MentorCreateCoursePage = () => {
             Description
           </label>
           <input
-            {...register("description", {
-              required: "Course description is required",
-            })}
+            {...register("description")}
             id="description"
             className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder="Course Description"
@@ -355,15 +413,12 @@ const MentorCreateCoursePage = () => {
             >
               <span
                 className={
-                  (watch("category") || {}).id
-                    ? "text-black"
-                    : "text-purple-400"
+                  watch("category")?.id ? "text-black" : "text-purple-400"
                 }
               >
-                {(watch("category") || {}).id
-                  ? categories.find(
-                      (cat) => cat.id === (watch("category") || {}).id
-                    )?.title
+                {watch("category")?.id
+                  ? categories.find((cat) => cat.id === watch("category")?.id)
+                      ?.title
                   : "Select Course Category"}
               </span>
               <ChevronDown
@@ -483,8 +538,13 @@ const MentorCreateCoursePage = () => {
             <Plus className="h-4 w-4" />
             Add Lesson
           </button>
-          {errors.lessons && (
-            <p className="text-red-500 text-sm">{errors.lessons.message}</p>
+          {fields.map(
+            (_, index) =>
+              errors.lessons?.[index]?.title && (
+                <p key={index} className="text-red-500 text-sm">
+                  {errors.lessons[index].title.message}
+                </p>
+              )
           )}
         </div>
 
