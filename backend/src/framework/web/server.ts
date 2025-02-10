@@ -15,6 +15,7 @@ import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
 import learnerRouter from "../../adapter/routers/learner";
 import adminRouter from "../../adapter/routers/admin";
 import mentorRouter from "../../adapter/routers/mentor";
+import apiRouter from "../../adapter/routers/api";
 
 // Custom middlewares
 import errorHandler from "../../adapter/middleware/errorHandler";
@@ -50,6 +51,7 @@ app.use("/learner", learnerRouter);
 app.use("/admin", adminRouter);
 app.use("/mentor", mentorRouter);
 app.use("/refresh", refreshTokenRouter);
+app.use("/api", apiRouter);
 
 // Error handling middleware (after routes to catch any errors)
 app.use(errorHandler);

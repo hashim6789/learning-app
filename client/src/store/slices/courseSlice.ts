@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Course } from "../../shared/types/Course";
 import { updateCourse } from "../thunks/course/updateCourse";
+import { CourseStatus } from "../../shared/types/CourseStatus";
 interface CourseState {
   course: Course | null;
   prevCourse: Course | null;
@@ -29,6 +30,13 @@ const courseSlice = createSlice({
         state.course = { ...state.course, ...action.payload };
       }
     },
+
+    updateCourseStatus(state, action: PayloadAction<CourseStatus>) {
+      if (state.course && state.prevCourse) {
+        state.course.status = action.payload;
+        state.prevCourse.status = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -54,5 +62,6 @@ const courseSlice = createSlice({
   },
 });
 
-export const { setCourse, editCourse } = courseSlice.actions;
+export const { setCourse, editCourse, updateCourseStatus } =
+  courseSlice.actions;
 export default courseSlice.reducer;

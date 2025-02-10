@@ -1,3 +1,11 @@
+//imported dtos for check the body credentials
+//imported the entities
+//imported the repositories
+//imported the use cases
+//created the instances
+//mentor controller
+//mentor signup
+
 import { Request, Response, NextFunction } from "express";
 import MaterialRepository from "../../infrastructures/database/repositories/MaterialRepository";
 import CreateMaterialUseCase from "../../application/use_cases/material/CreateMaterialUseCase";

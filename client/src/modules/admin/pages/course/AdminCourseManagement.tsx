@@ -22,6 +22,7 @@ const AdminCourseManagement: React.FC<AdminCourseManagementProps> = () => {
         lessons: item.lessons,
         thumbnail: item.thumbnail || "",
         description: item.description,
+        duration: item.duration,
       }))
     : [];
 

@@ -1,6 +1,5 @@
 import { Category } from "./Category";
 import { CourseStatus } from "./CourseStatus";
-import { Lesson } from "./Lesson";
 
 export interface Course {
   id: string;
@@ -10,4 +9,5 @@ export interface Course {
   thumbnail: string;
   lessons: { id: string; title: string }[];
   description: string;
+  duration: number;
 }

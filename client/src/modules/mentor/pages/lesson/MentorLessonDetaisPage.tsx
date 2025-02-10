@@ -22,7 +22,7 @@ import { IMaterial } from "../../../../shared/types/Material";
 import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -69,6 +69,8 @@ const MentorLessonDetailsPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { lessonId } = useParams();
+
+  const navigate = useNavigate();
 
   // Fetch lesson data
   const {
@@ -131,6 +133,7 @@ const MentorLessonDetailsPage = () => {
       if (response && response.status === 200 && response.data) {
         showToast.success("Lesson updated successfully");
         setIsEditing(false);
+        navigate("/mentor/my-lessons");
       } else {
         showToast.error(response.data.message);
       }
@@ -388,6 +391,9 @@ const MentorLessonDetailsPage = () => {
                   <div className="grid gap-3">
                     {lesson.materials.map((material, index) => (
                       <div
+                        onClick={() =>
+                          navigate(`/mentor/my-materials/${material.id}`)
+                        }
                         key={material.id}
                         className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
                       >

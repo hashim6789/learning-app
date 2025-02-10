@@ -160,7 +160,7 @@ export function useCategoryTable({
         };
 
         // Update the category data state
-        const updatedData = [...categoryData, updatedItem];
+        const updatedData = [updatedItem, ...categoryData];
 
         setCategoryData(updatedData); // Update the local state with the new category data
         setIsCreating(false); // Close the editing state

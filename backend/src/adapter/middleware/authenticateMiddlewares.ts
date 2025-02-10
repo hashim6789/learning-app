@@ -15,7 +15,6 @@ const authenticateToken = (
   }
 
   const decoded = verifyAccessToken(token);
-  // console.log(decoded);
   if (!decoded) {
     res
       .status(401)

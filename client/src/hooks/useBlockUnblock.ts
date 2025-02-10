@@ -16,7 +16,7 @@ interface UseBlockUnblockResponse {
     id: string,
     entityType: EntityType,
     currentStatus: Status
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 const host = "http://localhost:3000";
@@ -56,10 +56,12 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
 
         if (response.status === 200) {
           showToast.success(`Successfully ${action}ed the ${entityType}.`);
+          return true;
         }
       } else {
         showToast.info("Action cancelled.");
       }
+      return false;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const errorMessage = err.response?.data?.message || "An error occurred";
@@ -69,6 +71,7 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
         setError("An unexpected error occurred");
         showToast.error("An unexpected error occurred");
       }
+      return false;
     } finally {
       setIsLoading(false);
     }

@@ -74,8 +74,6 @@ class GoogleSignupMentorUseCase {
       };
     }
 
-    console.log("New User Created:", mentor);
-
     // Generate tokens
     const accessToken = generateAccessToken({
       userId: mentor.id,

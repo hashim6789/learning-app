@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import api from "../shared/utils/api";
 import { showToast } from "../shared/utils/toastUtils";
@@ -13,6 +13,10 @@ const useCourseManagement = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [course, setCourse] = useState<Course | null>(null);
+  const handleSetCourse = (course: Course) => {
+    setCourse(course);
+  };
 
   // Fetch categories (only if not already fetched)
   const fetchCategories = useCallback(async () => {
@@ -53,6 +57,7 @@ const useCourseManagement = () => {
 
       if (response && response.data) {
         showToast.success("Course created successfully!");
+        handleSetCourse(response.data.course);
         return true;
       }
 
@@ -126,6 +131,7 @@ const useCourseManagement = () => {
     addCourse,
     editCourse,
     deleteCourse,
+    course,
   };
 };
 

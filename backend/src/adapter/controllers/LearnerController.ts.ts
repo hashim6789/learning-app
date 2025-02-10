@@ -1,29 +1,31 @@
 import { Request, Response, NextFunction } from "express";
-import { IGetLearnersUseCase } from "../IUseCases/admin/IGetLearnersUseCase";
-import { IBlockUnblockLearnerUseCase } from "../IUseCases/admin/IBlockUnblockLearnerUseCase";
-import { IGetLearnerByIdUseCase } from "../IUseCases/admin/IGetLearnerByIdUseCase";
 
+//imported the repositories
+import LearnerRepository from "../../infrastructures/database/repositories/LearnerRepository";
+
+//imported the use cases
+import GetLearnersUseCase from "../../application/use_cases/admin/GetLearnersUseCase";
+import BlockUnblockLearnerUseCase from "../../application/use_cases/admin/BlockUnblockLearnerUseCase";
+import GetLearnerByIdUseCase from "../../application/use_cases/admin/GetLearnerByIdUseCase";
+
+//created the instances
+const learnerRepository = new LearnerRepository();
+const getLearnersUseCase = new GetLearnersUseCase(learnerRepository);
+const blockUnblockLearnerUseCase = new BlockUnblockLearnerUseCase(
+  learnerRepository
+);
+const getLearnerByIdUseCase = new GetLearnerByIdUseCase(learnerRepository);
+
+//Learner controller
 class LearnerController {
-  private getLearnersUseCase: IGetLearnersUseCase;
-  private blockUnblockLearnerUseCase: IBlockUnblockLearnerUseCase;
-  private getLearnerByIdUseCase: IGetLearnerByIdUseCase;
-
-  constructor(
-    getLearnersUseCase: IGetLearnersUseCase,
-    blockUnblockLearnerUseCase: IBlockUnblockLearnerUseCase,
-    getLearnerByIdUseCase: IGetLearnerByIdUseCase
-  ) {
-    this.getLearnersUseCase = getLearnersUseCase;
-    this.blockUnblockLearnerUseCase = blockUnblockLearnerUseCase;
-    this.getLearnerByIdUseCase = getLearnerByIdUseCase;
-  }
+  //get all learners
   async getAllLearnersForAdmin(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const response = await this.getLearnersUseCase.execute();
+      const response = await getLearnersUseCase.execute();
       if (response.success && response.data) {
         res.status(200).json({
           message: response.message,
@@ -37,10 +39,11 @@ class LearnerController {
     }
   }
 
+  //get learner
   async getLearnerForAdmin(req: Request, res: Response, next: NextFunction) {
     try {
       const { learnerId } = req.params;
-      const response = await this.getLearnerByIdUseCase.execute(learnerId);
+      const response = await getLearnerByIdUseCase.execute(learnerId);
       if (response.success && response.data) {
         res.status(200).json({
           message: response.message,
@@ -54,10 +57,11 @@ class LearnerController {
     }
   }
 
+  //block and unblock the learner
   async blockUnblockLearner(req: Request, res: Response, next: NextFunction) {
     try {
       const { learnerId } = req.params;
-      const response = await this.blockUnblockLearnerUseCase.execute(
+      const response = await blockUnblockLearnerUseCase.execute(
         learnerId,
         req.body
       );

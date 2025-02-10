@@ -12,8 +12,10 @@ import UploadCourseImageUseCase from "../../../application/use_cases/mentor/Uplo
 import authenticateToken from "../../middleware/authenticateMiddlewares";
 import authorizeRole from "../../middleware/authorizationMiddlewares";
 
+//authController instance created.
 const uploadRouter = Router();
 
+//uploadRouter is created,
 // Dependency injection
 const cloudinaryService = new CloudinaryService();
 const uploadFileUseCase = new UploadCourseImageUseCase(cloudinaryService);

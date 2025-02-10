@@ -47,11 +47,17 @@ const useMentor = (mentors: Mentor[]) => {
     try {
       const newStatus =
         mentorStatus[mentorId] === "blocked" ? "unblocked" : "blocked";
-      await handleBlockUnblock(mentorId, "mentor", mentorStatus[mentorId]);
-      setMentorStatus((prevState) => ({
-        ...prevState,
-        [mentorId]: newStatus,
-      }));
+      const result = await handleBlockUnblock(
+        mentorId,
+        "mentor",
+        mentorStatus[mentorId]
+      );
+      if (result) {
+        setMentorStatus((prevState) => ({
+          ...prevState,
+          [mentorId]: newStatus,
+        }));
+      }
     } catch (error) {
       console.error("Failed to block/unblock mentor:", error);
     }

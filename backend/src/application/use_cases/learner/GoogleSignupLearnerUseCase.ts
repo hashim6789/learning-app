@@ -73,8 +73,6 @@ class GoogleSignupLearnerUseCase {
       };
     }
 
-    console.log("New User Created:", learner);
-
     // Generate tokens
     const accessToken = generateAccessToken({
       userId: learner.id,

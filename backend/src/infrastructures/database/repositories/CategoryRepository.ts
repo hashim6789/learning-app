@@ -6,7 +6,9 @@ class CategoryRepository implements ICategoryRepository {
   //get all categories
   async fetchAllCategories(): Promise<Category[] | null> {
     try {
-      const categories = await CategoryModel.find();
+      const categories = await CategoryModel.find().sort({
+        createdAt: -1,
+      });
       if (!categories) return null;
       return categories.map(mappedCategory);
     } catch (error) {
@@ -17,7 +19,9 @@ class CategoryRepository implements ICategoryRepository {
     }
   }
   async fetchAllListedCategories(): Promise<Category[] | null> {
-    const categories = await CategoryModel.find({ isListed: true });
+    const categories = await CategoryModel.find({ isListed: true }).sort({
+      createdAt: -1,
+    });
     if (!categories || categories.length === 0) return null;
     return categories.map(mappedCategory);
   }

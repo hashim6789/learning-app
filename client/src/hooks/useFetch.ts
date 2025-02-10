@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import api from "../shared/utils/api";
 import { config } from "../shared/configs/config";
 
-const useFetch = <T>(url: string, options?: RequestInit) => {
+const useFetch = <T>(url: string | null, options?: RequestInit) => {
+  if (!url) {
+    return { data: null, loading: false, error: null };
+  }
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null); // Error message

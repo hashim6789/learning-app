@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Course } from "../../../shared/types/Course";
 import { CourseStatus } from "../../mentor/hooks/useCourseTableFunctionality";
+import { getCourseStatusColor } from "../../../shared/utils/colors";
+import { useNavigate } from "react-router-dom";
 
 const defaultThumbnail = "https://via.placeholder.com/150";
 
@@ -14,6 +16,8 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [coursesPerPage] = useState(5); // Number of courses per page
+
+  const navigate = useNavigate();
 
   // Filter courses based on status
   const filteredCourses = courses.filter((course) => {
@@ -98,6 +102,9 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
               <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
                 Thumbnail
               </th>
+              <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -109,15 +116,9 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
                 >
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        course.status === "approved"
-                          ? "bg-green-100 text-green-600"
-                          : course.status === "rejected"
-                          ? "bg-red-100 text-red-600"
-                          : course.status === "pending"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm ${getCourseStatusColor(
+                        course.status
+                      )}`}
                     >
                       {course.status}
                     </span>
@@ -138,6 +139,14 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
                       alt="Course Thumbnail"
                       className="w-16 h-16 rounded"
                     />
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => navigate(`/admin/courses/${course.id}`)}
+                      className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition"
+                    >
+                      View
+                    </button>
                   </td>
                 </tr>
               ))

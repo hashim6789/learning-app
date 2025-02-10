@@ -20,6 +20,14 @@ class AdminRepository implements IAdminRepository {
 
     return mappedAdmin(admin);
   }
+
+  async findById(adminId: string): Promise<Admin | null> {
+    const admin = await AdminModel.findById(adminId);
+    // const admin = email === ADMIN.email ? ADMIN : null;
+    if (!admin) return null;
+
+    return mappedAdmin(admin);
+  }
   async findByToken(token: string): Promise<Admin | null> {
     const admin = await AdminModel.findOne({ refreshToken: token });
     // const admin = email === ADMIN.email ? ADMIN : null;

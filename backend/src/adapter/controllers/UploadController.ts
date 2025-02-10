@@ -1,3 +1,11 @@
+//imported dtos for check the body credentials
+//imported the entities
+//imported the repositories
+//imported the use cases
+//created the instances
+//mentor controller
+//mentor signup
+
 import { Request, Response } from "express";
 import UploadCourseImageUseCase from "../../application/use_cases/mentor/UploadCourseImageUseCase";
 

@@ -48,3 +48,38 @@ export const sampleMaterials: IMaterial[] = [
     duration: 20,
   } as IVideoMaterial,
 ];
+
+// Mock data to match the image
+const materials = [
+  {
+    id: 1,
+    type: "video",
+    title: "Introduction to the course",
+    duration: "4 min",
+  },
+  {
+    id: 2,
+    type: "video",
+    title: "A day in the life of a full stack developer",
+    duration: "3 min",
+  },
+  {
+    id: 3,
+    type: "discussion",
+    title: "What do you hope to learn?",
+    duration: "5 min",
+  },
+  { id: 4, type: "reading", title: "Course syllabus", duration: "5 min" },
+  {
+    id: 5,
+    type: "reading",
+    title: "How to be successful in this course",
+    duration: "10 min",
+  },
+  {
+    id: 6,
+    type: "reading",
+    title: "Working with labs and exercises in this course",
+    duration: "10 min",
+  },
+];

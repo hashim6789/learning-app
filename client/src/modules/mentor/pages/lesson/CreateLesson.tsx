@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { GripVertical, X, Plus, Loader2 } from "lucide-react";
+import { GripVertical, X, Plus, Loader2, ArrowLeft } from "lucide-react";
 import {
   DragDropContext,
   Droppable,
@@ -151,190 +151,201 @@ const CreateLesson = () => {
 
   watch("materials") || [];
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
-      <div className="p-6 border-b border-purple-100">
-        <h2 className="text-2xl font-bold text-purple-700">
-          Create New Lesson
-        </h2>
-      </div>
-      <div className="p-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-purple-700"
-            >
-              Lesson Title
-            </label>
-            <input
-              id="title"
-              type="text"
-              {...register("title")}
-              className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="Enter lesson title"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm">{errors.title.message}</p>
-            )}
-          </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <button
+        onClick={() => window.history.back()}
+        className="flex items-center text-purple-600 hover:text-purple-700 mb-6"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back to Materials
+      </button>
+      <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
+        <div className="p-6 border-b border-purple-100">
+          <h2 className="text-2xl font-bold text-purple-700">
+            Create New Lesson
+          </h2>
+        </div>
+        <div className="p-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-purple-700"
+              >
+                Lesson Title
+              </label>
+              <input
+                id="title"
+                type="text"
+                {...register("title")}
+                className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Enter lesson title"
+              />
+              {errors.title && (
+                <p className="text-red-500 text-sm">{errors.title.message}</p>
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-purple-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              {...register("description")}
-              className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-[100px]"
-              placeholder="Enter lesson description"
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-purple-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                {...register("description")}
+                className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent min-h-[100px]"
+                placeholder="Enter lesson description"
+              />
+              {errors.description && (
+                <p className="text-red-500 text-sm">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
 
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-purple-700">
-              Materials
-            </label>
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="materials">
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-2"
-                  >
-                    {fields.map((field, index) => (
-                      <Draggable
-                        key={field.id}
-                        draggableId={field.id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center gap-2 bg-purple-50 p-2 rounded-md"
-                          >
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-purple-700">
+                Materials
+              </label>
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="materials">
+                  {(provided) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="space-y-2"
+                    >
+                      {fields.map((field, index) => (
+                        <Draggable
+                          key={field.id}
+                          draggableId={field.id}
+                          index={index}
+                        >
+                          {(provided) => (
                             <div
-                              {...provided.dragHandleProps}
-                              className="text-purple-400"
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="flex items-center gap-2 bg-purple-50 p-2 rounded-md"
                             >
-                              <GripVertical className="h-5 w-5" />
-                            </div>
-                            <select
-                              {...register(`materials.${index}.title`, {
-                                required: "Material selection is required",
-                                onChange: (e) => {
-                                  const selectedMaterial = materials?.find(
-                                    (m) => m.title === e.target.value
-                                  );
-                                  if (selectedMaterial) {
-                                    setValue(
-                                      `materials.${index}.id`,
-                                      selectedMaterial.id
+                              <div
+                                {...provided.dragHandleProps}
+                                className="text-purple-400"
+                              >
+                                <GripVertical className="h-5 w-5" />
+                              </div>
+                              <select
+                                {...register(`materials.${index}.title`, {
+                                  required: "Material selection is required",
+                                  onChange: (e) => {
+                                    const selectedMaterial = materials?.find(
+                                      (m) => m.title === e.target.value
                                     );
-                                  }
-                                },
-                              })}
-                              className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            >
-                              <option value="">Select Material</option>
-                              {materialsLoading ? (
-                                <option>Loading...</option>
-                              ) : materialsError ? (
-                                <option>Error loading materials</option>
-                              ) : materials ? (
-                                materials.map((material) => (
-                                  <option
-                                    key={material.id}
-                                    value={material.title}
-                                  >
-                                    {material.title}
-                                  </option>
-                                ))
-                              ) : null}
-                            </select>
-                            <button
-                              type="button"
-                              onClick={() => remove(index)}
-                              className="p-2 text-purple-400 hover:text-purple-600 hover:bg-purple-100 rounded-md transition-colors"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                                    if (selectedMaterial) {
+                                      setValue(
+                                        `materials.${index}.id`,
+                                        selectedMaterial.id
+                                      );
+                                    }
+                                  },
+                                })}
+                                className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              >
+                                <option value="">Select Material</option>
+                                {materialsLoading ? (
+                                  <option>Loading...</option>
+                                ) : materialsError ? (
+                                  <option>Error loading materials</option>
+                                ) : materials ? (
+                                  materials.map((material) => (
+                                    <option
+                                      key={material.id}
+                                      value={material.title}
+                                    >
+                                      {material.title}
+                                    </option>
+                                  ))
+                                ) : null}
+                              </select>
+                              <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="p-2 text-purple-400 hover:text-purple-600 hover:bg-purple-100 rounded-md transition-colors"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+
+              <button
+                type="button"
+                onClick={() => append({ id: "", title: "" })}
+                className="w-full py-2 px-4 border border-purple-200 rounded-md text-purple-700 hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Material
+              </button>
+
+              {/* Show validation errors */}
+              {fields.map(
+                (_, index) =>
+                  errors.materials?.[index]?.title && (
+                    <p key={index} className="text-red-500 text-sm">
+                      {errors.materials[index].title.message}
+                    </p>
+                  )
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="duration"
+                className="block text-sm font-medium text-purple-700"
+              >
+                Duration (minutes)
+              </label>
+              <input
+                id="duration"
+                type="number"
+                defaultValue={20}
+                {...(register("duration"), { valueAsNumber: true })}
+                onChange={(e) =>
+                  setValue("duration", Number(e.target.value) || 0)
+                }
+                className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+              {errors.duration && (
+                <p className="text-red-500 text-sm">
+                  {errors.duration.message}
+                </p>
+              )}
+            </div>
 
             <button
-              type="button"
-              onClick={() => append({ id: "", title: "" })}
-              className="w-full py-2 px-4 border border-purple-200 rounded-md text-purple-700 hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              <Plus className="h-4 w-4" />
-              Add Material
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Creating Lesson...
+                </>
+              ) : (
+                "Create Lesson"
+              )}
             </button>
-
-            {/* Show validation errors */}
-            {fields.map(
-              (_, index) =>
-                errors.materials?.[index]?.title && (
-                  <p key={index} className="text-red-500 text-sm">
-                    {errors.materials[index].title.message}
-                  </p>
-                )
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="duration"
-              className="block text-sm font-medium text-purple-700"
-            >
-              Duration (minutes)
-            </label>
-            <input
-              id="duration"
-              type="number"
-              defaultValue={20}
-              {...(register("duration"), { valueAsNumber: true })}
-              onChange={(e) =>
-                setValue("duration", Number(e.target.value) || 0)
-              }
-              className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-            {errors.duration && (
-              <p className="text-red-500 text-sm">{errors.duration.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Creating Lesson...
-              </>
-            ) : (
-              "Create Lesson"
-            )}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

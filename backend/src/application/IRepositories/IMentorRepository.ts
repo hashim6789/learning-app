@@ -14,4 +14,5 @@ export interface IMentorRepository {
   verifyMentor(mentorId: string): Promise<Mentor | null>;
   updateMentor(mentorId: string, data: Partial<Mentor>): Promise<Mentor | null>;
   deleteMentorById(mentorId: string): Promise<Mentor | null>;
+  fetMentorCoursesAnalytics(mentorId: string): Promise<any>;
 }

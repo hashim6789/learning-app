@@ -2,41 +2,55 @@ import express from "express";
 import MentorController from "../../controllers/MentorController";
 import authenticateToken from "../../middleware/authenticateMiddlewares";
 import authorizeRole from "../../middleware/authorizationMiddlewares";
-import GetMentorsUseCase from "../../../application/use_cases/admin/GetMentorsUseCase";
-import MentorRepository from "../../../infrastructures/database/repositories/MentorRepository";
-import BlockUnblockMentorUseCase from "../../../application/use_cases/admin/BlockUnBlockMentorUseCase";
-import GetMentorByIdUseCase from "../../../application/use_cases/admin/GetMentorByIdUseCase";
 
+//mentorController instance created.
+const mentorController = new MentorController();
+
+//mentorRouter is created,
 const mentorRouter = express.Router();
-const mentorRepository = new MentorRepository();
-const getMentorsUseCase = new GetMentorsUseCase(mentorRepository);
-const getMentorByIdUseCase = new GetMentorByIdUseCase(mentorRepository);
-const blockUnblockMentorUseCase = new BlockUnblockMentorUseCase(
-  mentorRepository
-);
-const mentorController = new MentorController(
-  getMentorsUseCase,
-  blockUnblockMentorUseCase,
-  getMentorByIdUseCase
-);
 
+//----------------------mentor routes------------------------------//
+
+/**
+ * mentors get route
+ * endpoint - /admin/mentors
+ * method -  get
+ * body - {}
+ * response - {success, message, data:mentors}
+ */
 mentorRouter.get(
   "/",
   authenticateToken,
   authorizeRole(["admin"]),
-  mentorController.fetchAllMentorsForAdmin.bind(mentorController)
+  mentorController.fetchAllMentorsForAdmin
 );
+
+/**
+ * mentor get route
+ * endpoint - /admin/mentors/:mentorId
+ * method -  get
+ * params - {mentorID}
+ * response - {success, message, data:mentor}
+ */
 mentorRouter.get(
   "/:mentorId",
   authenticateToken,
   authorizeRole(["admin"]),
-  mentorController.fetchMentorForAdmin.bind(mentorController)
+  mentorController.fetchMentorForAdmin
 );
+
+/**
+ * mentor block unblock route
+ * endpoint - /admin/mentors/:mentorId/block-unblock
+ * method -  get
+ * params - {mentorID}
+ * response - {success, message, data:mentor}
+ */
 mentorRouter.patch(
   "/:mentorId/block-unblock",
   authenticateToken,
   authorizeRole(["admin"]),
-  mentorController.blockUnblockMentor.bind(mentorController)
+  mentorController.blockUnblockMentor
 );
 
 export default mentorRouter;

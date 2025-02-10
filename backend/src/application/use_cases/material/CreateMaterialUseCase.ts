@@ -14,6 +14,20 @@ class CreateMaterialUseCase {
     mentorId: string
   ): Promise<ResponseModel> {
     try {
+      const existingMaterial =
+        await this.materialRepository.fetchMentorMaterialByTitle(
+          mentorId,
+          data.title
+        );
+
+      if (existingMaterial) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The material is exist on this title!",
+        };
+      }
+
       const createdMaterial = await this.materialRepository.createMaterial(
         data,
         mentorId

@@ -6,15 +6,12 @@ import axios, {
 } from "axios";
 import { config } from "../configs/config";
 
-// Extend InternalAxiosRequestConfig to include _retry
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean; // Adding a custom property for retry logic
+  _retry?: boolean;
 }
 
-// Define the base API URL
-const API_BASE_URL = config.API_BASE_URL; // Replace with your API URL
+const API_BASE_URL = config.API_BASE_URL;
 
-// Function to get a cookie by name
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
   return match ? match[2] : null;
@@ -26,26 +23,21 @@ const api: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Ensures cookies are sent with the request
+  withCredentials: true,
 });
 
 // Request Interceptor
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig): CustomAxiosRequestConfig => {
-    // Ensure headers exist
     config.headers = config.headers || {};
 
-    // Get the token from cookies
     const token = getCookie("accessToken");
-    // console.log(token);
     if (token) {
-      // Attach the token to the Authorization header
       config.headers.authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error: AxiosError) => {
-    // Handle request errors
     return Promise.reject(error);
   }
 );
@@ -56,12 +48,10 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
-    // Check for 401 Unauthorized errors and handle token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // The refresh token is automatically included in the request because it's stored as httpOnly cookie
         const refreshResponse = await axios.post(
           `${API_BASE_URL}/refresh`,
           {},
@@ -70,7 +60,6 @@ api.interceptors.response.use(
 
         const { accessToken } = refreshResponse.data;
 
-        // Store the new access token in cookies (not refresh token since it's httpOnly)
         document.cookie = `Authorization=${accessToken}; HttpOnly; Secure; SameSite=Strict; path=/`;
 
         // Retry the original request with the new token

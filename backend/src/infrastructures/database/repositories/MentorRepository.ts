@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Mentor } from "../../../application/entities/Mentor";
 import { IMentorRepository } from "../../../application/IRepositories/IMentorRepository";
 import MentorModel, { IMentor } from "../models/MentorModel";
@@ -154,6 +155,45 @@ class MentorRepository implements IMentorRepository {
       return mappingMentor(deletedMentor);
     } catch (error) {
       throw new Error("An error when deleting the mentor");
+    }
+  }
+
+  //get analytics for mentor courses
+  async fetMentorCoursesAnalytics(mentorId: string): Promise<any[]> {
+    try {
+      const mentorObjectId = new mongoose.Types.ObjectId(mentorId);
+      const data = await MentorModel.aggregate([
+        { $match: { _id: mentorObjectId } },
+        {
+          $lookup: {
+            from: "courses",
+            localField: "createdCourses",
+            foreignField: "_id",
+            as: "courses",
+          },
+        },
+        {
+          $unwind: "$courses",
+        },
+        {
+          $group: {
+            _id: "$courses.status",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            status: "$_id",
+            count: 1,
+          },
+        },
+      ]);
+
+      console.log("aggregated data :", data);
+      return data;
+    } catch (error) {
+      throw new Error("Failed to aggregate courses of the mentor");
     }
   }
 }

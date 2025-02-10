@@ -40,6 +40,23 @@ class LessonRepository implements ILessonRepository {
     }
   }
 
+  async fetchMentorLessonByTitle(
+    mentorId: string,
+    title: string
+  ): Promise<Lesson | null> {
+    try {
+      const lesosn = await LessonModel.findOne({
+        mentorId,
+        title: { $regex: new RegExp(title, "i") },
+      });
+
+      if (!lesosn) return null;
+      return mappedLesson(lesosn);
+    } catch (error) {
+      throw new Error("Failed to fetch material by title of the mentor");
+    }
+  }
+
   async deleteLessonById(lessonId: string): Promise<Lesson | null> {
     try {
       const lesson = await LessonModel.findByIdAndDelete(lessonId);

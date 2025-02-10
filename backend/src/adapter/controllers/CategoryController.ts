@@ -1,10 +1,15 @@
 import { Request, Response, NextFunction } from "express";
+
+//imported the repositories
 import CategoryRepository from "../../infrastructures/database/repositories/CategoryRepository";
+
+//imported the use cases
 import GetCategoriesUseCase from "../../application/use_cases/admin/GetCategoriesUseCase";
 import CreateCategoryUseCase from "../../application/use_cases/admin/CreateCategoryUseCase";
 import ListUnListCategoryUseCase from "../../application/use_cases/admin/ListUnlistCategoryUseCase";
 import UpdateCategoryUseCase from "../../application/use_cases/admin/UpdateCategoryUseCase";
 
+//created the instances
 const categoryRepository = new CategoryRepository();
 const getCategoriesUseCase = new GetCategoriesUseCase(categoryRepository);
 const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository);
@@ -13,7 +18,9 @@ const listUnListCategoryUseCase = new ListUnListCategoryUseCase(
 );
 const updateCategoryUseCase = new UpdateCategoryUseCase(categoryRepository);
 
+//mentor controller
 class CategoryController {
+  //fetch all categories
   async fetchAllCategoriesForAdmin(
     req: Request,
     res: Response,
@@ -33,6 +40,7 @@ class CategoryController {
     }
   }
 
+  //fetch all available categories(isListed : true)
   async fetchAllAvailableCategoriesForMentor(
     req: Request,
     res: Response,
@@ -52,6 +60,7 @@ class CategoryController {
     }
   }
 
+  //create new category
   async createCategoryForAdmin(
     req: Request,
     res: Response,
@@ -75,6 +84,8 @@ class CategoryController {
       next(error);
     }
   }
+
+  //list and unlist the categories
   async listUnlistCategoryForAdmin(
     req: Request,
     res: Response,
@@ -97,6 +108,8 @@ class CategoryController {
       next(error);
     }
   }
+
+  //update the category
   async updateCategoryForAdmin(
     req: Request,
     res: Response,

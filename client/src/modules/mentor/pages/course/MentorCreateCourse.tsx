@@ -76,7 +76,7 @@ const courseSchema = z.object({
   //   .min(15, "Duration must be at least 15 minute"),
 });
 
-const MentorCreateCoursePage = () => {
+const MentorCreateCourse = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [image, setImage] = React.useState<ImageState | null>(null);
   const [isCropping, setIsCropping] = React.useState(false);
@@ -562,4 +562,4 @@ const MentorCreateCoursePage = () => {
   );
 };
 
-export default MentorCreateCoursePage;
+export default MentorCreateCourse;

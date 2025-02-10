@@ -2,7 +2,6 @@ import express from "express";
 import authenticateToken from "../../middleware/authenticateMiddlewares";
 import authorizeRole from "../../middleware/authorizationMiddlewares";
 import LearnerAuthController from "../../controllers/LearnerAuthControllers";
-import checkBlocked from "../../middleware/chackBlockMiddleware";
 
 //authController instance created.
 const authController = new LearnerAuthController();

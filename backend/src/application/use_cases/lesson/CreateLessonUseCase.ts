@@ -27,14 +27,19 @@ class CreateLessonUseCase {
     mentorId: string
   ): Promise<ResponseModel> {
     try {
-      // const course = await this.courseRepository.findCourseById(data.courseId);
-      // if (!course) {
-      //   return {
-      //     statusCode: 404,
-      //     success: false,
-      //     message: "The lesson's course is doesn't exist!",
-      //   };
-      // }
+      const existingLesson =
+        await this.lessonRepository.fetchMentorLessonByTitle(
+          mentorId,
+          data.title
+        );
+
+      if (existingLesson) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The lesson is exist on this title!",
+        };
+      }
 
       const createdLesson = await this.lessonRepository.createLesson(
         data,

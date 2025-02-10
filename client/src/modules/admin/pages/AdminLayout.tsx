@@ -13,8 +13,8 @@ const AdminLayout: React.FC = () => {
     { icon: <span>👨‍🏫</span>, label: "Mentors", href: "/admin/mentors" },
     { icon: <span>📚</span>, label: "Courses", href: "/admin/courses" },
     { icon: <span>🏷️</span>, label: "Category", href: "/admin/categories" },
-    { icon: <span>💰</span>, label: "Financial", href: "/admin/financial" },
-    { icon: <span>📋</span>, label: "Report", href: "/admin/reports" },
+    // { icon: <span>💰</span>, label: "Financial", href: "/admin/financial" },
+    // { icon: <span>📋</span>, label: "Report", href: "/admin/reports" },
   ];
 
   return (

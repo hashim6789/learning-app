@@ -10,7 +10,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ paths }) => {
   const navigate = useNavigate();
 
   return (
-    <nav className="flex items-center space-x-2 text-gray-500 text-sm mb-4">
+    <nav className="flex items-center space-x-2  text-sm mb-4">
       <button
         onClick={() => navigate("/mentor/dashboard")}
         className="hover:text-purple-700 flex items-center"
@@ -22,11 +22,11 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ paths }) => {
         <div key={index} className="flex items-center space-x-2">
           <ChevronRight className="w-4 h-4" />
           {index === paths.length - 1 ? (
-            <span className="text-purple-600 font-semibold">{item.title}</span>
+            <span className=" font-semibold">{item.title}</span>
           ) : (
             <button
               onClick={() => navigate(item.link)}
-              className="hover:text-purple-700"
+              className="hover:text-purple-600"
             >
               {item.title}
             </button>

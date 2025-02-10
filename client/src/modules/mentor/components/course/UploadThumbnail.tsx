@@ -1,65 +1,112 @@
-import { useState } from "react";
+import React, { useRef, useState } from "react";
+import { Cropper, CropperRef } from "react-advanced-cropper";
+import "react-advanced-cropper/dist/style.css";
+import { showToast } from "../../../../shared/utils/toastUtils";
+import api from "../../../../shared/utils/api";
+import { config } from "../../../../shared/configs/config";
+import { UseFormSetValue } from "react-hook-form";
+import { FormInputs } from "./CourseForm";
 
-type ThumbnailUploadProps = {
-  onUpload: (file: File) => void;
-};
+interface ThumbnailUploaderProps {
+  setValue: UseFormSetValue<FormInputs>; // Correct typing
+}
 
-const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ onUpload }) => {
-  const [file, setFile] = useState<File | null>(null);
+const UploadThumbnail: React.FC<ThumbnailUploaderProps> = ({ setValue }) => {
+  const [image, setImage] = useState<{ src: string; type?: string } | null>(
+    null
+  );
+  const [isCropping, setIsCropping] = useState(false);
+  const cropperRef = useRef<CropperRef>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      onUpload(selectedFile);
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const blob = URL.createObjectURL(file);
+    setImage({ src: blob, type: file.type });
+    setIsCropping(true);
+    e.target.value = "";
+  };
+
+  const handleCropComplete = async () => {
+    if (cropperRef.current) {
+      const canvas = cropperRef.current.getCanvas();
+      if (canvas) {
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+
+          const formData = new FormData();
+          formData.append("file", blob, "cropped-image.png");
+
+          try {
+            const response = await api.post(
+              `${config.API_BASE_URL}/mentor/upload/course-img`,
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
+            );
+
+            showToast.success("Image uploaded successfully!");
+            setValue("thumbnail", response.data.url);
+            setIsCropping(false);
+
+            if (image?.src) URL.revokeObjectURL(image.src);
+          } catch (error) {
+            showToast.error("Image upload failed!");
+          }
+        }, "image/png");
+      }
     }
   };
 
-  return (
-    <div className="flex items-center justify-center w-full">
-      <label
-        htmlFor="dropzone-file"
-        className="flex flex-col items-center justify-center w-full h-64 border-2 border-purple-300 border-dashed rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100 dark:hover:bg-purple-800 dark:bg-purple-700 dark:border-purple-600 dark:hover:border-purple-500 dark:hover:bg-purple-600"
-      >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-          <svg
-            className="w-8 h-8 mb-4 text-purple-500 dark:text-purple-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 16"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-            />
-          </svg>
-          <p className="mb-2 text-sm text-purple-500 dark:text-purple-400">
-            <span className="font-semibold">Click to upload</span> or drag and
-            drop
-          </p>
-          <p className="text-xs text-purple-500 dark:text-purple-400">
-            SVG, PNG, JPG or GIF (MAX. 800x400px)
-          </p>
+  if (isCropping && image) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg max-w-2xl w-full">
+          <h2 className="text-xl font-bold mb-4">Crop Your Image</h2>
+          <Cropper
+            ref={cropperRef}
+            src={image.src}
+            stencilProps={{ aspectRatio: 16 / 9 }}
+          />
+          <div className="flex justify-end space-x-4 mt-4">
+            <button
+              onClick={() => setIsCropping(false)}
+              className="px-4 py-2 border border-purple-500 text-purple-500 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCropComplete}
+              className="px-4 py-2 bg-purple-600 text-white rounded"
+            >
+              Save Crop
+            </button>
+          </div>
         </div>
-        <input
-          id="dropzone-file"
-          type="file"
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/*"
-        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-purple-700">
+        Thumbnail
       </label>
-      {file && (
-        <p className="mt-2 text-sm text-purple-600">
-          Selected file: {file.name}
-        </p>
-      )}
+      <input
+        type="file"
+        ref={inputRef}
+        onChange={handleThumbnailUpload}
+        className="hidden"
+      />
+      <button
+        onClick={() => inputRef.current?.click()}
+        className="px-4 py-2 bg-purple-600 text-white rounded"
+      >
+        Upload Thumbnail
+      </button>
     </div>
   );
 };
 
-export default ThumbnailUpload;
+export default UploadThumbnail;

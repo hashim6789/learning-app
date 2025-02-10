@@ -1,5 +1,10 @@
+//imported the entity
 import { Learner } from "../../../application/entities/Learner";
+
+//imported the interface
 import { ILearnerRepository } from "../../../application/IRepositories/ILearnerRepository";
+
+//imported the mode\
 import LearnerModel, { ILearner } from "../models/LearnerModel";
 
 class LearnerRepository implements ILearnerRepository {
@@ -38,18 +43,18 @@ class LearnerRepository implements ILearnerRepository {
     }
   }
 
+  //fetch learner by id
   async fetchLearnerById(learnerId: string): Promise<Learner | null> {
     const learner = await LearnerModel.findById(learnerId).populate({
-      path: "purchasedCourses", // Path to the field being populated
-      model: "Courses", // The model being populated
+      path: "purchasedCourses",
+      model: "Courses",
     });
-
-    console.log("populated learner", learner);
 
     if (!learner) return null;
     return mappingLearner(learner);
   }
 
+  //block learner
   async BlockLearner(
     learnerId: string,
     isBlock: boolean

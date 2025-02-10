@@ -1,3 +1,11 @@
+//imported dtos for check the body credentials
+//imported the entities
+//imported the repositories
+//imported the use cases
+//created the instances
+//mentor controller
+//mentor signup
+
 import { Request, Response, NextFunction } from "express";
 import LessonRepository from "../../infrastructures/database/repositories/LessonRepository";
 import CreateLessonUseCase from "../../application/use_cases/lesson/CreateLessonUseCase";
@@ -7,8 +15,12 @@ import Lesson from "../../application/entities/Lesson";
 import GetLessonByIdUseCase from "../../application/use_cases/lesson/GetLessonByIdUseCase";
 import UpdateLessonByIdUseCase from "../../application/use_cases/lesson/UpdateLessonByIdUseCase";
 import DeleteLessonByIdUseCase from "../../application/use_cases/lesson/DeleteLessonByIdUseCase";
+import GetMaterialsByLessonIdUseCase from "../../application/use_cases/lesson/GetMaterialsByLessonIdUseCase";
+import MaterialRepository from "../../infrastructures/database/repositories/MaterialRepository";
+import Material from "../../application/entities/Material";
 const lessonRepository = new LessonRepository();
 const courseRepository = new CourseRepository();
+const materialRepository = new MaterialRepository();
 // const getAllLessonsOfCourse = new GetAllLessonsOfCourseUseCase(
 //   lessonRepository
 // );
@@ -20,6 +32,11 @@ const createLessonUseCase = new CreateLessonUseCase(
 
 const getAllLessonsOfMentorUseCase = new GetAllLessonsOfMentorUseCase(
   lessonRepository
+);
+
+const getMaterialsByLessonIdUseCase = new GetMaterialsByLessonIdUseCase(
+  lessonRepository,
+  materialRepository
 );
 
 const getLessonByIdUseCase = new GetLessonByIdUseCase(lessonRepository);
@@ -108,6 +125,25 @@ class LessonController {
       next(error);
     }
   }
+  async getMaterialsByLessonId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mentorId = req.user?.userId || "";
+      const { lessonId } = req.params;
+      const response = await getMaterialsByLessonIdUseCase.execute(lessonId);
+      if (response.success && response.data) {
+        const { materials } = response.data as { materials: Material[] };
+        res.status(200).json({ message: response.message, data: materials });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
-export default new LessonController();
+export default LessonController;

@@ -15,7 +15,6 @@ import OtpRepository from "../../infrastructures/database/repositories/OtpReposi
 //imported the use cases
 import SignupMentorUseCase from "../../application/use_cases/mentor/SignupMentorUseCase";
 import LoginMentorUseCase from "../../application/use_cases/mentor/LoginMentorUseCase";
-// import GoogleSignupUseCase from "../../../application/use_cases/mentor/GoogleSignupMentorUseCase";
 import LogoutMentorUseCase from "../../application/use_cases/mentor/LogoutMentorUseCase";
 import GoogleSignupMentorUseCase from "../../application/use_cases/mentor/GoogleSignupMentorUseCase";
 import VerifyMentorUseCase from "../../application/use_cases/mentor/VerifyMentorUseCase";
@@ -26,12 +25,12 @@ import ChangePasswordMentorUseCase from "../../application/use_cases/mentor/Chan
 
 //created the instances
 const mentorRepository = new MentorRepository();
+const loginMentorUseCase = new LoginMentorUseCase(mentorRepository);
 const otpRepository = new OtpRepository();
 const signupMentorUseCase = new SignupMentorUseCase(
   mentorRepository,
   otpRepository
 );
-const loginMentorUseCase = new LoginMentorUseCase(mentorRepository);
 const googleSignupMentorUseCase = new GoogleSignupMentorUseCase(
   mentorRepository
 );

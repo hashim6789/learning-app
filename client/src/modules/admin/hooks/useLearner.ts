@@ -47,11 +47,17 @@ const useLearner = (learners: Learner[]) => {
     try {
       const newStatus =
         learnerStatus[learnerId] === "blocked" ? "unblocked" : "blocked";
-      await handleBlockUnblock(learnerId, "learner", learnerStatus[learnerId]);
-      setLearnerStatus((prevState) => ({
-        ...prevState,
-        [learnerId]: newStatus,
-      }));
+      const result = await handleBlockUnblock(
+        learnerId,
+        "learner",
+        learnerStatus[learnerId]
+      );
+      if (result) {
+        setLearnerStatus((prevState) => ({
+          ...prevState,
+          [learnerId]: newStatus,
+        }));
+      }
     } catch (error) {
       console.error("Failed to block/unblock learner:", error);
     }

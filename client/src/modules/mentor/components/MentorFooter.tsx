@@ -6,10 +6,8 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center space-y-8">
           <div className="flex items-center space-x-3">
-            <img src="/totc-logo.svg" alt="TOTC" className="h-10" />
-            <span className="text-lg font-semibold">
-              Virtual Class for Zoom
-            </span>
+            {/* <img src="/totc-logo.svg" alt="TOTC" className="h-10" /> */}
+            <span className="text-lg font-semibold">EazyDev</span>
           </div>
 
           <div className="w-full max-w-md">
@@ -27,19 +25,19 @@ const Footer: React.FC = () => {
 
           <div className="flex space-x-8 text-sm text-purple-300">
             <a
-              href="/careers"
+              href="/"
               className="hover:text-white transition-colors duration-200"
             >
               Careers
             </a>
             <a
-              href="/privacy"
+              href="/"
               className="hover:text-white transition-colors duration-200"
             >
               Privacy Policy
             </a>
             <a
-              href="/terms"
+              href="/"
               className="hover:text-white transition-colors duration-200"
             >
               Terms & Conditions
@@ -47,7 +45,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div className="text-sm text-purple-400">
-            © 2023 Class Technologies Inc.
+            © 2025 EazyDev Academy Inc.
           </div>
         </div>
       </div>

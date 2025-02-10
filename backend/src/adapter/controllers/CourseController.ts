@@ -1,18 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import CourseCreationUseCase from "../../application/use_cases/mentor/CourseCreationUseCase";
+
+//imported the repositories
 import CourseRepository from "../../infrastructures/database/repositories/CourseRepository";
-import GetAllCourseOfMentorUseCase from "../../application/use_cases/mentor/GetAllCoursesOfMentorUseCase";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
+
+//imported the use cases
+import CourseCreationUseCase from "../../application/use_cases/mentor/CourseCreationUseCase";
+import GetAllCourseOfMentorUseCase from "../../application/use_cases/mentor/GetAllCoursesOfMentorUseCase";
 import GetAllCourseUseCase from "../../application/use_cases/admin/GetAllCourses";
-// import GetAllLessonsOfCourseUseCase from "../../application/use_cases/mentor/GetAllLessonOfCourseUseCase";
-import LessonRepository from "../../infrastructures/database/repositories/LessonRepository";
 import GetCourseOfMentorUseCase from "../../application/use_cases/mentor/GetCourseByIdUseCase";
 import UpdateCourseUseCase from "../../application/use_cases/mentor/UpdateCourseUseCase";
 import DeleteCourseUseCase from "../../application/use_cases/mentor/DeleteCourseUseCase";
+import UpdateCourseStatusUseCase from "../../application/use_cases/course/UpdateCourseStatusUseCase";
+import GetCourseByIdUseCase from "../../application/use_cases/course/GetCourseByIdUseCase";
+import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
 
+//created the instances
 const mentorRepository = new MentorRepository();
 const courseRepository = new CourseRepository();
-const lessonRepository = new LessonRepository();
 const courseCreationUseCase = new CourseCreationUseCase(
   courseRepository,
   mentorRepository
@@ -37,7 +42,15 @@ const getCourseOfMentorUseCase = new GetCourseOfMentorUseCase(
 const updatedCourseUseCase = new UpdateCourseUseCase(courseRepository);
 const deleteCourseUseCase = new DeleteCourseUseCase(courseRepository);
 
+const updateCourseStatusUseCase = new UpdateCourseStatusUseCase(
+  courseRepository
+);
+
+const getCourseByIdUseCase = new GetCourseByIdUseCase(courseRepository);
+
+//Course controller
 class CourseController {
+  //create course
   async createCourseForMentor(
     req: Request,
     res: Response,
@@ -62,6 +75,8 @@ class CourseController {
       next(error);
     }
   }
+
+  //update course
   async updateCourseForMentor(
     req: Request,
     res: Response,
@@ -85,6 +100,8 @@ class CourseController {
       next(error);
     }
   }
+
+  //delete course
   async deleteCourseForMentor(
     req: Request,
     res: Response,
@@ -107,6 +124,36 @@ class CourseController {
     }
   }
 
+  //update course
+  async updateCourseStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const mentorId = req.user?.userId || "";
+      const userRole = req.user?.role || "learner";
+      const { courseId } = req.params;
+      const { newStatus } = req.body;
+      const response = await updateCourseStatusUseCase.execute(
+        courseId,
+        newStatus,
+        userRole
+      );
+
+      if (response.success && response.data) {
+        res
+          .status(200)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //get all courses of the mentor
   async getAllCourseOfMentor(
     req: Request,
     res: Response,
@@ -127,6 +174,29 @@ class CourseController {
     }
   }
 
+  //get mentor all courses of the mentor
+  // async getMentorCoursesAnalytics(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> {
+  //   try {
+  //     const userId = req.user?.userId || "";
+  //     const { mentorId } = req.params;
+  //     // const response = await getAllCourseOfMentorUseCase.execute(mentorId);
+  //     // if (response.success && response.data) {
+  //     //   res
+  //     //     .status(200)
+  //     //     .json({ message: response.message, data: response.data });
+  //     // } else {
+  //     //   res.status(400).json({ message: response.message });
+  //     // }
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+  //get a course of mentor
   async getCourseOfMentorByCourseId(
     req: Request,
     res: Response,
@@ -151,6 +221,7 @@ class CourseController {
     }
   }
 
+  //get all created courses
   async getAllCourseOfAdmin(
     req: Request,
     res: Response,
@@ -169,26 +240,48 @@ class CourseController {
       next(error);
     }
   }
-  async getLessonsOfCourseForMentor(
+  //get course by id
+  async getCourseById(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      // const { courseId } = req.params;
-      // const mentorId = req.user?.userId || "";
-      // const response = await getAllLessonsOfCourseUseCase.execute(courseId);
-      // if (response.success && response.data) {
-      //   res
-      //     .status(200)
-      //     .json({ message: response.message, data: response.data });
-      // } else {
-      //   res.status(400).json({ message: response.message });
-      // }
+      const { courseId } = req.params;
+
+      const response = await getCourseByIdUseCase.execute(courseId);
+      if (response.success && response.data) {
+        res
+          .status(200)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
     } catch (error) {
       next(error);
     }
   }
+
+  // async getLessonsOfCourseForMentor(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> {
+  //   try {
+  //     const { courseId } = req.params;
+  //     const mentorId = req.user?.userId || "";
+  //     const response = await getL.execute(courseId);
+  //     if (response.success && response.data) {
+  //       res
+  //         .status(200)
+  //         .json({ message: response.message, data: response.data });
+  //     } else {
+  //       res.status(400).json({ message: response.message });
+  //     }
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }
 
 export default CourseController;

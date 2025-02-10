@@ -23,6 +23,24 @@ class MaterialRepository implements IMaterialRepository {
       throw new Error("Failed to fetch materials by type");
     }
   }
+
+  async fetchMentorMaterialByTitle(
+    mentorId: string,
+    title: string
+  ): Promise<Material | null> {
+    try {
+      const material = await MaterialModel.findOne({
+        mentorId,
+        title: { $regex: new RegExp(title, "i") },
+      });
+
+      if (!material) return null;
+      return mapMaterial(material);
+    } catch (error) {
+      throw new Error("Failed to fetch material by title of the mentor");
+    }
+  }
+
   async fetchMaterialsByMentorId(mentorId: string): Promise<Material[] | null> {
     try {
       const materials = await MaterialModel.find({ mentorId }).sort({
@@ -77,6 +95,18 @@ class MaterialRepository implements IMaterialRepository {
       return deletedMaterial ? mapMaterial(deletedMaterial) : null;
     } catch (error) {
       throw new Error("Failed to delete the material");
+    }
+  }
+
+  async fetchMaterialsByMentorIds(
+    materialIds: string[]
+  ): Promise<Material[] | null> {
+    try {
+      const materials = await MaterialModel.find({ _id: { $in: materialIds } });
+      if (!materials) return null;
+      return materials ? materials.map(mapMaterial) : null;
+    } catch (error) {
+      throw new Error("Failed to fetch the materials");
     }
   }
 }

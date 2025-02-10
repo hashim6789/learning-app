@@ -21,7 +21,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   const { refreshToken, user } = req.cookies;
 
   // Log request cookies for debugging
-  console.log("Request Cookies: ", req.cookies);
+  // console.log("Request Cookies: ", req.cookies);
 
   if (!refreshToken) {
     res.status(400).json({ message: "Refresh token is required" });
@@ -72,8 +72,6 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
       newRefreshToken
     );
   }
-
-  console.log(refreshedUser);
 
   if (!refreshedUser) {
     res.status(400).json({ message: "an error when storing refresh token" });

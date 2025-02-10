@@ -9,6 +9,8 @@ import AdminCourseManagement from "../modules/admin/pages/course/AdminCourseMana
 import AdminLearnerDetails from "../modules/admin/pages/learner/AdminLernerDetails";
 import AdminMentorDetails from "../modules/admin/pages/mentor/AdminMentorDetails";
 import AdminCategoryManagement from "../modules/admin/pages/category/AdminCategoryManagement";
+import CourseDetails from "../modules/admin/pages/course/CourseDetails";
+import MaterialDetailPage from "../modules/admin/pages/course/MaterialsDetailsPage";
 
 export const AdminRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -34,6 +36,11 @@ export const AdminRoutes = (isAuthenticated: boolean, user: string) => [
               { path: "mentors", element: <AdminMentorManagement /> },
               { path: "mentors/:mentorId", element: <AdminMentorDetails /> },
               { path: "courses", element: <AdminCourseManagement /> },
+              { path: "courses/:courseId", element: <CourseDetails /> },
+              {
+                path: "materials/:materialId",
+                element: <MaterialDetailPage />,
+              },
               { path: "categories", element: <AdminCategoryManagement /> },
             ],
           },

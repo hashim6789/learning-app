@@ -7,6 +7,7 @@ import categoryRoutes from "./categoryRoutes";
 import uploadRouter from "./uploadRoutes";
 import lessonRouter from "./lessonsRoutes";
 import materialRouter from "./materialRoutes";
+import profileRouter from "./profileRoutes";
 
 // import { authenticate } from "../../middleware/authMiddleware";
 
@@ -19,5 +20,6 @@ mentorRouter.use("/categories", categoryRoutes);
 mentorRouter.use("/upload", uploadRouter);
 mentorRouter.use("/lessons", lessonRouter);
 mentorRouter.use("/materials", materialRouter);
+mentorRouter.use("/profile", profileRouter);
 
 export default mentorRouter;

@@ -9,5 +9,9 @@ export default interface ILessonRepository {
     data: Partial<Lesson>
   ): Promise<Lesson | null>;
   deleteLessonById(lessonId: string): Promise<Lesson | null>;
+  fetchMentorLessonByTitle(
+    mentorId: string,
+    title: string
+  ): Promise<Lesson | null>;
   createLesson(data: CreateLessonDTO, mentorId: string): Promise<Lesson | null>;
 }

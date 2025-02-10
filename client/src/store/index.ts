@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducers from "./slices/authSlice";
+import themeReducers from "./slices/themeSlice";
 
 // import learnerReducers from "./slices/learnersSlice";
 // import mentorReducers from "./slices/mentorsSlice";
@@ -11,6 +12,7 @@ import materialReducers from "./slices/materialSlice";
 const store = configureStore({
   reducer: {
     auth: authReducers,
+    theme: themeReducers,
     course: courseReducers,
     lesson: lessonReducers,
     material: materialReducers,

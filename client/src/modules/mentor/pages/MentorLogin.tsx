@@ -5,8 +5,10 @@ import ForgotPasswordModal from "../components/MentorForgotPasswordModal";
 
 // Imported the custom hooks
 import useMentorAuth from "../hooks/useMentorAuth";
+import { useNavigate } from "react-router-dom";
 
 const MentorLogin: React.FC = () => {
+  const navigate = useNavigate();
   const {
     loading,
     error,
@@ -55,6 +57,13 @@ const MentorLogin: React.FC = () => {
       {/* Right side - Form Section */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16">
         <div className="max-w-md w-full mx-auto">
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          >
+            Learner
+          </button>
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold mb-2 text-purple-600">
               {isLogin ? "Mentor Login" : "Mentor Signup"}

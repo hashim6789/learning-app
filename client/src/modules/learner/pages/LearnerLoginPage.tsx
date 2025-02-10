@@ -9,8 +9,11 @@ import ForgotPasswordModal from "../components/LearnerForgotPassword";
 
 // Imported the custom hooks
 import useLearnerAuth from "../hooks/useLearnerAuth";
+import { useNavigate } from "react-router-dom";
 
 const LearnerLoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const {
     loading,
     error,
@@ -59,6 +62,13 @@ const LearnerLoginPage: React.FC = () => {
       {/* Right side - Form Section */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16">
         <div className="max-w-md w-full mx-auto">
+          <button
+            type="button"
+            onClick={() => navigate("/mentor/login")}
+            className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+          >
+            Mentor
+          </button>
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold mb-2 text-blue-600">
               {isLogin ? "Learner Login" : "Learner Signup"}

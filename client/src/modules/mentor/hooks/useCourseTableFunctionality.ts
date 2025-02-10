@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import { Course } from "../../../shared/types/Course";
 
-export type CourseStatus = "approved" | "rejected" | "pending" | "draft";
-
+import { CourseStatus } from "../../../shared/types/CourseStatus";
 interface UseCourseTableFunctionalityOptions {
   data: Omit<Course, "lessons" | "description">[];
   itemsPerPage: number;
