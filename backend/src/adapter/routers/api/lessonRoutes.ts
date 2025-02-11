@@ -14,7 +14,7 @@ const lessonRouter = express.Router();
 
 /**
  * mentor lesson create route
- * endpoint - /mentor/lessons
+ * endpoint - /api/lessons
  * method -  post
  * body - {title, description, materials, duration}
  * response - {success, message, data:lesson}
@@ -29,7 +29,7 @@ lessonRouter.post(
 
 /**
  * fetch mentor lesson route
- * endpoint - /mentor/lessons
+ * endpoint - /api/lessons
  * method -  get
  * body - {}
  * response - {success, message, data:lessons}
@@ -44,7 +44,7 @@ lessonRouter.get(
 
 /**
  * fetch mentor lessons route
- * endpoint - /mentor/lessons/:lessonId
+ * endpoint - /api/lessons/:lessonId
  * method -  get
  * params - {lessonId}
  * response - {success, message, data:lesson}
@@ -59,7 +59,7 @@ lessonRouter.get(
 
 /**
  * mentor lesson update route
- * endpoint - /mentor/lessons/:lessonId
+ * endpoint - /api/lessons/:lessonId
  * method -  put
  * body - {title, description, materials, duration}
  * params - {lessonId}
@@ -75,7 +75,7 @@ lessonRouter.put(
 
 /**
  * mentor delete lesson route
- * endpoint - /mentor/lessons/:lessonId
+ * endpoint - /api/lessons/:lessonId
  * method -  delete
  * params - {lessonId}
  * response - {success, message, data:lesson}
@@ -90,7 +90,7 @@ lessonRouter.delete(
 
 /**
  * fetch mentor materials by lessonId route
- * endpoint - /mentor/lessons/:lessonId/materials
+ * endpoint - /api/lessons/:lessonId/materials
  * method -  get
  * params - {lessonId}
  * response - {success, message, data:materials}

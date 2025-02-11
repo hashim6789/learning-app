@@ -1,5 +1,7 @@
 import React from "react";
 import { sampleCourses } from "../../../../shared/sample/sampleCourse";
+import useFetch from "../../../../hooks/useFetch";
+import { Course } from "../../../../shared/types/Course";
 
 export enum CourseStatus {
   NEW = "NEW",
@@ -18,22 +20,22 @@ export interface Lesson {
   title: string;
 }
 
-export interface Course {
-  id: string;
-  status: CourseStatus;
-  title: string;
-  category: Category;
-  thumbnail: string;
-  lessons: Lesson[];
-  description: string;
-  certificateType: string;
-}
+// export interface Course {
+//   id: string;
+//   status: CourseStatus;
+//   title: string;
+//   category: Category;
+//   thumbnail: string;
+//   lessons: Lesson[];
+//   description: string;
+//   certificateType: string;
+// }
 
 interface CourseGridProps {
   courses: Course[];
 }
 
-const CourseGrid: React.FC<CourseGridProps> = ({ courses = sampleCourses }) => {
+const CourseGrid: React.FC<CourseGridProps> = ({ courses }) => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6">Most Popular Courses</h2>
@@ -71,7 +73,7 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses = sampleCourses }) => {
                   />
                 )} */}
                 <span className="text-sm text-gray-600">
-                  {course.category.name}
+                  {course.category.title}
                 </span>
               </div>
 

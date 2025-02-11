@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoutes";
 import LearnerLoginPage from "../modules/learner/pages/LearnerLoginPage";
@@ -7,6 +6,9 @@ import LearnerLayout from "../modules/learner/pages/LearnerLayout";
 import LearnerOtpPage from "../modules/learner/pages/LearnerOtpPage";
 import LearnerChangePasswordPage from "../modules/learner/pages/LearnerChangePasswordPage";
 import LearnerLandingPage from "../modules/learner/pages/LearnerLandingPage";
+import LearnerCoursePage from "../modules/learner/pages/course/LearnerCoursesPage";
+import CourseDetails from "../modules/learner/pages/course/CourseDetailPage";
+import LearnerCoursesPage from "../modules/learner/pages/course/LearnerCoursesPage";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -33,6 +35,14 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
       {
         path: "auth/:token/change-password",
         element: <LearnerChangePasswordPage />,
+      },
+      {
+        path: "courses",
+        element: <LearnerLayout />,
+        children: [
+          { path: "", element: <LearnerCoursesPage /> },
+          { path: ":courseId", element: <CourseDetails /> },
+        ],
       },
       {
         element: <ProtectedRoute role="learner" />,

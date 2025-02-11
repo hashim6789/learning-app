@@ -82,10 +82,8 @@ coursesRouter.patch(
  */
 coursesRouter.get(
   "/",
-  authenticateToken,
-  checkUserBlocked,
-  authorizeRole(["mentor"]),
-  courseController.getAllCourseOfMentor
+  authorizeRole(["mentor", "learner"]),
+  courseController.getAllPublishedCourses
 );
 
 /**

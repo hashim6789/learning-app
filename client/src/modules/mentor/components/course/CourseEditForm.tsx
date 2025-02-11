@@ -86,9 +86,10 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
     defaultValues: course || {
       title: "",
       description: "",
-      lessons: lessons
-        ? lessons.map((lesson) => ({ id: "", title: lesson.title }))
-        : [],
+      lessons: [],
+      // lessons: lessons
+      //   ? lessons.map((lesson) => ({ id: "", title: lesson.title }))
+      //   : [],
       duration: 30,
     },
   });
@@ -112,7 +113,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
   const onSubmit = async (data: Course) => {
     setIsSubmitting(true);
     try {
-      const titleRemovedLessons = data.lessons.map((material) => material.id);
+      const titleRemovedLessons = data.lessons.map((lesson) => lesson.id);
       const putData = { ...data, lessons: titleRemovedLessons };
       const response = await api.put(`/mentor/courses/${course.id}`, putData);
       if (response && response.status === 200 && response.data) {
@@ -204,15 +205,15 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
                           })}
                           className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         >
-                          <option value="">Select Lesson</option>
+                          <option value="">Select Lesso</option>
                           {lessonsLoading ? (
                             <option>Loading...</option>
                           ) : lessonsError ? (
                             <option>Error loading lessons</option>
                           ) : lessons ? (
-                            lessons.map((material) => (
-                              <option key={material.id} value={material.title}>
-                                {material.title}
+                            lessons.map((lesson) => (
+                              <option key={lesson.id} value={lesson.title}>
+                                {lesson.title}
                               </option>
                             ))
                           ) : null}

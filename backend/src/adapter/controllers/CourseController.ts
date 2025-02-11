@@ -14,6 +14,8 @@ import DeleteCourseUseCase from "../../application/use_cases/mentor/DeleteCourse
 import UpdateCourseStatusUseCase from "../../application/use_cases/course/UpdateCourseStatusUseCase";
 import GetCourseByIdUseCase from "../../application/use_cases/course/GetCourseByIdUseCase";
 import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
+import GetAllPublishedCoursesUseCase from "../../application/use_cases/course/GetAllPublishedCoursesUseCase";
+import { CourseQuery } from "../../shared/types/filters";
 
 //created the instances
 const mentorRepository = new MentorRepository();
@@ -47,6 +49,10 @@ const updateCourseStatusUseCase = new UpdateCourseStatusUseCase(
 );
 
 const getCourseByIdUseCase = new GetCourseByIdUseCase(courseRepository);
+
+const getAllPublishedCoursesUseCase = new GetAllPublishedCoursesUseCase(
+  courseRepository
+);
 
 //Course controller
 class CourseController {
@@ -161,7 +167,19 @@ class CourseController {
   ): Promise<void> {
     try {
       const mentorId = req.user?.userId || "";
-      const response = await getAllCourseOfMentorUseCase.execute(mentorId);
+
+      const {
+        status = "all",
+        search = "",
+        page = "1",
+        limit = "10",
+      } = req.query as any;
+      const response = await getAllCourseOfMentorUseCase.execute(mentorId, {
+        status,
+        search,
+        page,
+        limit,
+      });
       if (response.success && response.data) {
         res
           .status(200)
@@ -250,6 +268,25 @@ class CourseController {
       const { courseId } = req.params;
 
       const response = await getCourseByIdUseCase.execute(courseId);
+      if (response.success && response.data) {
+        res
+          .status(200)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+  //get all published courses
+  async getAllPublishedCourses(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const response = await getAllPublishedCoursesUseCase.execute();
       if (response.success && response.data) {
         res
           .status(200)

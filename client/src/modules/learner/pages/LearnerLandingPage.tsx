@@ -1,16 +1,14 @@
 import React from "react";
 import CourseGrid from "../components/course/CourseGrid";
-import { sampleCourses } from "../../../shared/sample/sampleCourse";
+import useFetch from "../../../hooks/useFetch";
+import { Course } from "../../../shared/types/Course";
 
 interface LearnerLandingPageProps {}
 
 const LearnerLandingPage: React.FC<LearnerLandingPageProps> = ({}) => {
-  return (
-    <>
-      <div>LearnerLandingPage</div>
-      <CourseGrid courses={sampleCourses} />
-    </>
-  );
+  const { data } = useFetch<Course[]>("/api/courses");
+
+  return <>{data && <CourseGrid courses={data} />}</>;
 };
 
 export default LearnerLandingPage;

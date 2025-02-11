@@ -25,6 +25,8 @@ import { showToast } from "../../../../shared/utils/toastUtils";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import LoadingComponent from "../../components/LoadingComponent";
+import ErrorComponent from "../../components/ErrorComponent";
 
 interface Lesson {
   id: string;
@@ -146,19 +148,12 @@ const MentorLessonDetailsPage = () => {
   };
 
   if (lessonLoading) {
-    return (
-      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    );
+    return <LoadingComponent item="lesson" theme="purple" />;
   }
 
+  // Error handling
   if (lessonError || !lesson) {
-    return (
-      <div className="min-h-screen bg-purple-50 flex items-center justify-center text-red-600">
-        Error loading lesson
-      </div>
-    );
+    return <ErrorComponent item="lesson" theme="purple" />;
   }
 
   return (

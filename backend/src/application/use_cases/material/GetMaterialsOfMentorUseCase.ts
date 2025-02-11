@@ -1,6 +1,7 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateMaterialDTO } from "../../../shared/dtos/CreateMaterialDTO";
 import IMaterialRepository from "../../IRepositories/IMaterialRepository";
+import { MaterialQuery } from "../../../shared/types/filters";
 
 class GetMaterialsOfMentorUseCase {
   private materialRepository: IMaterialRepository;
@@ -9,10 +10,16 @@ class GetMaterialsOfMentorUseCase {
     this.materialRepository = materialRepository;
   }
 
-  async execute(mentorId: string): Promise<ResponseModel> {
+  async execute(
+    mentorId: string,
+    filter: MaterialQuery
+  ): Promise<ResponseModel> {
     try {
       const fetchedMaterials =
-        await this.materialRepository.fetchMaterialsByMentorId(mentorId);
+        await this.materialRepository.fetchMaterialsByMentorId(
+          mentorId,
+          filter
+        );
       if (!fetchedMaterials) {
         return {
           statusCode: 400,

@@ -3,6 +3,7 @@ import Lesson from "../../../application/entities/Lesson";
 import ILessonRepository from "../../../application/IRepositories/ILessonRepository";
 import LessonModel, { ILessons } from "../models/LessonModel";
 import mongoose from "mongoose";
+import { LessonQuery } from "../../../shared/types/filters";
 
 class LessonRepository implements ILessonRepository {
   async fetchLessonById(lessonId: string): Promise<Lesson | null> {
@@ -16,11 +17,20 @@ class LessonRepository implements ILessonRepository {
       throw new Error("Failed to fetch the lesson");
     }
   }
-  async fetchAllLessonsByMentorId(mentorId: string): Promise<Lesson[] | null> {
+  async fetchAllLessonsByMentorId(
+    mentorId: string,
+    { search = "", page = "1", limit = "10" }: LessonQuery
+  ): Promise<Lesson[] | null> {
     try {
-      const lessons = await LessonModel.find({ mentorId }).sort({
-        createdAt: -1,
-      });
+      const lessons = await LessonModel.find({
+        mentorId,
+        title: { $regex: search, $options: "i" },
+      })
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
+        .sort({
+          createdAt: -1,
+        });
       return lessons ? lessons.map(mappedLesson) : null;
     } catch (error) {
       throw new Error("Failed to fetch the lessons");

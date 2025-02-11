@@ -7,6 +7,7 @@ import { ICategory } from "../models/CategoryModel";
 import { ILessons } from "../models/LessonModel";
 import { Category } from "../../../application/entities/Category";
 import mongoose from "mongoose";
+import { CourseQuery } from "../../../shared/types/filters";
 
 class CourseRepository implements ICourseRepository {
   //find a course by id
@@ -37,7 +38,9 @@ class CourseRepository implements ICourseRepository {
   //fetch all courses
   async fetchAllCourses(): Promise<Course[] | null> {
     try {
-      const courses = await CourseModel.find()
+      const courses = await CourseModel.find({
+        status: { $in: ["requested", "approved", "published"] },
+      })
         .populate("categoryId", "_id title isListed")
         .orFail()
         .sort({
@@ -104,14 +107,22 @@ class CourseRepository implements ICourseRepository {
     }
   }
 
-  async fetchAllCoursesByMentorId(mentorId: string): Promise<Course[] | null> {
+  async fetchAllCoursesByMentorId(
+    mentorId: string,
+    { status = "all", search = "", page = "1", limit = "10" }: CourseQuery
+  ): Promise<Course[] | null> {
     try {
-      const courses = await CourseModel.find({ mentorId })
+      const courses = await CourseModel.find({
+        mentorId,
+        status: status !== "all" ? status : { $exists: true },
+        title: { $regex: search, $options: "i" },
+      })
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
         .populate("categoryId", "_id title isListed")
         .orFail()
-        .sort({
-          createdAt: -1,
-        });
+        .sort({ createdAt: -1 });
+
       if (!courses) return null;
       return courses.map((course) => courseMapping(course));
     } catch (error) {
@@ -137,6 +148,18 @@ class CourseRepository implements ICourseRepository {
       });
 
       return updatedCourse ? courseMapping(updatedCourse) : null;
+    } catch (error) {
+      throw new Error("Failed to add lesson to the course");
+    }
+  }
+  async fetchAllCoursesByFilter(filter: object): Promise<Course[] | null> {
+    try {
+      const filteredCourse = await CourseModel.find(filter).populate({
+        path: "categoryId",
+        select: "title _id",
+      });
+
+      return filteredCourse.map((course) => courseMapping(course));
     } catch (error) {
       throw new Error("Failed to add lesson to the course");
     }

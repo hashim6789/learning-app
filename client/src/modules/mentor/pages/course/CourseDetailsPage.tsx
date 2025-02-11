@@ -1,22 +1,15 @@
 import { useParams } from "react-router-dom";
 import useFetch from "../../../../hooks/useFetch";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Edit, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Edit, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
 import { setCourse } from "../../../../store/slices/courseSlice";
 import { Course } from "../../../../shared/types/Course";
 import CourseDetails from "../../components/course/CourseDetails";
 import CourseEditForm from "../../components/course/CourseEditForm";
-import { CourseStatus } from "../../hooks/useCourseTableFunctionality";
-
-// interface Course {
-//   id: string;
-//   title: string;
-//   description: string;
-//   lessons: { id: string; title: string }[];
-//   duration: number;
-// }
+import LoadingComponent from "../../components/LoadingComponent";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const MentorCourseDetailsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +17,7 @@ const MentorCourseDetailsPage = () => {
   const { course } = useSelector((state: RootState) => state.course);
   const isPossible = (course: Course): boolean =>
     course
-      ? ["approved", "completed", "requested"].includes(course.status)
+      ? ["approved", "published", "requested"].includes(course.status)
         ? false
         : true
       : false;
@@ -54,34 +47,26 @@ const MentorCourseDetailsPage = () => {
   };
 
   if (courseLoading) {
-    return (
-      <div className="min-h-screen bg-purple-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    );
+    return <LoadingComponent item="course" theme="purple" />;
   }
 
+  // Error handling
   if (courseError || !course) {
-    return (
-      <div className="min-h-screen bg-purple-50 flex items-center justify-center text-red-600">
-        Error loading course
-      </div>
-    );
+    return <ErrorComponent item="course" theme="purple" />;
   }
 
   return (
     <div className="min-h-screen bg-purple-50 py-8 px-4">
+      <button
+        className="flex items-center text-purple-600 hover:text-purple-800 transition-colors"
+        onClick={() => window.history.back()}
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back to Courses
+      </button>
       <div className="max-w-4xl mx-auto">
         {/* Header with Back Button and Edit Toggle */}
         <div className="flex justify-between items-center mb-6">
-          <button
-            className="flex items-center text-purple-600 hover:text-purple-800 transition-colors"
-            onClick={() => window.history.back()}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Courses
-          </button>
-
           {isEditPossible && (
             <button
               onClick={() => setIsEditing(!isEditing)}

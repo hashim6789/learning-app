@@ -2,6 +2,7 @@ import { CreateMaterialDTO } from "../../../shared/dtos/CreateMaterialDTO";
 import Material from "../../../application/entities/Material";
 import IMaterialRepository from "../../../application/IRepositories/IMaterialRepository";
 import MaterialModel, { IMaterial } from "../models/MaterialModel";
+import { MaterialQuery } from "../../../shared/types/filters";
 
 class MaterialRepository implements IMaterialRepository {
   async fetchMaterialById(materialId: string): Promise<Material | null> {
@@ -41,13 +42,22 @@ class MaterialRepository implements IMaterialRepository {
     }
   }
 
-  async fetchMaterialsByMentorId(mentorId: string): Promise<Material[] | null> {
+  async fetchMaterialsByMentorId(
+    mentorId: string,
+    { type = "all", search = "", page = "1", limit = "10" }: MaterialQuery
+  ): Promise<Material[] | null> {
     try {
-      const materials = await MaterialModel.find({ mentorId }).sort({
-        createdAt: -1,
-      });
+      const materials = await MaterialModel.find({
+        mentorId,
+        type: type !== "all" ? type : { $exists: true },
+        title: { $regex: search, $options: "i" },
+      })
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
+        .sort({ createdAt: -1 });
+
       if (!materials) return null;
-      return materials ? materials.map(mapMaterial) : null;
+      return materials.map((material) => mapMaterial(material));
     } catch (error) {
       throw new Error("Failed to fetch materials by type");
     }

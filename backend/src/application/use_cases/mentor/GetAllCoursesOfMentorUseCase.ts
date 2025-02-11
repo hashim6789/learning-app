@@ -1,3 +1,4 @@
+import { CourseQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
@@ -19,7 +20,7 @@ class GetAllCourseOfMentorUseCase {
     this.mentorRepository = mentorRepository;
   }
 
-  async execute(mentorId: string): Promise<ResponseModel> {
+  async execute(mentorId: string, filter: CourseQuery): Promise<ResponseModel> {
     try {
       const mentor = await this.mentorRepository.fetchMentorById(mentorId);
       if (!mentor || mentor.isBlocked) {
@@ -31,7 +32,8 @@ class GetAllCourseOfMentorUseCase {
       }
 
       const courses = await this.courseRepository.fetchAllCoursesByMentorId(
-        mentorId
+        mentorId,
+        filter
       );
 
       if (!courses) {

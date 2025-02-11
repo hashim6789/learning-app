@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 import api from "../shared/utils/api";
 import { showToast } from "../shared/utils/toastUtils";
@@ -95,7 +95,7 @@ const useCourseManagement = () => {
   };
 
   // Delete a course
-  const deleteCourse = async (courseId: string) => {
+  const deleteCourse = async (courseId: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
@@ -110,14 +110,22 @@ const useCourseManagement = () => {
       });
 
       if (result.isConfirmed) {
-        await api.delete(`${baseUrl}/mentor/courses/${courseId}`);
-        showToast.success("Course deleted successfully!");
+        const response = await api.delete(
+          `${baseUrl}/mentor/courses/${courseId}`
+        );
+        if (response && response.status === 200) {
+          showToast.success("Course deleted successfully!");
+          return true;
+        }
+        showToast.error("Course deleted failed!");
       } else {
         showToast.info("Deletion canceled.");
       }
+      return false;
     } catch (err: any) {
       showToast.error("Failed to delete course");
       setError(err.response?.data?.message || "Failed to delete course");
+      return false;
     } finally {
       setLoading(false);
     }

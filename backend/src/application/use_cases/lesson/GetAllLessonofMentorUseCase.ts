@@ -1,3 +1,4 @@
+import { LessonQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import ILessonRepository from "../../IRepositories/ILessonRepository";
 
@@ -8,10 +9,11 @@ class GetAllLessonsOfMentorUseCase {
     this.lessonRepository = lessonRepository;
   }
 
-  async execute(mentorId: string): Promise<ResponseModel> {
+  async execute(mentorId: string, filter: LessonQuery): Promise<ResponseModel> {
     try {
       const lessons = await this.lessonRepository.fetchAllLessonsByMentorId(
-        mentorId
+        mentorId,
+        filter
       );
       if (!lessons) {
         return {

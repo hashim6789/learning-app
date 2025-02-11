@@ -83,8 +83,13 @@ class LessonController {
   }
   async getAllLessonsOfMentor(req: Request, res: Response, next: NextFunction) {
     try {
+      const { search = "", page = "1", limit = "10" } = req.query as any;
       const mentorId = req.user?.userId || "";
-      const response = await getAllLessonsOfMentorUseCase.execute(mentorId);
+      const response = await getAllLessonsOfMentorUseCase.execute(mentorId, {
+        search,
+        page,
+        limit,
+      });
       if (response.success && response.data) {
         const { lessons } = response.data as { lessons: Lesson[] };
         res.status(200).json({ message: response.message, data: lessons });

@@ -69,6 +69,10 @@ import { showToast } from "../../../../shared/utils/toastUtils";
 import { CourseStatus } from "../../../../shared/types/CourseStatus";
 import { getCourseStatusIcon } from "../../../../shared/utils/icons";
 import { getCourseStatusColor } from "../../../../shared/utils/colors";
+import ErrorComponent from "../ErrorComponent";
+import useCourseManagement from "../../../../hooks/useCourseManagement";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 interface CourseDetailsProps {
   userRole: "mentor" | "admin" | "student";
@@ -84,13 +88,40 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState<CourseStatus>("draft");
 
+  const navigate = useNavigate();
+
+  const { deleteCourse } = useCourseManagement();
+
   if (!course) {
-    return <div>The course does not exist</div>;
+    return <ErrorComponent item="course" theme="purple" />;
   }
 
   const handleStatusChange = (status: CourseStatus) => {
     setNewStatus(status);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async (courseId: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#6B46C1",
+      cancelButtonColor: "#E53E3E",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const result = await deleteCourse(courseId);
+        if (result) {
+          navigate("/mentor/my-courses");
+        }
+      } catch (error: any) {
+        showToast.error(error.message);
+      }
+    }
   };
 
   const confirmStatusChange = async () => {
@@ -146,6 +177,17 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
           <p className="text-gray-700 leading-relaxed">{course.description}</p>
         </div>
 
+        {userRole === "mentor" &&
+          ["draft", "completed"].includes(course.status) && (
+            <div>
+              <button
+                onClick={() => handleDelete(course.id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          )}
         {userRole === "mentor" && course.status === "draft" && (
           <div>
             <button

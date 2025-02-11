@@ -99,8 +99,19 @@ class MaterialController {
   }
   async getMaterialsOfMentor(req: Request, res: Response, next: NextFunction) {
     try {
+      const {
+        type = "all",
+        search = "",
+        page = "1",
+        limit = "10",
+      } = req.query as any;
       const mentorId = req.user?.userId || "";
-      const response = await getMaterialsOfMentorUseCase.execute(mentorId);
+      const response = await getMaterialsOfMentorUseCase.execute(mentorId, {
+        type,
+        search,
+        page,
+        limit,
+      });
       if (response.success && response.data) {
         const { materials } = response.data as {
           materials: Material[];

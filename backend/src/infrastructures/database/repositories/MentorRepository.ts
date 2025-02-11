@@ -196,6 +196,23 @@ class MentorRepository implements IMentorRepository {
       throw new Error("Failed to aggregate courses of the mentor");
     }
   }
+
+  async setCreatedCourseId(
+    mentorId: string,
+    courseId: string
+  ): Promise<Mentor | null> {
+    try {
+      const updatedMentor = await MentorModel.findByIdAndUpdate(
+        mentorId,
+        { $addToSet: { createdCourses: courseId } },
+        { new: true }
+      );
+      if (!updatedMentor) return null;
+      return mappingMentor(updatedMentor);
+    } catch (error) {
+      throw new Error("Failed to set courseId to the mentor");
+    }
+  }
 }
 
 //to convert IMentor to Mentor

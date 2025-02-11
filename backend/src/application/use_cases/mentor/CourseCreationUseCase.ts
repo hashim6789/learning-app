@@ -52,14 +52,27 @@ class CourseCreationUseCase {
           success: false,
           message: "The course creation failed!",
         };
-      } else {
+      }
+
+      if (!createdCourse.id) {
         return {
-          statusCode: 201,
-          success: true,
-          message: "The course is created successfully.",
-          data: createdCourse,
+          statusCode: 400,
+          success: false,
+          message: "The courseId of created course is null!",
         };
       }
+
+      const updatedMentor = await this.mentorRepository.setCreatedCourseId(
+        createdCourse.mentorId,
+        createdCourse.id
+      );
+
+      return {
+        statusCode: 201,
+        success: true,
+        message: "The course is created successfully.",
+        data: createdCourse,
+      };
     } catch (error) {
       throw new Error(
         "An error occurred while creating the course: " + (error as string)

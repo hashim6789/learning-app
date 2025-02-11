@@ -10,4 +10,5 @@ export interface Course {
   lessons: { id: string; title: string }[];
   description: string;
   duration: number;
+  price: number;
 }
