@@ -8,7 +8,7 @@ import { showToast } from "../../../../shared/utils/toastUtils";
 const verifyPasswordSchema = z.object({
   currentPassword: z
     .string()
-    .min(8, "Current password must be at least 8 characters"),
+    .min(6, "Current password must be at least 6 characters"),
 });
 
 const changePasswordSchema = z
@@ -54,7 +54,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
     // Simulate an API request for password verification
     try {
       const response = await api.post("/mentor/profile/verify-password", data);
-      if (response.data === 200 && response.data) {
+      if (response.status === 200 && response.data) {
         console.log(response);
         showToast.success(response.data.message);
         setIsVerified(true);
@@ -70,7 +70,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
 
     try {
       const response = await api.post("/mentor/profile/change-password", data);
-      if (response.data === 200 && response.data) {
+      if (response.status === 200 && response.data) {
         console.log(response);
         showToast.success(response.data.message);
         setIsVerified(false);

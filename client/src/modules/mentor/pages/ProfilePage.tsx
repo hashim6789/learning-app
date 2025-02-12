@@ -22,7 +22,7 @@ const MentorProfile = () => {
       <h1 className="text-2xl font-bold">Account & Settings</h1>
 
       <div className="w-full">
-        <div className="grid grid-cols-3 w-full mb-4">
+        <div className="grid grid-cols-2 w-full mb-4">
           <button
             onClick={() => setNavState("personal")}
             className={`flex items-center gap-2 p-2 border-b-2 ${
@@ -40,9 +40,9 @@ const MentorProfile = () => {
           >
             {" "}
             <KeyRound className="h-4 w-4" />
-            Password Details
+            Change Password
           </button>
-          <button
+          {/* <button
             onClick={() => setNavState("bank")}
             className={`flex items-center gap-2 p-2 border-b-2 ${
               navState === "bank" && activeStyle
@@ -51,7 +51,7 @@ const MentorProfile = () => {
             {" "}
             <CreditCard className="h-4 w-4" />
             Bank Details
-          </button>
+          </button> */}
         </div>
         {navState === "personal" && <PersonalDetails />}
 

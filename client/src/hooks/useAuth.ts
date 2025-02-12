@@ -76,7 +76,6 @@ const useAuth = () => {
   // for logout
   const handleLogout = (user: User) => {
     dispatch(logout(user));
-    navigate("/login");
   };
 
   return {

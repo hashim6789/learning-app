@@ -19,20 +19,41 @@ const profileRouter = express.Router();
  * body - {}
  * response - {success, message, data:categories}
  */
-// profileRouter.get(
-//   "/personal",
-//   authenticateToken,
-//   checkUserBlocked,
-//   authorizeRole(["mentor", "learner"]),
-//   profileController.fetchProfileDetailsOfUser
-// );
+profileRouter.get(
+  "/",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["mentor", "learner"]),
+  profileController.fetchProfileDetailsOfMentor
+);
 
 profileRouter.put(
   "/personal",
   authenticateToken,
   checkUserBlocked,
-  authorizeRole(["mentor", "learner"]),
+  authorizeRole(["mentor"]),
   profileController.updateProfileOfMentor
+);
+profileRouter.put(
+  "/profile-img",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["mentor"]),
+  profileController.updateProfileImageOfMentor
+);
+profileRouter.post(
+  "/verify-password",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["mentor"]),
+  profileController.verifyPasswordForMentor
+);
+profileRouter.post(
+  "/change-password",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["mentor"]),
+  profileController.changePasswordForMentor
 );
 
 // profileRouter.put(

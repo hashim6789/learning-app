@@ -1,24 +1,29 @@
 import { Request, Response, NextFunction } from "express";
 
-//imported the repositories
-// import ProfileRepository from "../../infrastructures/database/repositories/ProfileRepository";
-
 //imported the use cases
 import UpdateProfileByIdUseCase from "../../application/use_cases/profile/UpdateProfile";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
-// import GetCategoriesUseCase from "../../application/use_cases/admin/GetCategoriesUseCase";
-// import CreateProfileUseCase from "../../application/use_cases/admin/CreateProfileUseCase";
-// import ListUnListProfileUseCase from "../../application/use_cases/admin/ListUnlistProfileUseCase";
-// import UpdateProfileUseCase from "../../application/use_cases/admin/UpdateProfileUseCase";
+import GetProfileForMentorUseCase from "../../application/use_cases/profile/GetProfileForMentor";
+import { Mentor } from "../../application/entities/Mentor";
+import UpdateProfileImageForMentorUseCase from "../../application/use_cases/profile/UpdateProfileImageForMentor";
+import VerifyCurrentPasswordForMentorUseCase from "../../application/use_cases/profile/VerifyCurrentPasswordUseCase";
+import ChangeMentorPasswordUseCase from "../../application/use_cases/profile/ChangePasswordForMentom";
 
 //created the instances
 const mentorRepository = new MentorRepository();
-// const getCategoriesUseCase = new GetCategoriesUseCase(profileRepository);
-// const createProfileUseCase = new CreateProfileUseCase(profileRepository);
-// const listUnListProfileUseCase = new ListUnListProfileUseCase(
-//   profileRepository
-// );
+
 const updateProfileByIdUseCase = new UpdateProfileByIdUseCase(mentorRepository);
+const getProfileForMentorUseCase = new GetProfileForMentorUseCase(
+  mentorRepository
+);
+const updateProfileImageOfMentorUseCase =
+  new UpdateProfileImageForMentorUseCase(mentorRepository);
+const verifyCurrentPasswordForMentorUseCase =
+  new VerifyCurrentPasswordForMentorUseCase(mentorRepository);
+
+const changePasswordForMentorUseCase = new ChangeMentorPasswordUseCase(
+  mentorRepository
+);
 
 //mentor controller
 class ProfileController {
@@ -82,6 +87,102 @@ class ProfileController {
       } else {
         res.status(response.statusCode).json({ message: response.message });
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //update profile
+  async updateProfileImageOfMentor(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?.userId || "";
+      const { profilePicture } = req.body;
+      const response = await updateProfileImageOfMentorUseCase.execute(
+        {
+          profilePicture,
+        },
+        userId
+      );
+      if (response && response.data) {
+        res
+          .status(response.statusCode)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(response.statusCode).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //get profile
+  async fetchProfileDetailsOfMentor(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mentorId = req.user?.userId || "";
+      const response = await getProfileForMentorUseCase.execute(mentorId);
+      const { mentor } = response.data as { mentor: Mentor[] };
+
+      if (response && response.data) {
+        res
+          .status(response.statusCode)
+          .json({ message: response.message, data: mentor });
+      } else {
+        res.status(response.statusCode).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //verify current password
+  async verifyPasswordForMentor(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mentorId = req.user?.userId || "";
+      const { currentPassword } = req.body;
+      const response = await verifyCurrentPasswordForMentorUseCase.execute(
+        { currentPassword },
+        mentorId
+      );
+      const { isVerified } = response.data as { isVerified: boolean };
+
+      if (response && response.data) {
+        res
+          .status(response.statusCode)
+          .json({ message: response.message, data: isVerified });
+      } else {
+        res.status(response.statusCode).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //verify current password
+  async changePasswordForMentor(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const mentorId = req.user?.userId || "";
+      const { newPassword, confirmPassword } = req.body;
+      const response = await changePasswordForMentorUseCase.execute(
+        { newPassword, confirmPassword },
+        mentorId
+      );
+      res.status(response.statusCode).json({ message: response.message });
     } catch (error) {
       next(error);
     }
