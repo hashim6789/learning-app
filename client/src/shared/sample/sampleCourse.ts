@@ -4,6 +4,27 @@ export enum CourseStatus {
   COMPLETED = "COMPLETED",
 }
 
+// // Sample course data
+//   const course: Course = {
+//     id: "1",
+//     status: "published",
+//     title: "Version Control System",
+//     category: "Development",
+//     thumbnail: "/api/placeholder/800/400",
+//     lessons: [
+//       { id: "1", title: "Introduction to Version Control Systems" },
+//       { id: "2", title: "Types of VCS" },
+//       { id: "3", title: "Distributed Version Control Systems (DVCS)" },
+//     ],
+//     description:
+//       "Learn comprehensive version control systems and their implementation",
+//     duration: 32,
+//   };
+
+//   const originalPrice = 99.99;
+//   const discountedPrice = 49.65;
+//   const discount = 50;
+
 export interface Category {
   id: string;
   name: string;

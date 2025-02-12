@@ -1,14 +1,8 @@
-import React, { useState } from "react";
-import { Search, Trash2, BookOpen } from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useTableFunctionality } from "../../../hooks/useTable";
-import useCourseManagement from "../../../hooks/useCourseManagement";
-import { config } from "../../../shared/configs/config";
 import { CourseStatus } from "../../../shared/types/CourseStatus";
 import { useCourseTableFunctionality } from "../hooks/useCourseTableFunctionality";
-import { Category } from "../../../shared/types/Category";
 import { getCourseStatusColor } from "../../../shared/utils/colors";
-import { Course } from "../../../shared/types/Course";
 
 interface CourseCardProps {}
 
@@ -23,7 +17,6 @@ const CourseCard: React.FC<CourseCardProps> = () => {
     handleSearchChange,
     handleFilterChange,
     data,
-    handleDelete,
   } = useCourseTableFunctionality({
     itemsPerPage: 6,
     filterField: "title",

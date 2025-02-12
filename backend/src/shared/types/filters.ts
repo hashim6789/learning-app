@@ -4,6 +4,12 @@ export type CourseQuery = {
   page?: string;
   limit?: string;
 };
+export type CourseLearnerQuery = {
+  category?: string;
+  search?: string;
+  page?: string;
+  limit?: string;
+};
 export type MaterialQuery = {
   type?: string;
   search?: string;

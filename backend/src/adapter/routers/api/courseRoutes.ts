@@ -110,10 +110,8 @@ coursesRouter.get(
  */
 coursesRouter.get(
   "/:courseId",
-  authenticateToken,
-  checkUserBlocked,
-  authorizeRole(["mentor"]),
-  courseController.getCourseOfMentorByCourseId
+  authorizeRole(["learner"]),
+  courseController.getCourseForLearner
 );
 
 /**

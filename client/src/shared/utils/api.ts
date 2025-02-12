@@ -85,11 +85,14 @@ api.interceptors.response.use(
       document.cookie =
         "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       console.log("error found: User Blocked");
-      const user =
-        JSON.parse(localStorage.getItem("user") || "null") ?? "learner";
+      const user = JSON.parse(localStorage.getItem("user") || "null");
 
       console.log("object", user);
-      window.location.href = `/${user}/login`;
+      if (user === "learner") {
+        window.location.href = `/login`;
+      } else {
+        window.location.href = `/${user}/login`;
+      }
     }
 
     return Promise.reject(error);

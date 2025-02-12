@@ -286,7 +286,44 @@ class CourseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const response = await getAllPublishedCoursesUseCase.execute();
+      const {
+        category = "all",
+        search = "",
+        page = "1",
+        limit = "10",
+      } = req.query as any;
+      const response = await getAllPublishedCoursesUseCase.execute({
+        category,
+        search,
+        page,
+        limit,
+      });
+      if (response.success && response.data) {
+        res
+          .status(200)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+  //get all published courses
+  async getCourseForLearner(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      // const {
+      //   category = "all",
+      //   search = "",
+      //   page = "1",
+      //   limit = "10",
+      // } = req.query as any;
+      const { courseId } = req.params;
+      const response = await getCourseByIdUseCase.execute(courseId);
       if (response.success && response.data) {
         res
           .status(200)

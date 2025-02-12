@@ -1,4 +1,5 @@
 import { CourseStatus } from "../../../shared/types";
+import { CourseLearnerQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 
@@ -8,12 +9,13 @@ class GetAllPublishedCoursesUseCase {
     this.courseRepository = courseRepository;
   }
 
-  async execute(): Promise<ResponseModel> {
+  async execute(filter: CourseLearnerQuery): Promise<ResponseModel> {
     try {
       const publishedCourse =
-        await this.courseRepository.fetchAllCoursesByFilter({
-          status: "published",
-        });
+        await this.courseRepository.fetchAllCoursesByFilter(
+          "published",
+          filter
+        );
       if (!publishedCourse) {
         return {
           statusCode: 404,

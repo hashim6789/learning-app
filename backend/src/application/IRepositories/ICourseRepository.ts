@@ -1,5 +1,6 @@
 import { CreateCourseDTO } from "../../shared/dtos/createCourseDTO";
-import { CourseQuery } from "../../shared/types/filters";
+import { CourseStatus } from "../../shared/types";
+import { CourseLearnerQuery, CourseQuery } from "../../shared/types/filters";
 import Course from "../entities/Course";
 
 export default interface ICourseRepository {
@@ -20,5 +21,8 @@ export default interface ICourseRepository {
     courseId: string,
     lessonId: string
   ): Promise<Course | null>;
-  fetchAllCoursesByFilter(filter: object): Promise<Course[] | null>;
+  fetchAllCoursesByFilter(
+    status: CourseStatus,
+    filter: CourseLearnerQuery
+  ): Promise<Course[] | null>;
 }

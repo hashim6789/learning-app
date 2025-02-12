@@ -7,7 +7,8 @@ import { ICategory } from "../models/CategoryModel";
 import { ILessons } from "../models/LessonModel";
 import { Category } from "../../../application/entities/Category";
 import mongoose from "mongoose";
-import { CourseQuery } from "../../../shared/types/filters";
+import { CourseLearnerQuery, CourseQuery } from "../../../shared/types/filters";
+import { CourseStatus } from "../../../shared/types";
 
 class CourseRepository implements ICourseRepository {
   //find a course by id
@@ -152,12 +153,27 @@ class CourseRepository implements ICourseRepository {
       throw new Error("Failed to add lesson to the course");
     }
   }
-  async fetchAllCoursesByFilter(filter: object): Promise<Course[] | null> {
+  async fetchAllCoursesByFilter(
+    status: CourseStatus,
+    {
+      category = "all",
+      search = "",
+      page = "1",
+      limit = "10",
+    }: CourseLearnerQuery
+  ): Promise<Course[] | null> {
     try {
-      const filteredCourse = await CourseModel.find(filter).populate({
-        path: "categoryId",
-        select: "title _id",
-      });
+      const filteredCourse = await CourseModel.find({
+        status,
+        categoryId: category !== "all" ? category : { $exists: true },
+        title: { $regex: search, $options: "i" },
+      })
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
+        .populate({
+          path: "categoryId",
+          select: "title _id",
+        });
 
       return filteredCourse.map((course) => courseMapping(course));
     } catch (error) {

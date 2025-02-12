@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Search } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import NotificationPanel from "./NotificationPanel";
 
-const CourseraNavbar: React.FC = () => {
+const CourseNavbar: React.FC = () => {
   const { handleLogout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -23,9 +23,9 @@ const CourseraNavbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Left section */}
           <div className="flex items-center space-x-4">
-            <Link to="/" className="text-blue-600 font-bold text-2xl">
+            <NavLink to="/" className="text-blue-600 font-bold text-2xl">
               EazyDev
-            </Link>
+            </NavLink>
             <div className="relative">
               <button className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md flex items-center space-x-1">
                 <span>Explore</span>
@@ -35,7 +35,7 @@ const CourseraNavbar: React.FC = () => {
           </div>
 
           {/* Center section - Search */}
-          <div className="flex-1 max-w-2xl mx-8">
+          {/* <div className="flex-1 max-w-2xl mx-8">
             <div className="relative">
               <input
                 type="text"
@@ -48,15 +48,13 @@ const CourseraNavbar: React.FC = () => {
               />
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
-          </div>
+          </div> */}
 
           {/* Right section */}
           <div className="flex items-center space-x-4">
             {isAuthenticated && !isBlocked && isVerified ? (
               <>
-                <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-                  <NotificationPanel />
-                </button>
+                <NotificationPanel />
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -76,18 +74,18 @@ const CourseraNavbar: React.FC = () => {
                           {user?.email}
                         </p>
                       </div>
-                      <Link
+                      <NavLink
                         to="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
                         Profile
-                      </Link>
-                      <Link
+                      </NavLink>
+                      <NavLink
                         to="/settings"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
                         Settings
-                      </Link>
+                      </NavLink>
                       <button
                         onClick={() => handleLogout("learner")}
                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
@@ -99,48 +97,62 @@ const CourseraNavbar: React.FC = () => {
                 </div>
               </>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                >
-                  Login / Sign Up
-                </Link>
-              </>
+              <NavLink
+                to="/login"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              >
+                Login / Sign Up
+              </NavLink>
             )}
           </div>
         </div>
 
         {/* Secondary Navigation */}
         <div className="flex space-x-8 h-12">
-          <Link
+          <NavLink
             to="/"
-            className="text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
           >
             Home
-          </Link>
-          <Link
-            to="/"
-            className="text-gray-600 hover:text-gray-900 flex items-center px-1"
+          </NavLink>
+          {/* <NavLink
+            to="/my-learnings"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
           >
             My Learning
-          </Link>
-          <Link
-            to="/"
-            className="text-gray-600 hover:text-gray-900 flex items-center px-1"
+          </NavLink> */}
+          <NavLink
+            to="/learner/courses"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
           >
-            Online Degrees
-          </Link>
-          <Link
+            Courses
+          </NavLink>
+          {/* <NavLink
             to="/"
-            className="text-gray-600 hover:text-gray-900 flex items-center px-1"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
           >
             Careers
-          </Link>
+          </NavLink> */}
         </div>
       </div>
     </nav>
   );
 };
 
-export default CourseraNavbar;
+export default CourseNavbar;

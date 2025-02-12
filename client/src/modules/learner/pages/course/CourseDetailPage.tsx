@@ -1,48 +1,30 @@
 import { Clock, Award, Monitor, Share2 } from "lucide-react";
-
-export interface Course {
-  id: string;
-  status: CourseStatus;
-  title: string;
-  category: string;
-  thumbnail: string;
-  lessons: { id: string; title: string }[];
-  description: string;
-  duration: number;
-}
-
-export type CourseStatus =
-  | "approved"
-  | "rejected"
-  | "completed"
-  | "requested"
-  | "published"
-  | "draft";
+import { Course } from "../../../../shared/types/Course";
+import useFetch from "../../../../hooks/useFetch";
+import { useParams } from "react-router-dom";
+import ErrorComponent from "../../../mentor/components/ErrorComponent";
+import LoadingComponent from "../../../mentor/components/LoadingComponent";
+import useUnAuthorizedFetch from "../../../../hooks/useUnAuthorizedFetch";
+import BackComponent from "../../components/BackComponent";
 
 const CourseDetails = () => {
-  // Sample course data
-  const course: Course = {
-    id: "1",
-    status: "published",
-    title: "Version Control System",
-    category: "Development",
-    thumbnail: "/api/placeholder/800/400",
-    lessons: [
-      { id: "1", title: "Introduction to Version Control Systems" },
-      { id: "2", title: "Types of VCS" },
-      { id: "3", title: "Distributed Version Control Systems (DVCS)" },
-    ],
-    description:
-      "Learn comprehensive version control systems and their implementation",
-    duration: 32,
-  };
+  const { courseId } = useParams();
+  const {
+    data: course,
+    error,
+    loading,
+  } = useUnAuthorizedFetch<Course>(`/api/courses/${courseId}`);
 
-  const originalPrice = 99.99;
-  const discountedPrice = 49.65;
-  const discount = 50;
+  if (loading) {
+    return <LoadingComponent theme="blue" item="course" />;
+  }
+  if (error || !course) {
+    return <ErrorComponent theme="blue" item="course" />;
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      <BackComponent item="Courses" theme="blue" />
       <div className="grid md:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="md:col-span-2">
@@ -52,9 +34,9 @@ const CourseDetails = () => {
               alt={course.title}
               className="w-full rounded-lg object-cover h-64"
             />
-            <span className="absolute top-4 right-4 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
+            {/* <span className="absolute top-4 right-4 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
               {course.status}
-            </span>
+            </span> */}
           </div>
 
           <div className="mt-6">
@@ -62,7 +44,7 @@ const CourseDetails = () => {
             <p className="mt-2 text-gray-600">{course.description}</p>
 
             <div className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">Main Topics</h2>
+              <h2 className="text-xl font-semibold mb-4">Main Lessons</h2>
               <div className="space-y-4">
                 {course.lessons.map((lesson, index) => (
                   <div
@@ -84,7 +66,7 @@ const CourseDetails = () => {
         <div className="md:col-span-1">
           <div className="p-6 bg-white rounded-lg shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <div>
+              {/* <div>
                 <span className="text-3xl font-bold text-blue-600">
                   ${discountedPrice}
                 </span>
@@ -94,17 +76,17 @@ const CourseDetails = () => {
               </div>
               <span className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded">
                 {discount}% off
-              </span>
+              </span> */}
             </div>
 
             <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6">
-              Buy Now
+              Enroll Now
             </button>
 
             <div className="space-y-4">
               <div className="flex items-center text-gray-600">
                 <Clock className="w-5 h-5 mr-2" />
-                <span>{course.duration} Modules</span>
+                <span>{course.duration} Hours</span>
               </div>
               <div className="flex items-center text-gray-600">
                 <Monitor className="w-5 h-5 mr-2" />

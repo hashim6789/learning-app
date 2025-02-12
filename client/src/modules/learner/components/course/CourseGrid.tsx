@@ -1,130 +1,198 @@
 import React from "react";
-import { sampleCourses } from "../../../../shared/sample/sampleCourse";
-import useFetch from "../../../../hooks/useFetch";
-import { Course } from "../../../../shared/types/Course";
+import { useCourseTableFunctionality } from "../../hooks/useCourseTableFuntionality";
+import {
+  Search,
+  BookOpen,
+  Clock,
+  Users,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  Filter,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export enum CourseStatus {
-  NEW = "NEW",
-  ONGOING = "ONGOING",
-  COMPLETED = "COMPLETED",
-}
+interface CourseGridProps {}
 
-export interface Category {
-  id: string;
-  name: string;
-  icon: string;
-}
+const CourseGrid: React.FC<CourseGridProps> = () => {
+  const {
+    currentPage,
+    searchQuery,
+    data,
+    totalPages,
+    loading,
+    handlePageChange,
+    handleSearchChange,
+  } = useCourseTableFunctionality({ itemsPerPage: 6 });
 
-export interface Lesson {
-  id: string;
-  title: string;
-}
+  // const [selectedCategory, setSelectedCategory] = React.useState<string>("all");
+  // const [sortBy, setSortBy] = React.useState<string>("popular");
 
-// export interface Course {
-//   id: string;
-//   status: CourseStatus;
-//   title: string;
-//   category: Category;
-//   thumbnail: string;
-//   lessons: Lesson[];
-//   description: string;
-//   certificateType: string;
-// }
+  const navigate = useNavigate();
 
-interface CourseGridProps {
-  courses: Course[];
-}
+  // const categories = ["All", "Development", "Business", "Design", "Marketing"];
 
-const CourseGrid: React.FC<CourseGridProps> = ({ courses }) => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">Most Popular Courses</h2>
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Most Popular Courses
+          </h2>
+          <p className="text-gray-600">
+            Explore our top-rated courses and start learning today
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {courses.map((course) => (
+        {/* Search and Filter */}
+        <div className="mt-4 md:mt-0 w-full md:w-auto flex flex-col md:flex-row gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-10 w-full md:w-[300px] py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+            <Filter className="h-4 w-4" />
+            Filters
+          </button>
+        </div>
+      </div>
+
+      {/* Categories */}
+      {/* <div className="flex flex-wrap gap-2 mb-6">
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category.toLowerCase())}
+            className={`px-4 py-2 rounded-full ${
+              selectedCategory === category.toLowerCase()
+                ? "bg-blue-600 text-white"
+                : "border border-gray-300 text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div> */}
+
+      {/* Course Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data.map((course) => (
           <div
             key={course.id}
-            className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
+            onClick={() => navigate(`/learner/courses/${course.id}`)}
+            className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group"
           >
             {/* Image and Badge Container */}
-            <div className="relative">
+            <div className="relative overflow-hidden rounded-t-xl">
               <img
                 src={course.thumbnail}
                 alt={course.title}
-                className="w-full h-48 object-cover rounded-t-lg"
+                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              {/* {course.status === "NEW" && (
-                <div className="absolute top-3 right-3">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500 text-white">
-                    New AI skills
-                  </span>
-                </div>
-              )} */}
+              {/* <span className="absolute top-3 right-3 px-2 py-1 bg-blue-600 text-white text-xs font-semibold rounded">
+                {course.status}
+              </span> */}
             </div>
 
-            {/* Header Section */}
+            {/* Content */}
             <div className="p-6 flex-grow">
-              <div className="flex items-center gap-2 mb-2">
-                {/* {course.category.icon && (
-                  <img
-                    src={course.category.icon}
-                    alt={course.category.name}
-                    className="w-6 h-6 rounded-full"
-                  />
-                )} */}
+              <div className="flex items-center gap-2 mb-3">
+                <BookOpen className="w-4 h-4 text-blue-500" />
                 <span className="text-sm text-gray-600">
                   {course.category.title}
                 </span>
               </div>
 
-              <h3 className="text-lg font-semibold leading-tight mb-4">
+              <h3 className="text-lg font-semibold leading-tight mb-3 group-hover:text-blue-600 transition-colors">
                 {course.title}
               </h3>
 
-              {/* Description */}
-              <p className="text-sm text-gray-600 line-clamp-2">
+              <p className="text-sm text-gray-600 line-clamp-2 mb-4">
                 {course.description}
               </p>
+
+              {/* Course Stats */}
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  <span>{course.duration} hours</span>
+                </div>
+                {/* <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  <span>2.5k students</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <span>4.8</span>
+                </div> */}
+              </div>
             </div>
 
-            {/* Footer Section */}
+            {/* Footer */}
             <div className="p-6 pt-0 mt-auto">
               <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
-                {/* <div className="flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5 text-blue-500"
-                    fill="none"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"
-                    />
-                  </svg>
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-blue-500" />
                   <span className="text-sm text-blue-500 font-medium">
-                    Build toward a degree
+                    Certificate Included
                   </span>
                 </div>
-                <span className="text-sm text-gray-600">
-                  Professional Certificate
-                </span> */}
+                <button className="text-blue-600 hover:text-blue-700 transition-colors">
+                  Learn More
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* <button className="mt-8 px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition-colors duration-300">
-        Show 8 more
-      </button> */}
+      {/* Pagination */}
+      <div className="mt-8 flex justify-center items-center gap-2">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            className={`px-4 py-2 rounded-md ${
+              currentPage === page
+                ? "bg-blue-600 text-white"
+                : "border border-gray-300 text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center mt-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+        </div>
+      )}
     </div>
   );
 };
