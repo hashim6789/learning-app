@@ -29,11 +29,11 @@ const checkUserBlocked = async (
 
     let user: null | Learner | Mentor | Admin = null;
     if (role === "mentor") {
-      user = await mentorRepository.fetchMentorById(userId);
+      user = await mentorRepository.fetchById(userId);
     } else if (role === "learner") {
-      user = await learnerRepository.fetchLearnerById(userId);
+      user = await learnerRepository.fetchById(userId);
     } else if (role === "admin") {
-      user = await adminRepository.findById(userId);
+      user = await adminRepository.fetchById(userId);
     }
 
     if (!user) {

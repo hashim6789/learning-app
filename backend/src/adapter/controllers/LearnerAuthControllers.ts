@@ -13,7 +13,7 @@ import LearnerRepository from "../../infrastructures/database/repositories/Learn
 import OtpRepository from "../../infrastructures/database/repositories/OtpRepository";
 
 //imported the use cases
-import SignupLearnerUseCase from "../../application/use_cases/learner/SignupLearnerUseCase";
+// import SignupLearnerUseCase from "../../application/use_cases/learner/SignupLearnerUseCase";
 import LoginLearnerUseCase from "../../application/use_cases/learner/LoginLearnerUseCase";
 // import GoogleSignupUseCase from "../../../application/use_cases/learner/GoogleSignupLearnerUseCase";
 import LogoutLearnerUseCase from "../../application/use_cases/learner/LogoutLearnerUseCase";
@@ -27,10 +27,10 @@ import ChangePasswordLearnerUseCase from "../../application/use_cases/learner/Ch
 //created the instances
 const learnerRepository = new LearnerRepository();
 const otpRepository = new OtpRepository();
-const signupLearnerUseCase = new SignupLearnerUseCase(
-  learnerRepository,
-  otpRepository
-);
+// const signupLearnerUseCase = new SignupLearnerUseCase(
+//   learnerRepository,
+//   otpRepository
+// );
 const loginLearnerUseCase = new LoginLearnerUseCase(learnerRepository);
 const googleSignupLearnerUseCase = new GoogleSignupLearnerUseCase(
   learnerRepository
@@ -61,7 +61,7 @@ const changePasswordLearnerUseCase = new ChangePasswordLearnerUseCase(
 class LearnerAuthController {
   constructor() {}
 
-  //learner signup
+  learner signup
   async learnerSignup(req: Request, res: Response, next: NextFunction) {
     const signupDTO: SignupDTO = req.body;
     try {

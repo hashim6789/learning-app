@@ -7,15 +7,17 @@ import courseRouter from "./courseRoutes";
 import mentorRouter from "./mentorRoutes";
 import categoryRouter from "./categoryRoutes";
 import learnerRouter from "../learner";
+import authRouter from "./authRoutes";
 
 const apiRouter = express.Router();
 
 //redirect all lesson routes to corresponding subroutes
-apiRouter.use("/lessons", lessonRouter);
-apiRouter.use("/materials", materialRouter);
-apiRouter.use("/courses", courseRouter);
-apiRouter.use("/mentors", mentorRouter);
-apiRouter.use("/learners", learnerRouter);
-apiRouter.use("/categories", categoryRouter);
+apiRouter.use("/auth", authRouter);
+// apiRouter.use("/lessons", lessonRouter);
+// apiRouter.use("/materials", materialRouter);
+// apiRouter.use("/courses", courseRouter);
+// apiRouter.use("/mentors", mentorRouter);
+// apiRouter.use("/learners", learnerRouter);
+// apiRouter.use("/categories", categoryRouter);
 
 export default apiRouter;

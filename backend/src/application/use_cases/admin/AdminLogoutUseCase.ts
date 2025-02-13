@@ -13,7 +13,7 @@ class AdminLogoutUseCase {
   }
 
   async execute(refreshToken: string): Promise<ResponseModel> {
-    const admin = await this.adminRepository.findByRefreshToken(refreshToken);
+    const admin = await this.adminRepository.fetchByRefreshToken(refreshToken);
     if (!admin) {
       return {
         statusCode: 404,

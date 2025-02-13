@@ -1,7 +1,7 @@
-// application/entities/Admin.ts
+// application/entities/User.ts
 import { IUser } from "./IUser";
 
-export class Admin implements IUser {
+export class User implements IUser {
   id: string;
   email: string;
   password: string | null;
@@ -10,6 +10,9 @@ export class Admin implements IUser {
   refreshToken: string | null;
   resetToken: string | null;
   profilePicture: string | null;
+  googleId: string | null;
+  firstName: string;
+  lastName: string | null;
 
   constructor(
     id: string,
@@ -17,10 +20,12 @@ export class Admin implements IUser {
     password: string | null,
     isBlocked = false,
     isVerified = true,
-    refreshToken = null,
+    refreshToken: string | null,
     resetToken = null,
-    googleId = null,
-    profilePicture = null
+    profilePicture = null,
+    firstName: string,
+    lastName: string | null,
+    googleId = null
   ) {
     this.id = id;
     this.email = email;
@@ -29,7 +34,10 @@ export class Admin implements IUser {
     this.isVerified = isVerified;
     this.refreshToken = refreshToken;
     this.resetToken = resetToken;
+    this.googleId = googleId;
     this.profilePicture = profilePicture;
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   removeSensitive() {

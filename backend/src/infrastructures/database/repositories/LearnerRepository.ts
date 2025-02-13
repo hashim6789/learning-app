@@ -5,36 +5,39 @@ import { Learner } from "../../../application/entities/Learner";
 import { ILearnerRepository } from "../../../application/IRepositories/ILearnerRepository";
 
 //imported the mode\
-import LearnerModel, { ILearner } from "../models/LearnerModel";
+import LearnerModel from "../models/LearnerModel";
+import { ILearner } from "../interfaces/ILearner";
+import { IUserRepository } from "../../../application/IRepositories/IUserRepository";
+import { mapToLearner } from "../mappers/userMapper";
 
-class LearnerRepository implements ILearnerRepository {
-  //find learner by email
-  async findByEmail(email: string): Promise<Learner | null> {
-    const learner = await LearnerModel.findOne({ email });
-    if (!learner) return null;
-    return mappingLearner(learner);
-  }
+class LearnerRepository implements IUserRepository<Learner> {
+  // //find learner by email
+  // async findByEmail(email: string): Promise<Learner | null> {
+  //   const learner = await LearnerModel.findOne({ email });
+  //   if (!learner) return null;
+  //   return mappingLearner(learner);
+  // }
 
-  //for google signup and login
-  async findByGoogleId(googleId: string): Promise<Learner | null> {
-    const learner = await LearnerModel.findOne({ googleId });
-    if (!learner) return null;
-    return mappingLearner(learner);
-  }
+  // //for google signup and login
+  // async findByGoogleId(googleId: string): Promise<Learner | null> {
+  //   const learner = await LearnerModel.findOne({ googleId });
+  //   if (!learner) return null;
+  //   return mappingLearner(learner);
+  // }
 
-  //to create a new learner
-  async createLearner(data: Learner): Promise<Learner> {
+  // //to create a new learner
+  async create(data: Learner): Promise<Learner> {
     const newLearner = new LearnerModel(data);
     await newLearner.save();
-    return mappingLearner(newLearner);
+    return mapToLearner(newLearner);
   }
 
   //to fetch all learners
-  async fetchAllLearners(): Promise<Learner[] | null> {
+  async fetchAll(): Promise<Learner[] | null> {
     try {
       const learners = await LearnerModel.find();
       if (!learners) return null;
-      return learners.map(mappingLearner);
+      return learners.map(mapToLearner);
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
         return [];
@@ -44,96 +47,51 @@ class LearnerRepository implements ILearnerRepository {
   }
 
   //fetch learner by id
-  async fetchLearnerById(learnerId: string): Promise<Learner | null> {
-    const learner = await LearnerModel.findById(learnerId).populate({
-      path: "purchasedCourses",
-      model: "Courses",
-    });
+  async fetchById(learnerId: string): Promise<Learner | null> {
+    const learner = await LearnerModel.findById(learnerId);
+    // .populate({
+    //   path: "purchasedCourses",
+    //   model: "Courses",
+    // });
 
     if (!learner) return null;
-    return mappingLearner(learner);
+    return mapToLearner(learner);
   }
 
-  //block learner
-  async BlockLearner(
+  async updateById(
     learnerId: string,
-    isBlock: boolean
-  ): Promise<Learner | null> {
-    const updatedLearner = await LearnerModel.findByIdAndUpdate(
-      learnerId,
-      { isBlocked: isBlock },
-      { new: true }
-    );
-    if (!updatedLearner) return null;
-    return mappingLearner(updatedLearner);
-  }
-
-  async setOtpToDB(learnerId: string, otp: string): Promise<Learner | null> {
-    try {
-      const learner = await LearnerModel.findByIdAndUpdate(
-        learnerId,
-        { otp, otpExpiration: Date.now() + 5 * 1000 * 60 },
-        { new: true }
-      );
-      if (!learner) return null;
-      return mappingLearner(learner);
-    } catch (error) {
-      throw new Error("An error when set the refresh token in to db");
-    }
-  }
-
-  async findByRefreshToken(token: string): Promise<Learner | null> {
-    try {
-      const learner = await LearnerModel.findOne({ refreshToken: token });
-      if (!learner) return null;
-      return mappingLearner(learner);
-    } catch (error) {
-      throw new Error("An error when find the learner by refreshToken");
-    }
-  }
-
-  async deleteRefreshToken(learnerId: string): Promise<Learner | null> {
-    try {
-      const unRefreshedLearner = await LearnerModel.findByIdAndUpdate(
-        learnerId,
-        { refreshToken: null },
-        { new: true }
-      );
-      if (!unRefreshedLearner) return null;
-      return mappingLearner(unRefreshedLearner);
-    } catch (error) {
-      throw new Error("An error when delete the learner's refresh token!");
-    }
-  }
-
-  async setRefreshToken(
-    learnerId: string,
-    token: string
+    data: Partial<Learner>
   ): Promise<Learner | null> {
     try {
-      const refreshedLearner = await LearnerModel.findByIdAndUpdate(
+      const updatedLearner = await LearnerModel.findByIdAndUpdate(
         learnerId,
-        { refreshToken: token },
+        data,
         { new: true }
       );
-      if (!refreshedLearner) return null;
-      return mappingLearner(refreshedLearner);
+      if (!updatedLearner) return null;
+      return mapToLearner(updatedLearner);
     } catch (error) {
-      throw new Error("An error when");
+      throw new Error("An error when update the learner");
     }
   }
 
-  async verifyLearner(learnerId: string): Promise<Learner | null> {
+  async deleteById(learnerId: string): Promise<Learner | null> {
     try {
-      const verifiedLearner = await LearnerModel.findByIdAndUpdate(
-        learnerId,
-        { isVerified: true },
-        { new: true }
-      );
-      if (!verifiedLearner) return null;
-      return mappingLearner(verifiedLearner);
+      const deletedMentor = await LearnerModel.findByIdAndDelete(learnerId);
+      if (!deletedMentor) return null;
+      return mapToLearner(deletedMentor);
     } catch (error) {
-      throw new Error("An error when the learner verifying!");
+      throw new Error("An error when deleting the learner");
+    }
+  }
+
+  async fetchByField(field: { [key: string]: any }): Promise<Learner | null> {
+    try {
+      const learner = await LearnerModel.findOne(field);
+      if (!learner) return null;
+      return mapToLearner(learner);
+    } catch (error) {
+      throw new Error("An error when find the mentor by refreshToken");
     }
   }
 
@@ -146,7 +104,7 @@ class LearnerRepository implements ILearnerRepository {
         new: true,
       });
       if (!learner) return null;
-      return mappingLearner(learner);
+      return mapToLearner(learner);
     } catch (error) {
       throw new Error("An error when update the learner");
     }
@@ -156,33 +114,116 @@ class LearnerRepository implements ILearnerRepository {
     try {
       const deletedLearner = await LearnerModel.findByIdAndDelete(learnerId);
       if (!deletedLearner) return null;
-      return mappingLearner(deletedLearner);
+      return mapToLearner(deletedLearner);
     } catch (error) {
       throw new Error("An error when deleting the learner");
     }
   }
+
+  // //block learner
+  // async BlockLearner(
+  //   learnerId: string,
+  //   isBlock: boolean
+  // ): Promise<Learner | null> {
+  //   const updatedLearner = await LearnerModel.findByIdAndUpdate(
+  //     learnerId,
+  //     { isBlocked: isBlock },
+  //     { new: true }
+  //   );
+  //   if (!updatedLearner) return null;
+  //   return mappingLearner(updatedLearner);
+  // }
+
+  // async setOtpToDB(learnerId: string, otp: string): Promise<Learner | null> {
+  //   try {
+  //     const learner = await LearnerModel.findByIdAndUpdate(
+  //       learnerId,
+  //       { otp, otpExpiration: Date.now() + 5 * 1000 * 60 },
+  //       { new: true }
+  //     );
+  //     if (!learner) return null;
+  //     return mappingLearner(learner);
+  //   } catch (error) {
+  //     throw new Error("An error when set the refresh token in to db");
+  //   }
+  // }
+
+  // async findByRefreshToken(token: string): Promise<Learner | null> {
+  //   try {
+  //     const learner = await LearnerModel.findOne({ refreshToken: token });
+  //     if (!learner) return null;
+  //     return mappingLearner(learner);
+  //   } catch (error) {
+  //     throw new Error("An error when find the learner by refreshToken");
+  //   }
+  // }
+
+  // async deleteRefreshToken(learnerId: string): Promise<Learner | null> {
+  //   try {
+  //     const unRefreshedLearner = await LearnerModel.findByIdAndUpdate(
+  //       learnerId,
+  //       { refreshToken: null },
+  //       { new: true }
+  //     );
+  //     if (!unRefreshedLearner) return null;
+  //     return mappingLearner(unRefreshedLearner);
+  //   } catch (error) {
+  //     throw new Error("An error when delete the learner's refresh token!");
+  //   }
+  // }
+
+  // async setRefreshToken(
+  //   learnerId: string,
+  //   token: string
+  // ): Promise<Learner | null> {
+  //   try {
+  //     const refreshedLearner = await LearnerModel.findByIdAndUpdate(
+  //       learnerId,
+  //       { refreshToken: token },
+  //       { new: true }
+  //     );
+  //     if (!refreshedLearner) return null;
+  //     return mappingLearner(refreshedLearner);
+  //   } catch (error) {
+  //     throw new Error("An error when");
+  //   }
+  // }
+
+  // async verifyLearner(learnerId: string): Promise<Learner | null> {
+  //   try {
+  //     const verifiedLearner = await LearnerModel.findByIdAndUpdate(
+  //       learnerId,
+  //       { isVerified: true },
+  //       { new: true }
+  //     );
+  //     if (!verifiedLearner) return null;
+  //     return mappingLearner(verifiedLearner);
+  //   } catch (error) {
+  //     throw new Error("An error when the learner verifying!");
+  //   }
+  // }
 }
 
 //to convert ILearner to Learner
-function mappingLearner(data: ILearner): Learner {
-  const id = data._id.toString();
-  const purchasedCourses = data.purchasedCourses
-    ? data.purchasedCourses.map((courseId) => courseId.toString())
-    : null;
-  return new Learner(
-    data.googleId || null,
-    id,
-    data.firstName,
-    data.lastName || null,
-    data.email,
-    data.password,
-    data.profilePicture,
-    purchasedCourses,
-    data.isBlocked || false,
-    data.isVerified || false,
-    data.refreshToken || null,
-    data.resetToken || null
-  );
-}
+// function mappingLearner(data: ILearner): Learner {
+//   const id = data._id.toString();
+//   const purchasedCourses = data.purchasedCourses
+//     ? data.purchasedCourses.map((courseId) => courseId.toString())
+//     : null;
+//   return new Learner(
+//     data.googleId || null,
+//     id,
+//     data.firstName,
+//     data.lastName || null,
+//     data.email,
+//     data.password,
+//     data.profilePicture,
+//     purchasedCourses,
+//     data.isBlocked || false,
+//     data.isVerified || false,
+//     data.refreshToken || null,
+//     data.resetToken || null
+//   );
+// }
 
 export default LearnerRepository;

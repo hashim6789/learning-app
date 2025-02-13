@@ -47,9 +47,9 @@ app.use(cookieParser()); // Parse cookies
 connectDB();
 
 // Route-level middlewares
-app.use("/learner", learnerRouter);
-app.use("/admin", adminRouter);
-app.use("/mentor", mentorRouter);
+// app.use("/learner", learnerRouter);
+// app.use("/admin", adminRouter);
+// app.use("/mentor", mentorRouter);
 app.use("/refresh", refreshTokenRouter);
 app.use("/api", apiRouter);
 

@@ -20,7 +20,7 @@ class AdminLoginUseCase {
   async execute(data: LoginDTO): Promise<ResponseModel> {
     await validateData(data, LoginDTO);
 
-    const admin = await this.adminRepository.findByEmail(data.email);
+    const admin = await this.adminRepository.fetchByEmail(data.email);
     if (!admin || admin.password !== data.password) {
       return {
         statusCode: 404,

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { generateAccessToken } from "../../shared/utils/jwt"; // Import from your jwt file
+import { generateToken } from "../../shared/utils/jwt"; // Import from your jwt file
 import { generateRefreshToken } from "../../shared/utils/uuid";
 import AdminRepository from "../../infrastructures/database/repositories/AdminRepository";
 import cookieConfig from "../../shared/configs/cookieConfig";
@@ -28,26 +28,26 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  let userData: null | Admin | Mentor | Learner = null;
+  let userData: null | Admin | Mentor | Learner | User = null;
   if (user === "admin") {
-    userData = await adminRepository.findByToken(refreshToken);
+    userData = await adminRepository.fetchByField({ refreshToken });
   } else if (user === "mentor") {
-    userData = await mentorRepository.findByRefreshToken(refreshToken);
+    userData = await mentorRepository.fetchByField({ refreshToken });
   } else {
-    userData = await learnerRepository.findByRefreshToken(refreshToken);
+    userData = await learnerRepository.fetchByField({ refreshToken });
   }
   // Verify the refresh token
   if (!userData) {
     // Set new refresh token and access token as cookies
-    res.cookie("refreshToken", "", { httpOnly: true });
-    res.cookie("accessToken", "", { httpOnly: false });
-    res.cookie("user", "", { httpOnly: true });
+    res.clearCookie("refreshToken", { httpOnly: true });
+    res.clearCookie("accessToken", { httpOnly: false });
+    res.clearCookie("user", { httpOnly: true });
     res.status(403).json({ message: "Invalid refresh token" });
     return;
   }
 
   // Create a new access token
-  const newAccessToken = generateAccessToken({
+  const newAccessToken = generateToken({
     userId: userData.id,
     role: user,
   });
@@ -57,20 +57,17 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 
   let refreshedUser: null | Admin | Mentor | Learner = null;
   if (user === "admin") {
-    refreshedUser = await adminRepository.setRefreshTokenToDB(
-      newRefreshToken,
-      userData.id
-    );
+    refreshedUser = await adminRepository.updateById(userData.id, {
+      refreshToken: newRefreshToken,
+    });
   } else if (user === "mentor") {
-    refreshedUser = await mentorRepository.setRefreshToken(
-      userData.id,
-      newRefreshToken
-    );
+    refreshedUser = await mentorRepository.updateById(userData.id, {
+      refreshToken: newRefreshToken,
+    });
   } else {
-    refreshedUser = await learnerRepository.setRefreshToken(
-      userData.id,
-      newRefreshToken
-    );
+    refreshedUser = await learnerRepository.updateById(userData.id, {
+      refreshToken: newRefreshToken,
+    });
   }
 
   if (!refreshedUser) {

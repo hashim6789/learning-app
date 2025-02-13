@@ -8,3 +8,5 @@ export type CourseStatus =
   | "requested"
   | "published"
   | "draft";
+
+export type UserType = "admin" | "learner" | "mentor";

@@ -18,7 +18,7 @@ const authRouter = express.Router();
  * body - {firstName, lastName?, email, password}
  * response - {success, message, data?}
  */
-authRouter.post("/signup", authController.learnerSignup);
+// authRouter.post("/signup", authController.learnerSignup);
 
 /**
  * learner login route

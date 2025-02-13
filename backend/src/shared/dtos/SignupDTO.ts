@@ -1,4 +1,5 @@
 import { IsString, IsEmail, IsOptional, MinLength } from "class-validator";
+import { UserType } from "../types";
 
 export class SignupDTO {
   @IsString()
@@ -16,4 +17,6 @@ export class SignupDTO {
   @IsString()
   @MinLength(6, { message: "Password must be at least 6 characters long." })
   password: string;
+
+  role: UserType;
 }
