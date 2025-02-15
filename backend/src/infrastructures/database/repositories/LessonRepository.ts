@@ -20,18 +20,25 @@ class LessonRepository implements ILessonRepository {
   async fetchAllLessonsByMentorId(
     mentorId: string,
     { search = "", page = "1", limit = "10" }: LessonQuery
-  ): Promise<Lesson[] | null> {
+  ): Promise<{ lessons: Lesson[]; docCount: number } | null> {
     try {
-      const lessons = await LessonModel.find({
+      const query = {
         mentorId,
         title: { $regex: search, $options: "i" },
-      })
+      };
+      const lessons = await LessonModel.find(query)
         .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
         .limit(parseInt(limit, 10))
         .sort({
           createdAt: -1,
         });
-      return lessons ? lessons.map(mappedLesson) : null;
+
+      const totalCount = await LessonModel.countDocuments(query);
+
+      if (!lessons) return null;
+      const mappedLessons = lessons.map((lesson) => mappedLesson(lesson));
+
+      return { lessons: mappedLessons, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to fetch the lessons");
     }

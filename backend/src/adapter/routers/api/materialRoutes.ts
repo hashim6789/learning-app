@@ -24,7 +24,7 @@ materialRouter.post(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  materialController.createMaterialForMentor
+  materialController.createMaterial
 );
 
 /**
@@ -40,7 +40,7 @@ materialRouter.put(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  materialController.updateMaterialForMentor
+  materialController.updateMaterial
 );
 
 /**
@@ -55,7 +55,7 @@ materialRouter.delete(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  materialController.deleteMaterialForMentor
+  materialController.deleteMaterial
 );
 
 /**
@@ -70,7 +70,7 @@ materialRouter.get(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  materialController.getMaterialsOfMentor
+  materialController.getMaterials
 );
 
 /**

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ArrowLeft, Book, Video } from "lucide-react";
 import api from "../../../../shared/utils/api";
-import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -53,14 +52,11 @@ const MentorCreateMaterial: React.FC = () => {
     setUploading(true);
     try {
       // Request signed URL from backend
-      const response = await api.post(
-        `${config.API_BASE_URL}/mentor/upload/signed-url`,
-        {
-          fileName: file.name,
-          fileType: file.type,
-          materialType: selectedType,
-        }
-      );
+      const response = await api.post(`/api/upload/signed-url`, {
+        fileName: file.name,
+        fileType: file.type,
+        materialType: selectedType,
+      });
 
       const { signedUrl, fileKey } = response.data.data;
 
@@ -87,10 +83,9 @@ const MentorCreateMaterial: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await api.post(
-        `${config.API_BASE_URL}/mentor/materials`,
-        { data }
-      );
+      const response = await api.post(`/api/materials`, {
+        data,
+      });
       if (response.data) {
         showToast.success("The material is created successfully.");
         reset();
@@ -99,7 +94,7 @@ const MentorCreateMaterial: React.FC = () => {
       }
     } catch (error: any) {
       console.error(error);
-      showToast.error(error.message);
+      showToast.error(error.response.data.message);
     }
   };
 

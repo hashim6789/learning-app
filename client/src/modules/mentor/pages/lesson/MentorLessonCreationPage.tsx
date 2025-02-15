@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, Clock, Book, Plus } from "lucide-react";
-import { config } from "../../../../shared/configs/config";
 import api from "../../../../shared/utils/api";
 import { showToast } from "../../../../shared/utils/toastUtils";
 
@@ -41,7 +40,7 @@ const MentorLessonCreation: React.FC = () => {
 
   const fetchMaterials = async () => {
     try {
-      const response = await api.get(`${config.API_BASE_URL}/mentor/materials`);
+      const response = await api.get(`/api/materials`);
       if (!response.data) throw new Error("Failed to fetch materials");
       const data = response.data.data;
       setAvailableMaterials(data);
@@ -53,11 +52,7 @@ const MentorLessonCreation: React.FC = () => {
   const onSubmit = async (data: LessonFormData) => {
     try {
       setIsSubmitting(true);
-      const response = await api.post(
-        `${config.API_BASE_URL}/mentor/lessons`,
-
-        data
-      );
+      const response = await api.post(`/api/lessons`, data);
 
       if (!response.data) throw new Error("Failed to create lesson");
       showToast.success(response.data.message);

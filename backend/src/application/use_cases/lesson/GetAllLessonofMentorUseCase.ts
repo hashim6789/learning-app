@@ -11,11 +11,11 @@ class GetAllLessonsOfMentorUseCase {
 
   async execute(mentorId: string, filter: LessonQuery): Promise<ResponseModel> {
     try {
-      const lessons = await this.lessonRepository.fetchAllLessonsByMentorId(
+      const fetchedData = await this.lessonRepository.fetchAllLessonsByMentorId(
         mentorId,
         filter
       );
-      if (!lessons) {
+      if (!fetchedData) {
         return {
           statusCode: 404,
           success: false,
@@ -27,7 +27,7 @@ class GetAllLessonsOfMentorUseCase {
         statusCode: 200,
         success: true,
         message: "The lessons of the course is fetched successfully.",
-        data: { lessons },
+        data: { lessons: fetchedData.lessons, docCount: fetchedData.docCount },
       };
     } catch (error) {
       throw new Error(error as string);

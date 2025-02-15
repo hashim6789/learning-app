@@ -24,7 +24,7 @@ coursesRouter.post(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  courseController.createCourseForMentor
+  courseController.createCourse
 );
 
 /**
@@ -40,7 +40,7 @@ coursesRouter.put(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  courseController.updateCourseForMentor
+  courseController.updateCourse
 );
 
 /**
@@ -55,7 +55,7 @@ coursesRouter.delete(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  courseController.deleteCourseForMentor
+  courseController.deleteCourse
 );
 
 /**
@@ -82,12 +82,14 @@ coursesRouter.patch(
  */
 coursesRouter.get(
   "/",
+  authenticateToken,
+  checkUserBlocked,
   authorizeRole(["mentor", "learner"]),
-  courseController.getAllPublishedCourses
+  courseController.getCourses
 );
 
 /**
- * fet mentor courses analysis route
+ * feat mentor courses analysis route
  * endpoint - /mentor/courses
  * method -  get
  * params - {}
@@ -110,8 +112,10 @@ coursesRouter.get(
  */
 coursesRouter.get(
   "/:courseId",
-  authorizeRole(["learner"]),
-  courseController.getCourseForLearner
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["learner", "mentor", "admin"]),
+  courseController.AuthorizedGetCourse
 );
 
 /**

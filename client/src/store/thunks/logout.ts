@@ -8,9 +8,9 @@ const host = config.API_BASE_URL;
 // Created an async thunk for the logout API request
 export const logout = createAsyncThunk(
   "auth/logout",
-  async (user: User, thunkAPI) => {
+  async (role: User, thunkAPI) => {
     try {
-      const response = await api.post(`${host}/${user}/auth/logout`);
+      const response = await api.post(`${host}/api/auth/logout`, { role });
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

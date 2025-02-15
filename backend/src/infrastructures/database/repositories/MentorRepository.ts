@@ -22,10 +22,11 @@ class MentorRepository implements IUserRepository<Mentor> {
   }
 
   async fetchById(mentorId: string): Promise<Mentor | null> {
-    const mentor = await MentorModel.findById(mentorId).populate({
-      path: "createdCourses", // Path to the field being populated
-      model: "Courses", // The model being populated
-    });
+    const mentor = await MentorModel.findById(mentorId);
+    // .populate({
+    //   path: "createdCourses", // Path to the field being populated
+    //   model: "Courses", // The model being populated
+    // });
 
     console.log("populated mentor", mentor);
 

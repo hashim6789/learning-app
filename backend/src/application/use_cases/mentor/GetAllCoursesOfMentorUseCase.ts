@@ -3,11 +3,6 @@ import { ResponseModel } from "../../../shared/types/ResponseModel";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
 
-interface Payload {
-  role: "admin" | "mentor" | "learner";
-  email: string;
-}
-
 class GetAllCourseOfMentorUseCase {
   private courseRepository: ICourseRepository;
   private mentorRepository: IMentorRepository;
@@ -22,21 +17,21 @@ class GetAllCourseOfMentorUseCase {
 
   async execute(mentorId: string, filter: CourseQuery): Promise<ResponseModel> {
     try {
-      const mentor = await this.mentorRepository.fetchMentorById(mentorId);
-      if (!mentor || mentor.isBlocked) {
-        return {
-          statusCode: 404,
-          success: false,
-          message: "The mentor is doesn't exist or blocked",
-        };
-      }
+      // const mentor = await this.mentorRepository.fetchById(mentorId);
+      // if (!mentor || mentor.isBlocked) {
+      //   return {
+      //     statusCode: 404,
+      //     success: false,
+      //     message: "The mentor is doesn't exist or blocked",
+      //   };
+      // }
 
-      const courses = await this.courseRepository.fetchAllCoursesByMentorId(
+      const fetchedData = await this.courseRepository.fetchAllCoursesByMentorId(
         mentorId,
         filter
       );
 
-      if (!courses) {
+      if (!fetchedData) {
         return {
           statusCode: 400,
           success: false,
@@ -48,7 +43,7 @@ class GetAllCourseOfMentorUseCase {
         statusCode: 201,
         success: true,
         message: "The courses is fetched successfully.",
-        data: courses,
+        data: { courses: fetchedData.courses, docCount: fetchedData.docCount },
       };
     } catch (error) {
       throw new Error(error as string);

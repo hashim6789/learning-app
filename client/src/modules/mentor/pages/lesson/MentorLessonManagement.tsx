@@ -20,7 +20,7 @@ const MentorLessonManagement: React.FC = () => {
     handlePageChange,
     handleSearchChange,
     handleDelete,
-  } = useLessonTableFunctionality({ itemsPerPage: 9 });
+  } = useLessonTableFunctionality({ itemsPerPage: 6 });
 
   if (loading) {
     return <LoadingComponent item="lesson" theme="purple" />;

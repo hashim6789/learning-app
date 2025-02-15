@@ -25,8 +25,10 @@ const useCourseManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(`${baseUrl}/mentor/categories`);
-      setCategories(response.data.data);
+      const response = await api.get(`/api/categories`);
+      const result = response.data;
+      console.log(result);
+      setCategories(result.data);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch categories");
     } finally {
@@ -53,7 +55,7 @@ const useCourseManagement = () => {
         lessons: lessonIds,
         category: course.category.id,
       };
-      const response = await api.post(`${baseUrl}/mentor/courses`, postData);
+      const response = await api.post(`/api/courses`, postData);
 
       if (response && response.data) {
         showToast.success("Course created successfully!");
@@ -63,8 +65,8 @@ const useCourseManagement = () => {
 
       return false;
     } catch (err: any) {
-      showToast.error("Failed to add course");
-      setError(err.response?.data?.message || "Failed to add course");
+      showToast.error(err.response.data.message || "Failed to add course");
+      setError(err.response.data.message || "Failed to add course");
       return false;
     } finally {
       setLoading(false);
@@ -79,10 +81,7 @@ const useCourseManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.put(
-        `${baseUrl}/mentor/courses/${courseId}`,
-        updatedCourse
-      );
+      const response = await api.put(`/api/courses/${courseId}`, updatedCourse);
       if (response && response.data) {
         showToast.success("Course updated successfully!");
       }
@@ -110,9 +109,7 @@ const useCourseManagement = () => {
       });
 
       if (result.isConfirmed) {
-        const response = await api.delete(
-          `${baseUrl}/mentor/courses/${courseId}`
-        );
+        const response = await api.delete(`/api/courses/${courseId}`);
         if (response && response.status === 200) {
           showToast.success("Course deleted successfully!");
           return true;

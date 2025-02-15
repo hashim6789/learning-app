@@ -10,10 +10,28 @@ class UpdateMaterialByIdUseCase {
   }
 
   async execute(
+    mentorId: string,
     data: CreateMaterialDTO,
     materialId: string
   ): Promise<ResponseModel> {
     try {
+      const existingData =
+        await this.materialRepository.fetchMaterialsByMentorId(mentorId, {
+          search: data.title,
+        });
+
+      if (
+        existingData &&
+        existingData.materials.length > 0 &&
+        existingData.materials.some((material) => material.id !== materialId)
+      ) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The same title is exist!",
+        };
+      }
+
       const existingMaterial = await this.materialRepository.fetchMaterialById(
         materialId
       );

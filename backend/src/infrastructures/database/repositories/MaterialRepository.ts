@@ -14,12 +14,20 @@ class MaterialRepository implements IMaterialRepository {
     }
   }
 
-  async fetchAllMaterialsByType(type: string): Promise<Material[] | null> {
+  async fetchAllMaterialsByType(
+    type: string
+  ): Promise<{ materials: Material[]; docCount: number } | null> {
     try {
       const materials = await MaterialModel.find({ type }).sort({
         createdAt: -1,
       });
-      return materials ? materials.map(mapMaterial) : null;
+      const totalCount = await MaterialModel.countDocuments();
+
+      if (!materials) return null;
+      const mappedMaterials = materials.map((material) =>
+        mapMaterial(material)
+      );
+      return { materials: mappedMaterials, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to fetch materials by type");
     }
@@ -45,19 +53,25 @@ class MaterialRepository implements IMaterialRepository {
   async fetchMaterialsByMentorId(
     mentorId: string,
     { type = "all", search = "", page = "1", limit = "10" }: MaterialQuery
-  ): Promise<Material[] | null> {
+  ): Promise<{ materials: Material[]; docCount: number } | null> {
     try {
-      const materials = await MaterialModel.find({
+      const query = {
         mentorId,
         type: type !== "all" ? type : { $exists: true },
         title: { $regex: search, $options: "i" },
-      })
+      };
+      const materials = await MaterialModel.find(query)
         .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
         .limit(parseInt(limit, 10))
         .sort({ createdAt: -1 });
 
+      const totalCount = await MaterialModel.countDocuments(query);
+
       if (!materials) return null;
-      return materials.map((material) => mapMaterial(material));
+      const mappedMaterials = materials.map((material) =>
+        mapMaterial(material)
+      );
+      return { materials: mappedMaterials, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to fetch materials by type");
     }
@@ -110,11 +124,17 @@ class MaterialRepository implements IMaterialRepository {
 
   async fetchMaterialsByMentorIds(
     materialIds: string[]
-  ): Promise<Material[] | null> {
+  ): Promise<{ materials: Material[]; docCount: number } | null> {
     try {
       const materials = await MaterialModel.find({ _id: { $in: materialIds } });
       if (!materials) return null;
-      return materials ? materials.map(mapMaterial) : null;
+      const totalCount = await MaterialModel.countDocuments();
+
+      if (!materials) return null;
+      const mappedMaterials = materials.map((material) =>
+        mapMaterial(material)
+      );
+      return { materials: mappedMaterials, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to fetch the materials");
     }

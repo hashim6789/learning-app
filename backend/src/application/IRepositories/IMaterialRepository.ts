@@ -4,11 +4,13 @@ import { MaterialQuery } from "../../shared/types/filters";
 
 export default interface IMaterialRepository {
   fetchMaterialById(materialId: string): Promise<Material | null>;
-  fetchAllMaterialsByType(type: string): Promise<Material[] | null>;
+  fetchAllMaterialsByType(
+    type: string
+  ): Promise<{ materials: Material[]; docCount: number } | null>;
   fetchMaterialsByMentorId(
     mentorId: string,
     filter: MaterialQuery
-  ): Promise<Material[] | null>;
+  ): Promise<{ materials: Material[]; docCount: number } | null>;
   fetchMentorMaterialByTitle(
     mentorId: string,
     title: string
@@ -23,5 +25,7 @@ export default interface IMaterialRepository {
     data: Partial<Material>
   ): Promise<Material | null>;
   deleteMaterialById(materialId: string): Promise<Material | null>;
-  fetchMaterialsByMentorIds(materialIds: string[]): Promise<Material[] | null>;
+  fetchMaterialsByMentorIds(
+    materialIds: string[]
+  ): Promise<{ materials: Material[]; docCount: number } | null>;
 }

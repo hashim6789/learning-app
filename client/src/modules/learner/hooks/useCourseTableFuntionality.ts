@@ -14,6 +14,7 @@ export function useCourseTableFunctionality({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategpry] = useState("");
 
   const [data, setData] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export function useCourseTableFunctionality({
       setLoading(true);
       try {
         const response = await api.get(
-          `/api/courses?search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api/courses?category=${category}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
         setData(result.data);

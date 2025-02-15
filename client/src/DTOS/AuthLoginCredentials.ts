@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength, Matches } from "class-validator";
+import { User } from "../shared/types/User";
 
 export class AuthLoginCredentials {
   @IsEmail({}, { message: "Please provide a valid email address." })
@@ -9,4 +10,6 @@ export class AuthLoginCredentials {
   @IsNotEmpty({ message: "Password cannot be empty." })
   @Matches(/^\S*$/, { message: "Password cannot contain spaces." })
   password: string;
+
+  role: User;
 }

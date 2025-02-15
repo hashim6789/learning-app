@@ -23,7 +23,7 @@ const categoriesRouter = express.Router();
 categoriesRouter.get(
   "/",
   authenticateToken,
-  authorizeRole(["admin"]),
+  authorizeRole(["admin", "mentor"]),
   categoryController.fetchAllCategoriesForAdmin
 );
 categoriesRouter.post(

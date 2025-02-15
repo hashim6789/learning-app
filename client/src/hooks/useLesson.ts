@@ -39,7 +39,7 @@ const useLesson = (courseId: string) => {
     if (!validateLesson()) return;
 
     try {
-      const response = await api.post("/mentor/lessons", lesson); // Adjust endpoint as necessary
+      const response = await api.post("/api/lessons", lesson); // Adjust endpoint as necessary
       Swal.fire({
         icon: "success",
         title: "Lesson Added",

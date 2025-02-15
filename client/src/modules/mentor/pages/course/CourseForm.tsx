@@ -96,7 +96,7 @@ const CourseForm: React.FC<CourseFormProps> = ({}) => {
     data: lessons,
     // loading,
     // error,
-  } = useFetch<Lesson[]>("/mentor/lessons");
+  } = useFetch<Lesson[]>("/api/lessons");
   const {
     register,
     control,
@@ -154,7 +154,7 @@ const CourseForm: React.FC<CourseFormProps> = ({}) => {
 
           try {
             const response = await api.post(
-              `${config.API_BASE_URL}/mentor/upload/course-img`,
+              `/api/upload/course-img`,
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },

@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoutes";
 import MentorLayout from "../modules/mentor/pages/MentorLayout";
@@ -13,7 +12,7 @@ import MentorMaterialManagement from "../modules/mentor/pages/materials/MentorMa
 import MentorCreateMaterial from "../modules/mentor/pages/materials/MentorCreateMaterial";
 import MentorMaterialDetailPage from "../modules/mentor/pages/materials/MentorMaterialDeatailPage";
 import MentorLessonManagement from "../modules/mentor/pages/lesson/MentorLessonManagement";
-import CourseCreationPage from "../modules/mentor/pages/course/CourseCreationPage";
+// import CourseCreationPage from "../modules/mentor/pages/course/CourseDeatailsPage";
 import CreateLesson from "../modules/mentor/pages/lesson/CreateLesson";
 import MentorLessonDetailsPage from "../modules/mentor/pages/lesson/MentorLessonDetaisPage";
 import Layout from "../modules/mentor/pages/Layout";

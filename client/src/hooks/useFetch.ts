@@ -16,7 +16,7 @@ const useFetch = <T>(url: string | null, options?: RequestInit) => {
       setError(null);
 
       try {
-        const response = await api.get(`${config.API_BASE_URL + url}`);
+        const response = await api.get(url);
 
         if (!response.data) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);

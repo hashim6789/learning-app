@@ -9,7 +9,6 @@ import api from "../../../../shared/utils/api";
 import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import Breadcrumbs from "../../components/BreadCrumbs";
-import { Category } from "../../../../shared/types/Category";
 import { Course } from "../../../../shared/types/Course";
 import useFetch from "../../../../hooks/useFetch";
 import { Lesson } from "../../../../shared/types/Lesson";
@@ -93,7 +92,7 @@ const MentorCreateCourse = () => {
     data: lessons,
     // loading,
     // error,
-  } = useFetch<Lesson[]>("/mentor/lessons");
+  } = useFetch<Lesson[]>("/api/lessons");
   const {
     register,
     control,
@@ -151,7 +150,7 @@ const MentorCreateCourse = () => {
 
           try {
             const response = await api.post(
-              `${config.API_BASE_URL}/mentor/upload/course-img`,
+              `/api/upload/course-img`,
               formData,
               {
                 headers: { "Content-Type": "multipart/form-data" },

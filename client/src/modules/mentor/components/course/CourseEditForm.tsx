@@ -73,7 +73,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
     data: lessons,
     loading: lessonsLoading,
     error: lessonsError,
-  } = useFetch<Lesson[]>("/mentor/lessons");
+  } = useFetch<Lesson[]>("/api/lessons");
   const {
     register,
     handleSubmit,
@@ -115,7 +115,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
     try {
       const titleRemovedLessons = data.lessons.map((lesson) => lesson.id);
       const putData = { ...data, lessons: titleRemovedLessons };
-      const response = await api.put(`/mentor/courses/${course.id}`, putData);
+      const response = await api.put(`/api/courses/${course.id}`, putData);
       if (response && response.status === 200 && response.data) {
         showToast.success("Course updated successfully");
         onStopEditing();
@@ -205,7 +205,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
                           })}
                           className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         >
-                          <option value="">Select Lesso</option>
+                          <option value="">Select Lessons</option>
                           {lessonsLoading ? (
                             <option>Loading...</option>
                           ) : lessonsError ? (

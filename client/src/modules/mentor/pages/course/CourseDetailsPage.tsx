@@ -29,7 +29,7 @@ const MentorCourseDetailsPage = () => {
     data,
     loading: courseLoading,
     error: courseError,
-  } = useFetch<Course>(`/mentor/courses/${courseId}`);
+  } = useFetch<Course>(`/api/courses/${courseId}`);
 
   useEffect(() => {
     if (data) {

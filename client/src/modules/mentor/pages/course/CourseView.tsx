@@ -15,7 +15,7 @@ const CourseView: React.FC<CourseViewProps> = ({ course }) => {
         <div className="flex items-center space-x-6">
           <div className="flex items-center">
             <Clock className="h-5 w-5 mr-2" />
-            <span>{course.duration} minutes</span>
+            <span>{course.duration} minutesssss</span>
           </div>
           <div className="flex items-center">
             <Book className="h-5 w-5 mr-2" />

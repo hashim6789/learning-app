@@ -8,6 +8,7 @@ import useFormErrors from "../../../hooks/useFormErrors";
 import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
 import { AuthSignupCredentials } from "../../../DTOS/AuthSignupCredentials";
 import { ForgotCredentials } from "../../../DTOS/ForgotCredentials";
+import { User } from "../../../shared/types/User";
 
 const useLearnerAuth = () => {
   const { loading, error, handleLogin, handleSignup, handleForgotPassword } =
@@ -26,6 +27,7 @@ const useLearnerAuth = () => {
   const [lastName, setLastName] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [role] = useState<User>("learner");
 
   // Forgot password state
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
@@ -40,11 +42,12 @@ const useLearnerAuth = () => {
       const loginCredentials = new AuthLoginCredentials();
       loginCredentials.email = email.trim();
       loginCredentials.password = password.trim();
+      loginCredentials.role = role;
 
       const isValid = await validateCredentials(loginCredentials);
       if (!isValid) return;
 
-      handleLogin(loginCredentials, "learner");
+      handleLogin(loginCredentials);
     } else {
       const signupCredentials = new AuthSignupCredentials();
       signupCredentials.email = email.trim();
@@ -52,11 +55,12 @@ const useLearnerAuth = () => {
       signupCredentials.confirmPassword = confirmPassword.trim();
       signupCredentials.firstName = firstName.trim();
       signupCredentials.lastName = lastName.trim();
+      signupCredentials.role = role;
 
       const isValid = await validateCredentials(signupCredentials);
       if (!isValid) return;
 
-      handleSignup(signupCredentials, "learner");
+      handleSignup(signupCredentials);
     }
   };
 
@@ -66,12 +70,13 @@ const useLearnerAuth = () => {
 
     const forgotCredentials = new ForgotCredentials();
     forgotCredentials.email = forgotPasswordEmail;
+    forgotCredentials.role = role;
 
     const isValid = await validateForgotCredentials(forgotCredentials);
     if (!isValid) {
       return;
     }
-    handleForgotPassword(forgotPasswordEmail, "learner");
+    handleForgotPassword(forgotCredentials);
   };
 
   return {

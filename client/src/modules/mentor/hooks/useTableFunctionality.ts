@@ -27,11 +27,13 @@ export function useMaterialTableFunctionality({
       setLoading(true);
       try {
         const response = await api.get(
-          `/mentor/materials?type=${materialFilterType}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api/materials?type=${materialFilterType}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
+        console.log("result", result.data);
         setData(result.data);
-        setTotalPages(result.totalPages);
+        console.log("data", data);
+        setTotalPages(Math.ceil(result.docCount / itemsPerPage));
       } catch (error) {
         console.error("Error fetching materials:", error);
       } finally {
@@ -74,7 +76,7 @@ export function useMaterialTableFunctionality({
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/mentor/materials/${materialId}`);
+        await api.delete(`/api/materials/${materialId}`);
         showToast.success("The lesson was deleted successfully!");
         setData((prevMaterials) =>
           prevMaterials.filter((material) => material.id !== materialId)

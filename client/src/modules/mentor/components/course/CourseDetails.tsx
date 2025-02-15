@@ -127,7 +127,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const confirmStatusChange = async () => {
     try {
       const response = await api.patch(
-        `/mentor/courses/${course.id}/update-status`,
+        `/api/courses/${course.id}/update-status`,
         { newStatus: newStatus }
       );
       if (response && response.status === 200) {

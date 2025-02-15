@@ -24,7 +24,7 @@ lessonRouter.post(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  lessonController.createLessonForMentor
+  lessonController.createLesson
 );
 
 /**
@@ -39,7 +39,7 @@ lessonRouter.get(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  lessonController.getAllLessonsOfMentor
+  lessonController.getAllLessons
 );
 
 /**
@@ -70,7 +70,7 @@ lessonRouter.put(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  lessonController.updateLessonOfMentor
+  lessonController.updateLesson
 );
 
 /**
@@ -85,7 +85,7 @@ lessonRouter.delete(
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
-  lessonController.deleteLessonOfMentor
+  lessonController.deleteLesson
 );
 
 /**
