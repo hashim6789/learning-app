@@ -66,7 +66,7 @@ const PersonalDetails: React.FC = () => {
         setProfilePicture(profilePicture);
 
         // Update profile image in backend
-        await api.put("/api/profile/profile-img", { profilePicture });
+        await api.put("/api/profile/learner/profile-img", { profilePicture });
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -85,7 +85,7 @@ const PersonalDetails: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await api.put("/api/profile/personal", data);
+      const response = await api.put("/api/profile/learner/personal", data);
       if (response.status === 200) {
         showToast.success(response.data.message);
         setIsEditable(false);

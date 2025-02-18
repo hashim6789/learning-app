@@ -30,7 +30,7 @@ const PersonalDetails: React.FC = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await api.get(`/mentor/profile`);
+        const response = await api.get(`/api/profile/mentor`);
         setUserDetails(response.data.data);
         if (response.data.data.profilePicture) {
           setProfilePicture(response.data.data.profilePicture);
@@ -66,7 +66,7 @@ const PersonalDetails: React.FC = () => {
         setProfilePicture(profilePicture);
 
         // Update profile image in backend
-        await api.put("/mentor/profile/profile-img", { profilePicture });
+        await api.put("/api/profile/mentor/profile-img", { profilePicture });
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -85,7 +85,7 @@ const PersonalDetails: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await api.put("/mentor/profile/personal", data);
+      const response = await api.put("/api/profile/mentor/personal", data);
       if (response.status === 200) {
         showToast.success(response.data.message);
         setIsEditable(false);

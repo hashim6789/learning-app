@@ -54,7 +54,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
     // Simulate an API request for password verification
     try {
       const response = await api.post(
-        "/api/profile/mentor/verify-password",
+        "/api/profile/learner/verify-password",
         data
       );
       if (response.status === 200 && response.data) {
@@ -73,7 +73,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
 
     try {
       const response = await api.post(
-        "/api/profile/mentor/change-password",
+        "/api/profile/learner/change-password",
         data
       );
       if (response.status === 200 && response.data) {
