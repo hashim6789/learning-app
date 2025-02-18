@@ -31,6 +31,8 @@ export class CreateCourseDTO {
 
   lessons: string[];
 
+  price: number;
+
   //   @IsArray()
   //   @IsString({ each: true, message: 'Each lesson must be a string.' })
   //   @IsOptional()

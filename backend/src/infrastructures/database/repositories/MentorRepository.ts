@@ -5,21 +5,62 @@ import MentorModel from "../models/MentorModel";
 import { IUserRepository } from "../../../application/IRepositories/IUserRepository";
 import { User } from "../../../application/entities/User";
 import { IMentor } from "../interfaces/IMentor";
+import { UserQuery } from "../../../shared/types/query";
 
-class MentorRepository implements IUserRepository<Mentor> {
-  //to fetch all mentors
-  async fetchAll(): Promise<Mentor[] | null> {
+class MentorRepository implements IMentorRepository {
+  // to fetch all mentors
+  async fetchAll({
+    status = "all",
+    search = "",
+    page = "1",
+    limit = "10",
+  }: UserQuery): Promise<{ users: Mentor[]; docCount: number } | null> {
     try {
-      const mentors = await MentorModel.find();
-      if (!mentors) return null;
-      return mentors.map(mappingMentor);
+      const query = {
+        isBlocked:
+          status !== "all"
+            ? status === "blocked"
+              ? true
+              : false
+            : { $exists: true },
+        $or: [
+          { firstName: { $regex: search, $options: "i" } },
+          { lastName: { $regex: search, $options: "i" } },
+        ],
+      };
+      const learners = await MentorModel.find(query)
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
+        .sort({ createdAt: -1 });
+
+      if (!learners) return null;
+
+      const totalCount = await MentorModel.countDocuments(query);
+
+      const mappedLearners = learners.map((learner) => mappingMentor(learner));
+
+      return { users: mappedLearners, docCount: totalCount };
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
-        return [];
+        return null;
       }
       throw new Error("Failed to fetch the learners!");
     }
   }
+
+  //to fetch all mentors
+  // async fetchAll(): Promise<Mentor[] | null> {
+  //   try {
+  //     const mentors = await MentorModel.find();
+  //     if (!mentors) return null;
+  //     return mentors.map(mappingMentor);
+  //   } catch (error) {
+  //     if (error instanceof Error && error.name === "DocumentNotFoundError") {
+  //       return [];
+  //     }
+  //     throw new Error("Failed to fetch the learners!");
+  //   }
+  // }
 
   async fetchById(mentorId: string): Promise<Mentor | null> {
     const mentor = await MentorModel.findById(mentorId);
@@ -268,9 +309,9 @@ function mappingMentor(data: IMentor): Mentor {
     data.isVerified || false,
     data.refreshToken || null,
     data.resetToken || null,
+    data.profilePicture,
     data.firstName,
     data.lastName || "",
-    data.profilePicture,
     data.googleId || null,
     [],
     createdCourses

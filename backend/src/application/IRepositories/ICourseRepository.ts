@@ -6,7 +6,9 @@ import Course from "../entities/Course";
 export default interface ICourseRepository {
   findCourseById(courseId: string): Promise<Course | null>;
   findCourseByTitle(title: string): Promise<Course | null>;
-  fetchAllCourses(): Promise<{ courses: Course[]; docCount: number } | null>;
+  fetchAllCourses(
+    filter: CourseQuery
+  ): Promise<{ courses: Course[]; docCount: number } | null>;
   fetchAllCoursesByMentorId(
     mentorId: string,
     filter: CourseQuery

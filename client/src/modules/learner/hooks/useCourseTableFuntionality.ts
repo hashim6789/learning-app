@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Course } from "../../../shared/types/Course";
 import api from "../../../shared/utils/api";
 import useCourseManagement from "../../../hooks/useCourseManagement";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface UseCourseTableFunctionalityOptions {
   itemsPerPage: number;
@@ -14,18 +16,21 @@ export function useCourseTableFunctionality({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [category, setCategpry] = useState("");
+  const [category, setCategpry] = useState("all");
 
   const [data, setData] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
 
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const auth = isAuthenticated ? "" : "/no-auth";
         const response = await api.get(
-          `/api/courses?category=${category}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api${auth}/courses?category=${category}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
         setData(result.data);

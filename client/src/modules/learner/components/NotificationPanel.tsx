@@ -1,9 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
+import io from "socket.io-client";
+import { Notification } from "../../../shared/types/Notification"; // Update with the correct path
 
-const NotificationPanel = () => {
+interface NotificationPanelProps {
+  userId: string;
+}
+
+// Connect to the Socket.io server
+const socket = io("http://localhost:3000", {
+  transports: ["websocket"],
+  upgrade: false,
+});
+
+const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
   const [showNotification, setShowNotification] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    console.log("userId", userId);
+    // Mentor joins their respective room
+    socket.emit("joinRoom", userId);
+
+    // Listen for 'receiveNotification' events
+    socket.on("receiveNotification", (notification: Notification) => {
+      console.log("Received notification: ", notification);
+      setNotifications((prevNotifications) => [
+        ...prevNotifications,
+        notification,
+      ]);
+    });
+
+    // Clean up the event listener on component unmount
+    return () => {
+      socket.off("receiveNotification");
+    };
+  }, [userId]);
 
   return (
     <div className="relative">
@@ -14,6 +46,11 @@ const NotificationPanel = () => {
         aria-label="Notifications"
       >
         <Bell className="w-5 h-5" />
+        {notifications.length > 0 && (
+          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+            {notifications.length}
+          </span>
+        )}
       </button>
 
       {/* Notification Panel */}
@@ -26,17 +63,16 @@ const NotificationPanel = () => {
           {notifications.length === 0 ? (
             <div className="p-8 text-center">
               <p className="text-gray-600 font-medium mb-2">No notifications</p>
-              {/* <p className="text-gray-500 text-sm">
-                We'll let you know when deadlines are approaching,
-                <br />
-                or there is a course update
-              </p> */}
             </div>
           ) : (
             <div className="max-h-96 overflow-y-auto">
               {notifications.map((notification, index) => (
                 <div key={index} className="p-4 border-b border-gray-200">
-                  {notification}
+                  <h3 className="font-semibold">{notification.title}</h3>
+                  <p>{notification.message}</p>
+                  <span className="text-sm text-gray-500">
+                    {new Date(notification.createdAt).toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>

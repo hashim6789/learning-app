@@ -30,9 +30,7 @@ export function useMaterialTableFunctionality({
           `/api/materials?type=${materialFilterType}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
-        console.log("result", result.data);
         setData(result.data);
-        console.log("data", data);
         setTotalPages(Math.ceil(result.docCount / itemsPerPage));
       } catch (error) {
         console.error("Error fetching materials:", error);

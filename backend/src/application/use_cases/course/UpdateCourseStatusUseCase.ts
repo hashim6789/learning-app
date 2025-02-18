@@ -2,16 +2,28 @@ import { CourseStatus } from "../../../shared/types";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { User } from "../../../shared/types/User";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
+import { INotificationService } from "../../../application/interfaces/INotificationService";
+import { Notification } from "../../entities/Notification";
+import { getIo } from "../../../framework/socket/socketSetup";
+
+const adminId = "67970be7e5fa9da392abd8a8";
 
 class UpdateCourseStatusUseCase {
   private courseRepository: ICourseRepository;
-  constructor(courseRepository: ICourseRepository) {
+  private notificationService: INotificationService;
+
+  constructor(
+    courseRepository: ICourseRepository,
+    notificationService: INotificationService
+  ) {
     this.courseRepository = courseRepository;
+    this.notificationService = notificationService;
   }
 
   async execute(
     courseId: string,
     newStatus: CourseStatus,
+    userId: string,
     userRole: User
   ): Promise<ResponseModel> {
     try {
@@ -20,7 +32,7 @@ class UpdateCourseStatusUseCase {
         return {
           statusCode: 404,
           success: false,
-          message: "The course is doesn't exist!",
+          message: "The course doesn't exist!",
         };
       }
 
@@ -32,7 +44,7 @@ class UpdateCourseStatusUseCase {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "The drafted courses only update to completed!",
+                  message: "Only requested courses can be rejected!",
                 };
               }
               break;
@@ -42,7 +54,7 @@ class UpdateCourseStatusUseCase {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "The completed courses only update to requested!",
+                  message: "Only requested courses can be approved!",
                 };
               }
               break;
@@ -51,7 +63,7 @@ class UpdateCourseStatusUseCase {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "The completed courses only update to requested!",
+                  message: "Only approved courses can be published!",
                 };
               }
               break;
@@ -60,18 +72,25 @@ class UpdateCourseStatusUseCase {
               return {
                 statusCode: 400,
                 success: false,
-                message: "You are trying to update invalid status!!!",
+                message: "You are trying to update to an invalid status!",
               };
           }
           break;
         case "mentor":
+          if (userId !== course.mentorId) {
+            return {
+              statusCode: 400,
+              success: false,
+              message: "Yoy can't allow to update the status of this course!",
+            };
+          }
           switch (newStatus) {
             case "completed":
               if (course.status !== "draft") {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "The drafted courses only update to completed!",
+                  message: "Only drafted courses can be completed!",
                 };
               }
               break;
@@ -81,7 +100,7 @@ class UpdateCourseStatusUseCase {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "The completed courses only update to requested!",
+                  message: "Only completed courses can be requested!",
                 };
               }
               break;
@@ -90,7 +109,7 @@ class UpdateCourseStatusUseCase {
               return {
                 statusCode: 400,
                 success: false,
-                message: "You are trying to update invalid status!!!",
+                message: "You are trying to update to an invalid status!",
               };
           }
           break;
@@ -99,7 +118,7 @@ class UpdateCourseStatusUseCase {
           return {
             statusCode: 400,
             success: false,
-            message: "The learner can't update the course!!!!!",
+            message: "Learners cannot update the course!",
           };
       }
 
@@ -111,20 +130,49 @@ class UpdateCourseStatusUseCase {
         return {
           statusCode: 400,
           success: false,
-          message: "The course status update is failed!",
+          message: "Failed to update the course status!",
         };
       }
 
+      const notification = new Notification(
+        "1",
+        "Course Status Update",
+        `The status of your course "${course.title}" has been updated to ${newStatus} by the admin.`,
+        userRole === "admin" ? course.mentorId : adminId,
+        new Date()
+      );
+
+      // Send notification to the mentor
+      if (
+        userRole === "admin" &&
+        (newStatus === "approved" ||
+          newStatus === "rejected" ||
+          newStatus === "published")
+      ) {
+        await this.notificationService.sendNotification(notification);
+        const io = getIo();
+        if (io) {
+          console.log("Emitting notification to mentor:", course.mentorId);
+          io.to(course.mentorId).emit("receiveNotification", notification);
+        }
+      } else if (userRole === "mentor" && newStatus === "requested") {
+        await this.notificationService.sendNotification(notification);
+        const io = getIo();
+        if (io) {
+          console.log("Emitting notification to admin:", adminId);
+          io.to(adminId).emit("receiveNotification", notification);
+        }
+      }
       return {
         statusCode: 200,
         success: true,
-        message: `The course status is updated to ${newStatus} successfully.`,
+        message: `The course status has been updated to ${newStatus} successfully.`,
         data: {
           course: updatedCourse,
         },
       };
     } catch (error) {
-      throw new Error("An Error when updating the course status!");
+      throw new Error("An error occurred while updating the course status!");
     }
   }
 }

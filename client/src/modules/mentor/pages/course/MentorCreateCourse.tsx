@@ -33,6 +33,7 @@ interface FormInputs {
   category: { title: string; id: string } | null;
   thumbnail: string | null;
   lessons: { id: string; title: string }[];
+  price: number;
 }
 
 const courseSchema = z.object({
@@ -70,9 +71,14 @@ const courseSchema = z.object({
       },
       { message: "Duplicate or empty lesson IDs are not allowed" }
     ),
+
   // duration: z
   //   .number({ invalid_type_error: "Duration must be a number" })
-  //   .min(15, "Duration must be at least 15 minute"),
+  //   .min(15, "Duration must be at least 15 minutes"),
+
+  price: z
+    .number({ invalid_type_error: "Price must be a number" })
+    .min(0, "Price must be a non-negative number"),
 });
 
 const MentorCreateCourse = () => {
@@ -112,6 +118,7 @@ const MentorCreateCourse = () => {
       lessons: lessons
         ? lessons.map((lesson) => ({ id: "", title: lesson.title }))
         : [],
+      price: 0,
     },
   });
 
@@ -544,6 +551,28 @@ const MentorCreateCourse = () => {
                   {errors.lessons[index].title.message}
                 </p>
               )
+          )}
+        </div>
+
+        {/* Course Price */}
+
+        <div className="space-y-2">
+          <label
+            htmlFor="duration"
+            className="block text-sm font-medium text-purple-700"
+          >
+            Price
+          </label>
+          <input
+            id="price"
+            type="number"
+            defaultValue={0}
+            {...(register("price"), { valueAsNumber: true })}
+            onChange={(e) => setValue("price", Number(e.target.value) || 0)}
+            className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+          {errors.price && (
+            <p className="text-red-500 text-sm">{errors.price.message}</p>
           )}
         </div>
 

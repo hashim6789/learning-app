@@ -4,24 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Edit2 } from "lucide-react";
 import userImage from "../../../../assets/img/user_image.avif";
-import { Cloudinary } from "@cloudinary/url-gen";
-import { AdvancedImage } from "@cloudinary/react";
 import { config } from "../../../../shared/configs/config";
 import axios from "axios";
 import api from "../../../../shared/utils/api";
 import { showToast } from "../../../../shared/utils/toastUtils";
+import LoadingComponent from "../LoadingComponent";
+import ErrorComponent from "../ErrorComponent";
 
 // Form Validation Schema
 const schema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-});
-
-// Cloudinary Configuration
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: config.CLOUDINARY_CLOUD_NAME,
-  },
 });
 
 type FormData = z.infer<typeof schema>;
@@ -42,8 +35,6 @@ const PersonalDetails: React.FC = () => {
         if (response.data.data.profilePicture) {
           setProfilePicture(response.data.data.profilePicture);
         }
-        console.log("profile", response.data.data.profilePicture);
-        console.log("profile", profilePicture);
       } catch (err) {
         setError("Failed to fetch user details");
       } finally {
@@ -104,6 +95,13 @@ const PersonalDetails: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return <LoadingComponent theme="blue" item="personal details" />;
+  }
+  if (error) {
+    return <ErrorComponent theme="blue" item="personal details" />;
+  }
+
   return (
     <div>
       <div className="space-y-6">
@@ -113,15 +111,11 @@ const PersonalDetails: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center overflow-hidden">
-              {/* {profilePicture.startsWith("http") ? (
-                <AdvancedImage cldImg={cld.image(profilePicture)} /> */}
-              {/* ) : ( */}
               <img
                 src={profilePicture}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
-              {/* )} */}
             </div>
             <button
               onClick={() => document.getElementById("fileInput")?.click()}

@@ -11,10 +11,9 @@ class BlockUnblockMentorUseCase {
   }
 
   async execute(mentorId: string, data: BlockData): Promise<ResponseModel> {
-    const mentor = await this.mentorRepository.BlockMentor(
-      mentorId,
-      data.change
-    );
+    const mentor = await this.mentorRepository.updateById(mentorId, {
+      isBlocked: !data.change,
+    });
     if (!mentor)
       return {
         statusCode: 404,

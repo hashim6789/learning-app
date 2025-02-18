@@ -1,3 +1,4 @@
+import { UserQuery } from "../../shared/types/query";
 import { User } from "../entities/User";
 
 // export interface IUserRepository {
@@ -15,7 +16,7 @@ export interface IUserRepository<T> {
   fetchByField(field: { [key: string]: any }): Promise<T | null>;
   updateById(userId: string, updateData: Partial<T>): Promise<T | null>;
   fetchById(userId: string): Promise<T | null>;
-  fetchAll(): Promise<T[] | null>;
+  fetchAll(query: UserQuery): Promise<{ users: T[]; docCount: number } | null>;
   deleteById(userId: string): Promise<T | null>;
   create(data: T): Promise<T | null>;
 }

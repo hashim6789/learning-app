@@ -20,11 +20,11 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const navigate = useNavigate();
 
   // Get mentor data from localStorage
-  const mentorData = JSON.parse(localStorage.getItem("data") || "{}");
-  const fullName = `${mentorData.firstName || ""} ${
-    mentorData.lastName || ""
+  const userData = JSON.parse(localStorage.getItem("data") || "{}");
+  const fullName = `${userData.firstName || ""} ${
+    userData.lastName || ""
   }`.trim();
-  const profileImage = mentorData.profilePicture;
+  const profileImage = userData.profilePicture;
 
   const getInitials = (name: string) => {
     return name
@@ -58,7 +58,7 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
       </div>
 
       <div className="flex items-center space-x-4 relative">
-        <NotificationPanel />
+        <NotificationPanel userId={userData.id} />
         <button onClick={changeTheme} className={`${style} p-2 rounded-md`}>
           {theme === "dark" ? <Sun /> : <Moon />}
         </button>
@@ -88,9 +88,7 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
           <div className="absolute right-0 top-16 w-64 bg-white rounded-lg shadow-lg py-2 border border-purple-100 z-10">
             <div className="px-4 py-3 border-b border-purple-100">
               <p className="text-sm font-semibold text-gray-800">{fullName}</p>
-              <p className="text-xs text-gray-500 truncate">
-                {mentorData.email}
-              </p>
+              <p className="text-xs text-gray-500 truncate">{userData.email}</p>
             </div>
 
             <button

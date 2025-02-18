@@ -1,19 +1,22 @@
 import { Clock, Award, Monitor, Share2 } from "lucide-react";
 import { Course } from "../../../../shared/types/Course";
-import useFetch from "../../../../hooks/useFetch";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ErrorComponent from "../../../mentor/components/ErrorComponent";
 import LoadingComponent from "../../../mentor/components/LoadingComponent";
 import useUnAuthorizedFetch from "../../../../hooks/useUnAuthorizedFetch";
 import BackComponent from "../../components/BackComponent";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
 
 const CourseDetails = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const {
     data: course,
     error,
     loading,
-  } = useUnAuthorizedFetch<Course>(`/api/courses/${courseId}`);
+  } = useUnAuthorizedFetch<Course>(`/api/no-auth/courses/${courseId}`);
 
   if (loading) {
     return <LoadingComponent theme="blue" item="course" />;
@@ -21,6 +24,21 @@ const CourseDetails = () => {
   if (error || !course) {
     return <ErrorComponent theme="blue" item="course" />;
   }
+
+  const handlePurchase = () => {
+    if (isAuthenticated) {
+      navigate(`/learner/checkout/${courseId}`);
+    } else {
+      navigate("/login");
+    }
+  };
+  const handleSubscription = () => {
+    if (isAuthenticated) {
+      navigate(`/learner/subscription-plans`);
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -66,21 +84,30 @@ const CourseDetails = () => {
         <div className="md:col-span-1">
           <div className="p-6 bg-white rounded-lg shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              {/* <div>
+              <div>
                 <span className="text-3xl font-bold text-blue-600">
-                  ${discountedPrice}
+                  ${course.price}
                 </span>
                 <span className="ml-2 text-gray-400 line-through">
-                  ${originalPrice}
+                  ${course.price}
                 </span>
               </div>
-              <span className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded">
+              {/* <span className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded">
                 {discount}% off
               </span> */}
             </div>
 
-            <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6">
-              Enroll Now
+            <button
+              className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
+              onClick={handlePurchase}
+            >
+              Buy Now
+            </button>
+            <button
+              className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
+              onClick={handleSubscription}
+            >
+              Subscription Plans
             </button>
 
             <div className="space-y-4">

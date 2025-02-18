@@ -9,22 +9,9 @@ import LearnerModel from "../models/LearnerModel";
 import { ILearner } from "../interfaces/ILearner";
 import { IUserRepository } from "../../../application/IRepositories/IUserRepository";
 import { mapToLearner } from "../mappers/userMapper";
+import { UserQuery } from "../../../shared/types/query";
 
-class LearnerRepository implements IUserRepository<Learner> {
-  // //find learner by email
-  // async findByEmail(email: string): Promise<Learner | null> {
-  //   const learner = await LearnerModel.findOne({ email });
-  //   if (!learner) return null;
-  //   return mappingLearner(learner);
-  // }
-
-  // //for google signup and login
-  // async findByGoogleId(googleId: string): Promise<Learner | null> {
-  //   const learner = await LearnerModel.findOne({ googleId });
-  //   if (!learner) return null;
-  //   return mappingLearner(learner);
-  // }
-
+class LearnerRepository implements ILearnerRepository {
   // //to create a new learner
   async create(data: Learner): Promise<Learner> {
     const newLearner = new LearnerModel(data);
@@ -32,15 +19,40 @@ class LearnerRepository implements IUserRepository<Learner> {
     return mapToLearner(newLearner);
   }
 
-  //to fetch all learners
-  async fetchAll(): Promise<Learner[] | null> {
+  async fetchAll({
+    status = "all",
+    search = "",
+    page = "1",
+    limit = "10",
+  }: UserQuery): Promise<{ users: Learner[]; docCount: number } | null> {
     try {
-      const learners = await LearnerModel.find();
+      const query = {
+        isBlocked:
+          status !== "all"
+            ? status === "blocked"
+              ? true
+              : false
+            : { $exists: true },
+        $or: [
+          { firstName: { $regex: search, $options: "i" } },
+          { lastName: { $regex: search, $options: "i" } },
+        ],
+      };
+      const learners = await LearnerModel.find(query)
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
+        .sort({ createdAt: -1 });
+
       if (!learners) return null;
-      return learners.map(mapToLearner);
+
+      const totalCount = await LearnerModel.countDocuments(query);
+
+      const mappedLearners = learners.map((learner) => mapToLearner(learner));
+
+      return { users: mappedLearners, docCount: totalCount };
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
-        return [];
+        return null;
       }
       throw new Error("Failed to fetch the learners!");
     }

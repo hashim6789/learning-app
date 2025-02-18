@@ -23,9 +23,7 @@ const CourseDetails: React.FC = () => {
   const [newStatus, setNewStatus] = useState<CourseStatus>("draft");
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data, error, loading } = useFetch<Course>(
-    `/admin/courses/${courseId}`
-  );
+  const { data, error, loading } = useFetch<Course>(`/api/courses/${courseId}`);
 
   useEffect(() => {
     if (data) {

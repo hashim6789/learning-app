@@ -13,16 +13,21 @@ import UpdateCourseUseCase from "../../application/use_cases/mentor/UpdateCourse
 import DeleteCourseUseCase from "../../application/use_cases/mentor/DeleteCourseUseCase";
 import UpdateCourseStatusUseCase from "../../application/use_cases/course/UpdateCourseStatusUseCase";
 import GetCourseByIdUseCase from "../../application/use_cases/course/GetCourseByIdUseCase";
-import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
+// import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
 import GetAllPublishedCoursesUseCase from "../../application/use_cases/course/GetAllPublishedCoursesUseCase";
 import { CourseQuery } from "../../shared/types/filters";
 import { Payload } from "../../shared/types/Payload";
 import { ResponseModel } from "../../shared/types/ResponseModel";
 import Course from "../../application/entities/Course";
+import { NotificationService } from "../../infrastructures/services/NotificationService";
+import { NotificationRepository } from "../../infrastructures/database/repositories/NotificatinRepository";
 
 //created the instances
 const mentorRepository = new MentorRepository();
 const courseRepository = new CourseRepository();
+const notificationRepository = new NotificationRepository();
+
+const notificationService = new NotificationService(notificationRepository);
 const courseCreationUseCase = new CourseCreationUseCase(
   courseRepository,
   mentorRepository
@@ -48,7 +53,8 @@ const updatedCourseUseCase = new UpdateCourseUseCase(courseRepository);
 const deleteCourseUseCase = new DeleteCourseUseCase(courseRepository);
 
 const updateCourseStatusUseCase = new UpdateCourseStatusUseCase(
-  courseRepository
+  courseRepository,
+  notificationService
 );
 
 const getCourseByIdUseCase = new GetCourseByIdUseCase(courseRepository);
@@ -140,13 +146,14 @@ class CourseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const mentorId = req.user?.userId || "";
+      const userId = req.user?.userId || "";
       const userRole = req.user?.role || "learner";
       const { courseId } = req.params;
       const { newStatus } = req.body;
       const response = await updateCourseStatusUseCase.execute(
         courseId,
         newStatus,
+        userId,
         userRole
       );
 
@@ -177,12 +184,17 @@ class CourseController {
         page = "1",
         limit = "10",
       } = req.query as any;
-      const response = await getAllCourseOfMentorUseCase.execute(mentorId, {
+
+      const filter = {
         status,
         search,
         page,
         limit,
-      });
+      };
+      const response = await getAllCourseOfMentorUseCase.execute(
+        mentorId,
+        filter
+      );
       if (response.success && response.data) {
         res
           .status(200)
@@ -237,7 +249,7 @@ class CourseController {
       if (!userId) {
         // response = await getAllPublishedCoursesUseCase.execute(filter);
       } else if (role === "admin") {
-        //  response = await getAllCourseUseCase.execute(filter);
+        response = await getCourseByIdUseCase.execute(courseId);
       } else if (role === "mentor") {
         response = await getCourseOfMentorUseCase.execute(userId, courseId);
       }
@@ -328,10 +340,10 @@ class CourseController {
         message: "",
       };
 
-      if (!userId) {
+      if (!userId || role === "learner") {
         response = await getAllPublishedCoursesUseCase.execute(filter);
       } else if (role === "admin") {
-        //  response = await getAllCourseUseCase.execute(filter);
+        response = await getAllCourseUseCase.execute(filter);
       } else if (role === "mentor") {
         response = await getAllCourseOfMentorUseCase.execute(userId, filter);
       }

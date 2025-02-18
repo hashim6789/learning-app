@@ -6,4 +6,7 @@ export const config = {
   CLOUDINARY_API_SECRET: "WVXBK5SJRA6ib0Tj9G6VwETNWq0",
   CLOUDINARY_CLOUD_NAME: "dqrcywqyg",
   CLOUDINARY_PRESET: "user-profile",
+
+  VITE_STRIPE_PK:
+    "pk_test_51QtM40FPx9xIDyIQ5jcOcxsQ1xAKdRxopM9EnG0a5RRQbOplMEMC2xYOnEQrJySkkxMScWi5jDdVgcnPK6dASCIU00QPnXGh1q",
 };

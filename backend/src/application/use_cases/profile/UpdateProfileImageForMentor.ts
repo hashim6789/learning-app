@@ -18,9 +18,7 @@ class UpdateProfileImageForMentorUseCase {
     mentorId: string
   ): Promise<ResponseModel> {
     try {
-      const existingMentor = await this.mentorRepository.fetchMentorById(
-        mentorId
-      );
+      const existingMentor = await this.mentorRepository.fetchById(mentorId);
 
       if (!existingMentor) {
         return {
@@ -29,7 +27,7 @@ class UpdateProfileImageForMentorUseCase {
           message: "The profile doesn't exist!",
         };
       }
-      const updatedProfile = await this.mentorRepository.updateMentor(
+      const updatedProfile = await this.mentorRepository.updateById(
         mentorId,
         data
       );

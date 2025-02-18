@@ -9,6 +9,7 @@ export default class Course {
   description: string | null;
   thumbnail: string | null;
   lessons: { id: string; title: string }[] | null;
+  price: number;
   duration: number | null;
   status: string | null;
   rejectionReason: string | null;
@@ -22,6 +23,7 @@ export default class Course {
     description: string | null,
     thumbnail: string | null,
     lessons: { id: string; title: string }[] | null,
+    price: number,
     duration: number | null,
     status: string | null,
     rejectionReason: string | null,

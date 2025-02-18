@@ -11,8 +11,9 @@ import GetMentorsUseCase from "../../application/use_cases/admin/GetMentorsUseCa
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import BlockUnblockMentorUseCase from "../../application/use_cases/admin/BlockUnBlockMentorUseCase";
 import GetMentorByIdUseCase from "../../application/use_cases/admin/GetMentorByIdUseCase";
-import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
+// import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
 import CourseRepository from "../../infrastructures/database/repositories/CourseRepository";
+import { Mentor } from "../../application/entities/Mentor";
 const mentorRepository = new MentorRepository();
 const courseRepository = new CourseRepository();
 const getMentorsUseCase = new GetMentorsUseCase(mentorRepository);
@@ -20,23 +21,37 @@ const getMentorByIdUseCase = new GetMentorByIdUseCase(mentorRepository);
 const blockUnblockMentorUseCase = new BlockUnblockMentorUseCase(
   mentorRepository
 );
-const getMentorCoursesAnalyticsUseCase = new GetMentorCoursesAnalyticsUseCase(
-  mentorRepository,
-  courseRepository
-);
+// const getMentorCoursesAnalyticsUseCase = new GetMentorCoursesAnalyticsUseCase(
+//   mentorRepository,
+//   courseRepository
+// );
 
 class MentorController {
-  async fetchAllMentorsForAdmin(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  //get all mentors
+  async getAllMentors(req: Request, res: Response, next: NextFunction) {
     try {
-      const response = await getMentorsUseCase.execute();
+      const {
+        status = "all",
+        search = "",
+        page = "1",
+        limit = "10",
+      } = req.query as any;
+      const query = {
+        status,
+        search,
+        page,
+        limit,
+      };
+      const response = await getMentorsUseCase.execute(query);
+
+      type Data = { mentors: Mentor[]; docCount: number };
       if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
+        const { mentors, docCount } = response.data as Data;
+        res.status(200).json({
+          message: response.message,
+          data: mentors,
+          docCount,
+        });
       } else {
         res.status(400).json({ message: response.message });
       }
@@ -44,14 +59,17 @@ class MentorController {
       next(error);
     }
   }
-  async fetchMentorForAdmin(req: Request, res: Response, next: NextFunction) {
+
+  //get mentor
+  async getMentor(req: Request, res: Response, next: NextFunction) {
     try {
       const { mentorId } = req.params;
       const response = await getMentorByIdUseCase.execute(mentorId);
       if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
+        res.status(200).json({
+          message: response.message,
+          data: response.data,
+        });
       } else {
         res.status(400).json({ message: response.message });
       }
@@ -60,6 +78,7 @@ class MentorController {
     }
   }
 
+  //block and unblock the mentor
   async blockUnblockMentor(req: Request, res: Response, next: NextFunction) {
     try {
       const { mentorId } = req.params;
@@ -68,9 +87,10 @@ class MentorController {
         req.body
       );
       if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
+        res.status(200).json({
+          message: response.message,
+          data: response.data,
+        });
       } else {
         res.status(400).json({ message: response.message });
       }
@@ -78,25 +98,25 @@ class MentorController {
       next(error);
     }
   }
-  async getMentorCoursesAnalytics(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { mentorId } = req.params;
-      const response = await getMentorCoursesAnalyticsUseCase.execute(mentorId);
-      if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
-      } else {
-        res.status(400).json({ message: response.message });
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async getMentorCoursesAnalytics(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const { mentorId } = req.params;
+  //     const response = await getMentorCoursesAnalyticsUseCase.execute(mentorId);
+  //     if (response.success && response.data) {
+  //       res
+  //         .status(200)
+  //         .json({ message: response.message, data: response.data });
+  //     } else {
+  //       res.status(400).json({ message: response.message });
+  //     }
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }
 
 export default MentorController;

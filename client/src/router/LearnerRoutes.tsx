@@ -6,9 +6,19 @@ import LearnerLayout from "../modules/learner/pages/LearnerLayout";
 import LearnerOtpPage from "../modules/learner/pages/LearnerOtpPage";
 import LearnerChangePasswordPage from "../modules/learner/pages/LearnerChangePasswordPage";
 import LearnerLandingPage from "../modules/learner/pages/LearnerLandingPage";
-import LearnerCoursePage from "../modules/learner/pages/course/LearnerCoursesPage";
 import CourseDetails from "../modules/learner/pages/course/CourseDetailPage";
 import LearnerCoursesPage from "../modules/learner/pages/course/LearnerCoursesPage";
+
+import { loadStripe } from "@stripe/stripe-js";
+import { config } from "../shared/configs/config";
+import { Elements } from "@stripe/react-stripe-js";
+import PaymentForm from "../components/CheckoutForm";
+import SubscriptionCheckout from "../modules/learner/pages/payment/SubscriptionCheckout";
+import WrappedCourseCheckout from "../modules/learner/pages/course/CourseCheckoutPage";
+// const stripePromise = loadStripe(config.VITE_STRIPE_PK);
+import PaymentSuccess from "../modules/learner/pages/payment/PaymentSuccess";
+import SubscriptionSuccess from "../modules/learner/pages/payment/SubscriptionSuccessPage";
+import LearnerProfile from "../modules/learner/pages/LearnerProfile";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -50,7 +60,35 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
           { path: "otp", element: <LearnerOtpPage /> },
           {
             element: <LearnerLayout />,
-            children: [{ path: "dashboard", element: <LearnerDashboard /> }],
+            children: [
+              { path: "dashboard", element: <LearnerDashboard /> },
+              { path: "profile", element: <LearnerProfile /> },
+
+              // {
+              //   path: "payment/:courseId",
+              //   element: (
+              //     <Elements stripe={stripePromise}>
+              //       <PaymentForm />
+              //     </Elements>
+              //   ),
+              // },
+              {
+                path: "checkout/:courseId",
+                element: <WrappedCourseCheckout />,
+              },
+              {
+                path: "subscription-plans",
+                element: <SubscriptionCheckout />,
+              },
+              {
+                path: "payment-success/:purchaseId",
+                element: <PaymentSuccess />,
+              },
+              {
+                path: "subscription-success/:subscriptionId",
+                element: <SubscriptionSuccess />,
+              },
+            ],
           },
         ],
       },

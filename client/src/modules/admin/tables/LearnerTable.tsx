@@ -2,28 +2,25 @@
 import useLearner from "../hooks/useLearner";
 
 //imported sub-classes
-import { Learner } from "../../../shared/types/Learner";
-interface LearnerTableProps {
-  learners: Learner[];
-}
+interface LearnerTableProps {}
 
 import userImage from "../../../assets/img/user_image.avif";
 
-const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
+const LearnersTable: React.FC<LearnerTableProps> = () => {
   const {
+    data,
     isLoading,
     learnerStatus,
     currentPage,
     searchQuery,
     filterStatus,
-    paginatedData,
     totalPages,
     handlePageChange,
     handleSearchChange,
     handleFilterChange,
     handleBlockUnblockWrapper,
     handleViewLearner,
-  } = useLearner(learners);
+  } = useLearner({ itemsPerPage: 5 });
 
   return (
     <div>
@@ -67,7 +64,7 @@ const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {paginatedData.map((learner) => (
+          {data.map((learner, index) => (
             <tr key={learner.id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -98,12 +95,12 @@ const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    learnerStatus[learner.id] === "blocked"
+                    learner.status === "blocked"
                       ? "bg-red-100 text-red-800"
                       : "bg-green-100 text-green-800"
                   }`}
                 >
-                  {learnerStatus[learner.id]}
+                  {learner.status}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -111,14 +108,12 @@ const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
                   onClick={() => handleBlockUnblockWrapper(learner.id)}
                   disabled={isLoading}
                   className={`text-sm px-4 py-2 rounded-md mr-2 ${
-                    learnerStatus[learner.id] === "blocked"
+                    learnerStatus[index] === "blocked"
                       ? "bg-green-100 text-green-600 hover:bg-green-200"
                       : "bg-red-100 text-red-600 hover:bg-red-200"
                   }`}
                 >
-                  {learnerStatus[learner.id] === "blocked"
-                    ? "Unblock"
-                    : "Block"}
+                  {learnerStatus[index] === "blocked" ? "Unblock" : "Block"}
                 </button>
                 <button
                   onClick={() => handleViewLearner(learner.id)}
@@ -131,29 +126,6 @@ const LearnersTable: React.FC<LearnerTableProps> = ({ learners }) => {
           ))}
         </tbody>
       </table>
-      <div className="mt-4 flex justify-between items-center">
-        <div>
-          Showing {(currentPage - 1) * 5 + 1} to{" "}
-          {Math.min(currentPage * 5, learners.length)} of {learners.length}{" "}
-          entries
-        </div>
-        <div>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 border rounded-md mr-2"
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 border rounded-md"
-          >
-            Next
-          </button>
-        </div>
-      </div>
     </div>
   );
 };

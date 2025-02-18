@@ -1,3 +1,4 @@
+import { CourseQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 
@@ -13,9 +14,9 @@ class GetAllCourseUseCase {
     this.courseRepository = courseRepository;
   }
 
-  async execute(): Promise<ResponseModel> {
+  async execute(query: CourseQuery): Promise<ResponseModel> {
     try {
-      const courses = await this.courseRepository.fetchAllCourses();
+      const courses = await this.courseRepository.fetchAllCourses(query);
 
       if (!courses) {
         return {

@@ -54,7 +54,7 @@ const CourseNavbar: React.FC = () => {
           <div className="flex items-center space-x-4">
             {isAuthenticated && !isBlocked && isVerified ? (
               <>
-                <NotificationPanel />
+                <NotificationPanel userId={user.id} />
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -75,7 +75,7 @@ const CourseNavbar: React.FC = () => {
                         </p>
                       </div>
                       <NavLink
-                        to="/profile"
+                        to="/learner/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
                         Profile

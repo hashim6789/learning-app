@@ -84,7 +84,7 @@ coursesRouter.get(
   "/",
   authenticateToken,
   checkUserBlocked,
-  authorizeRole(["mentor", "learner"]),
+  authorizeRole(["mentor", "learner", "admin"]),
   courseController.getCourses
 );
 

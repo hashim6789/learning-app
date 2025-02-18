@@ -6,14 +6,15 @@ import useAuth from "../../../hooks/useAuth";
 
 //imported build-in hooks
 import { useState } from "react";
+import NotificationPanel from "../../learner/components/NotificationPanel";
 
 const Navbar: React.FC = () => {
   const { handleLogout } = useAuth();
   let userEmail = "";
-  const storedData = localStorage.getItem("data");
-  if (storedData) {
+  const userData = JSON.parse(localStorage.getItem("data") || "{}");
+  if (userData) {
     try {
-      const parsedData = JSON.parse(storedData);
+      const parsedData = JSON.parse(userData);
       userEmail = parsedData?.email || "";
     } catch (error) {
       console.error("Error parsing localStorage data:", error);
@@ -33,6 +34,7 @@ const Navbar: React.FC = () => {
           </div>
           {/* <Logo /> */}
           <div className="flex items-center space-x-4">
+            <NotificationPanel userId={userData.id} />
             <span className="hidden text-sm text-gray-500 sm:inline-block">
               <Mail className="mr-2 inline-block h-4 w-4" />
               {userEmail}

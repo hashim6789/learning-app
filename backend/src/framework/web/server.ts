@@ -1,6 +1,7 @@
 // Inbuilt Node.js modules
 import express, { Application } from "express";
 import dotenv from "dotenv";
+import http from "http";
 import "reflect-metadata";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
@@ -12,9 +13,9 @@ import sessionConfig from "../../shared/configs/sessionConfig";
 
 // Importing router level routes
 import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
-import learnerRouter from "../../adapter/routers/learner";
-import adminRouter from "../../adapter/routers/admin";
-import mentorRouter from "../../adapter/routers/mentor";
+// import learnerRouter from "../../adapter/routers/learner";
+// import adminRouter from "../../adapter/routers/admin";
+// import mentorRouter from "../../adapter/routers/mentor";
 import apiRouter from "../../adapter/routers/api";
 
 // Custom middlewares
@@ -25,6 +26,9 @@ import { connectRedis } from "../redis/redisSetup";
 
 // DB connection setup
 import connectDB from "../db/dbSetup";
+
+// SOCKET connection setup
+import { connectSocket } from "../socket/socketSetup";
 
 // Load environment variables
 dotenv.config();
@@ -56,8 +60,14 @@ app.use("/api", apiRouter);
 // Error handling middleware (after routes to catch any errors)
 app.use(errorHandler);
 
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.io
+const io = connectSocket(server);
+
 // Server configuration
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
