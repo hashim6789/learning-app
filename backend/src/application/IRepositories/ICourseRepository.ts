@@ -27,4 +27,6 @@ export default interface ICourseRepository {
     status: CourseStatus,
     filter: CourseLearnerQuery
   ): Promise<{ courses: Course[]; docCount: number } | null>;
+
+  analyzeCourse(mentorId: string): Promise<any | null>;
 }

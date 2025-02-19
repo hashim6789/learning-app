@@ -5,7 +5,7 @@ import { toggleTheme } from "../../../store/slices/themeSlice";
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import userImage from "../../../assets/img/user_image.avif";
-import NotificationPanel from "../../learner/components/NotificationPanel";
+import NotificationPanel from "../../../components/NotificationPanel";
 import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {

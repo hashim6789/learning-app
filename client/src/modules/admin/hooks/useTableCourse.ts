@@ -26,7 +26,7 @@ export function useCourseTableFunctionality({
       setLoading(true);
       try {
         const response = await api.get(
-          `/api/courses?type=${courseFilterType}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api/courses?status=${courseFilterType}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
         setData(result.data);

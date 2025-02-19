@@ -33,7 +33,10 @@ class S3Service {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `uploads/${materialType}s/${key}`,
       ResponseContentDisposition: "inline",
-      ResponseContentType: "application/octet-stream",
+      ResponseContentType:
+        materialType === "video"
+          ? " application/octet-stream"
+          : "application/pdf",
     });
 
     return await getSignedUrl(this.s3, command, { expiresIn: 600 });

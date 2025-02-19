@@ -9,12 +9,14 @@ import categoryRouter from "./categoryRoutes";
 import learnerRouter from "./learnerRoutes";
 import authRouter from "./authRoutes";
 import uploadRouter from "./uploadRoutes";
-import notifyRouter from "./NotificationRoutes";
+import notifyRouter from "./notificationRoutes";
 import noAuthRouter from "./noAuthRoutes";
 import paymentRouter from "./paymentRoutes";
 import profileRouter from "./profileRoutes";
 import purchaseHistoryRouter from "./purchaseHistoryRoutes";
 import subscriptionHistoryRouter from "./subscriptionHistoryRoutes";
+import progressRouter from "./progressRoutes";
+import analysisRouter from "./analysisRoutes";
 
 const apiRouter = express.Router();
 
@@ -33,5 +35,7 @@ apiRouter.use("/payment", paymentRouter);
 apiRouter.use("/profile", profileRouter);
 apiRouter.use("/purchase-history", purchaseHistoryRouter);
 apiRouter.use("/subscription-history", subscriptionHistoryRouter);
+apiRouter.use("/progress", progressRouter);
+apiRouter.use("/analysis", analysisRouter);
 
 export default apiRouter;

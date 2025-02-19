@@ -25,7 +25,7 @@ const MentorsTable: React.FC<MentorTableProps> = () => {
     handleViewMentor,
     handleDeleteMentor,
     handleBlockUnblockWrapper,
-  } = useMentor({ itemsPerPage: 3 });
+  } = useMentor({ itemsPerPage: 6 });
 
   return (
     <div>
@@ -120,12 +120,12 @@ const MentorsTable: React.FC<MentorTableProps> = () => {
                 >
                   {mentor.status === "blocked" ? "Unblock" : "Block"}
                 </button>
-                <button
+                {/* <button
                   onClick={() => handleViewMentor(mentor.id)}
                   className="text-sm px-4 py-2 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200"
                 >
                   View
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}

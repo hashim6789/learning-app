@@ -5,6 +5,6 @@ export class Notification {
     public title: string,
     public message: string,
     public recipientId: string,
-    public createdAt: Date
+    public createdAt: number
   ) {}
 }

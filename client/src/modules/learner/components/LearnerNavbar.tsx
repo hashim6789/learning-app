@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import NotificationPanel from "./NotificationPanel";
+import NotificationPanel from "../../../components/NotificationPanel";
 
 const CourseNavbar: React.FC = () => {
   const { handleLogout } = useAuth();
@@ -139,16 +139,16 @@ const CourseNavbar: React.FC = () => {
           >
             Courses
           </NavLink>
-          {/* <NavLink
-            to="/"
+          <NavLink
+            to="/learner/my-learnings"
             className={({ isActive }) =>
               isActive
                 ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
                 : "text-gray-600 hover:text-gray-900 flex items-center px-1"
             }
           >
-            Careers
-          </NavLink> */}
+            My Learnings
+          </NavLink>
         </div>
       </div>
     </nav>

@@ -112,7 +112,7 @@ const SelectedPlanSummary: React.FC<SelectedPlanSummaryProps> = ({
         <div className="flex justify-between border-b pb-4">
           <span className="text-gray-600">Selected Plan</span>
           <span className="font-medium text-gray-900">
-            {selectedPlan.title}
+            {selectedPlan.price}
           </span>
         </div>
         <div className="flex justify-between border-b pb-4">

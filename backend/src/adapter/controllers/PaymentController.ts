@@ -22,6 +22,7 @@ import SubscriptionPlanRepository from "../../infrastructures/database/repositor
 import CreateSubscriptionHistoryUseCase from "../../application/use_cases/payment/CreateSubscriptionHistoryUseCase";
 import SubscriptionHistoryRepository from "../../infrastructures/database/repositories/SubscriptionHistoryRepository";
 import GetSubscriptionHistoryUseCase from "../../application/use_cases/payment/GetSubscriptonHistoryUseCase";
+import ProgressRepository from "../../infrastructures/database/repositories/ProgressRepository";
 
 //created the instances
 const courseRepository = new CourseRepository();
@@ -29,11 +30,13 @@ const mentorRepository = new MentorRepository();
 const purchaseHistoryRepository = new PurchaseHistoryRepository();
 const subscriptionHistoryRepository = new SubscriptionHistoryRepository();
 const subscriptionPlanRepository = new SubscriptionPlanRepository();
+const progressRepository = new ProgressRepository();
 
 const createPurchaseHistoryUseCase = new CreatePurchaseHistoryUseCase(
   courseRepository,
   mentorRepository,
-  purchaseHistoryRepository
+  purchaseHistoryRepository,
+  progressRepository
 );
 
 const getPurchaseHistoryUseCase = new GetPurchaseHistoryUseCase(
@@ -93,6 +96,7 @@ class PaymentController {
         req.body,
         userId
       );
+
       res.status(200).json({
         message: response.message,
         data: response.data,

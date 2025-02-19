@@ -34,7 +34,8 @@ export function useCourseTableFunctionality({
         );
         const result = response.data;
         setData(result.data);
-        setTotalPages(result.totalPages);
+        console.log(result);
+        setTotalPages(Math.ceil(result.docCount / itemsPerPage));
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {

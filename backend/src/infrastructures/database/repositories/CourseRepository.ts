@@ -56,8 +56,8 @@ class CourseRepository implements ICourseRepository {
         .sort({
           createdAt: -1,
         })
-        .populate("categoryId", "_id title isListed")
-        .orFail();
+        .populate("categoryId", "_id title isListed");
+      // .orFail();
 
       if (!courses) return null;
       const totalCount = await CourseModel.countDocuments(query);
@@ -238,6 +238,42 @@ class CourseRepository implements ICourseRepository {
       return { courses: mappedCourses, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to add lesson to the course");
+    }
+  }
+
+  async analyzeCourse(mentorId: string): Promise<any[] | null> {
+    try {
+      const aggregationPipeline = [
+        {
+          $match: {
+            mentorId: new mongoose.Types.ObjectId(mentorId),
+          },
+        },
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            status: "$_id",
+            count: 1,
+          },
+        },
+      ];
+
+      const results = await CourseModel.aggregate(aggregationPipeline).exec();
+
+      console.log(results);
+      if (!results) {
+        return null;
+      }
+
+      return results;
+    } catch (error) {
+      throw new Error(`Failed to analyze courses: ${error}`);
     }
   }
 }

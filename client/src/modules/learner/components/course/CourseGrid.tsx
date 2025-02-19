@@ -58,10 +58,10 @@ const CourseGrid: React.FC<CourseGridProps> = () => {
               className="pl-10 w-full md:w-[300px] py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+          {/* <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
             <Filter className="h-4 w-4" />
             Filters
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -122,8 +122,8 @@ const CourseGrid: React.FC<CourseGridProps> = () => {
               {/* Course Stats */}
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{course.duration} hours</span>
+                  {/* <Clock className="w-4 h-4" /> */}
+                  {/* <span>{course.duration} hours</span> */}
                 </div>
                 {/* <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
@@ -155,35 +155,32 @@ const CourseGrid: React.FC<CourseGridProps> = () => {
       </div>
 
       {/* Pagination */}
-      <div className="mt-8 flex justify-center items-center gap-2">
+      {/* Pagination */}
+      <div className="mt-6 flex justify-end items-center gap-2">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+          className={`px-4 py-2 rounded border ${
+            currentPage === 1
+              ? "text-gray-400 cursor-not-allowed"
+              : "text-black"
+          }`}
         >
-          <ChevronLeft className="h-4 w-4" />
+          Prev
         </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-4 py-2 rounded-md ${
-              currentPage === page
-                ? "bg-blue-600 text-white"
-                : "border border-gray-300 text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-
+        <span className="text-sm text-gray-600">
+          Page {currentPage} of {totalPages}
+        </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+          className={`px-4 py-2 rounded border ${
+            currentPage === totalPages
+              ? "text-gray-400 cursor-not-allowed"
+              : "text-black"
+          }`}
         >
-          <ChevronRight className="h-4 w-4" />
+          Next
         </button>
       </div>
 

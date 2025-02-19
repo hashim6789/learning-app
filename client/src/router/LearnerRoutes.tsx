@@ -19,6 +19,9 @@ import WrappedCourseCheckout from "../modules/learner/pages/course/CourseCheckou
 import PaymentSuccess from "../modules/learner/pages/payment/PaymentSuccess";
 import SubscriptionSuccess from "../modules/learner/pages/payment/SubscriptionSuccessPage";
 import LearnerProfile from "../modules/learner/pages/LearnerProfile";
+import MyLearningsPage from "../modules/learner/pages/MyLearningsPage";
+import LearningCoursePage from "../modules/learner/pages/learnings/LearningCoursePage";
+import MaterialContent from "../modules/learner/components/learnings/MaterialContent";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -87,6 +90,22 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
               {
                 path: "subscription-success/:subscriptionId",
                 element: <SubscriptionSuccess />,
+              },
+              {
+                path: "my-learnings",
+                element: <MyLearningsPage />,
+                children: [],
+              },
+              {
+                path: "my-learnings/:progressId",
+                element: <LearningCoursePage />,
+                children: [
+                  // { path: "welcome", element: <LearnerDashboard /> },
+                  // {
+                  //   path: "lessons/:lessonId/materials/materialId",
+                  //   element: <MaterialContent />,
+                  // },
+                ],
               },
             ],
           },

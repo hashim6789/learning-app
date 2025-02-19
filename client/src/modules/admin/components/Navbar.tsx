@@ -6,7 +6,7 @@ import useAuth from "../../../hooks/useAuth";
 
 //imported build-in hooks
 import { useState } from "react";
-import NotificationPanel from "../../learner/components/NotificationPanel";
+import NotificationPanel from "../../../components/NotificationPanel";
 
 const Navbar: React.FC = () => {
   const { handleLogout } = useAuth();

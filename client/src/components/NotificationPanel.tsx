@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
 import io from "socket.io-client";
-import { Notification } from "../../../shared/types/Notification"; // Update with the correct path
+import api from "../shared/utils/api"; // Adjust with the correct path
+import { Notification } from "../shared/types/Notification"; // Update with the correct path
 
 interface NotificationPanelProps {
   userId: string;
@@ -16,6 +17,27 @@ const socket = io("http://localhost:3000", {
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [count, setCount] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await api.get(`/api/notify`);
+        if (response && response.data) {
+          const result = response.data;
+          setNotifications(result.data);
+        }
+      } catch (error) {
+        setError("Failed to fetch notifications");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, [userId]);
 
   useEffect(() => {
     console.log("userId", userId);
@@ -24,10 +46,11 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
 
     // Listen for 'receiveNotification' events
     socket.on("receiveNotification", (notification: Notification) => {
+      setCount((prev) => prev + 1);
       console.log("Received notification: ", notification);
       setNotifications((prevNotifications) => [
-        ...prevNotifications,
         notification,
+        ...prevNotifications,
       ]);
     });
 
@@ -37,18 +60,31 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
     };
   }, [userId]);
 
+  const handleShowNotification = () => {
+    setCount(0);
+    setShowNotification(!showNotification);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="relative">
       {/* Notification Bell Button */}
       <button
-        onClick={() => setShowNotification(!showNotification)}
+        onClick={() => handleShowNotification()}
         className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
         aria-label="Notifications"
       >
         <Bell className="w-5 h-5" />
-        {notifications.length > 0 && (
+        {/* {notifications.length > 0 && (
           <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
             {notifications.length}
+          </span>
+        )} */}
+        {count > 0 && (
+          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+            {count}
           </span>
         )}
       </button>

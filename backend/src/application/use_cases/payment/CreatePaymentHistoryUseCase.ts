@@ -5,20 +5,25 @@ import { validateData } from "../../../shared/helpers/validateHelper";
 import { IPurchaseHistoryRepository } from "../../IRepositories/IPurchaseHistoryRepository";
 import { CreatePurchaseDTO } from "../../../shared/dtos/CreatePurshaseHistoryDTO";
 import { PurchaseHistory } from "../../entities/PurchaseHistory";
+import { IProgressRepository } from "../../IRepositories/IProgressRepository";
+import { Progress } from "../../entities/Progress";
 
 class CreatePurchaseHistoryUseCase {
   private courseRepository: ICourseRepository;
   private purchaseHistoryRepository: IPurchaseHistoryRepository;
   private mentorRepository: IMentorRepository;
+  private progressRepository: IProgressRepository;
 
   constructor(
     courseRepository: ICourseRepository,
     mentorRepository: IMentorRepository,
-    purchaseHistoryRepository: IPurchaseHistoryRepository
+    purchaseHistoryRepository: IPurchaseHistoryRepository,
+    progressRepository: IProgressRepository
   ) {
     this.courseRepository = courseRepository;
     this.mentorRepository = mentorRepository;
     this.purchaseHistoryRepository = purchaseHistoryRepository;
+    this.progressRepository = progressRepository;
   }
 
   async execute(
@@ -55,43 +60,28 @@ class CreatePurchaseHistoryUseCase {
           message: "The purchase history is not created!",
         };
       }
-      //   const mentorCoursesData =
-      //     await this.courseRepository.fetchAllCoursesByMentorId(data.mentorId, {
-      //       search: data.title,
-      //     });
 
-      //   if (mentorCoursesData && mentorCoursesData.courses.length > 0) {
-      //     return {
-      //       statusCode: 404,
-      //       success: false,
-      //       message:
-      //         "The same named course is already exist on this mentor created course list!",
-      //     };
-      //   }
+      const progress = new Progress(
+        "",
+        userId,
+        course.id,
+        [],
+        [],
+        false,
+        0,
+        null
+      );
 
-      //   // Create course with uppercase title (if required)
-      //   const createdCourse = await this.courseRepository.createCourse(data);
-
-      //   if (!createdCourse) {
-      //     return {
-      //       statusCode: 400,
-      //       success: false,
-      //       message: "The course creation failed!",
-      //     };
-      //   }
-
-      //   if (!createdCourse.id) {
-      //     return {
-      //       statusCode: 400,
-      //       success: false,
-      //       message: "The courseId of created course is null!",
-      //     };
-      //   }
-
-      //   // const updatedMentor = await this.mentorRepository.setCreatedCourseId(
-      //   //   createdCourse.mentorId,
-      //   //   createdCourse.id
-      //   // );
+      const createdProgress = await this.progressRepository.createProgress(
+        progress
+      );
+      if (!createdProgress) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The progress course is not created!",
+        };
+      }
 
       return {
         statusCode: 201,

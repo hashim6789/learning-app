@@ -86,11 +86,12 @@ class UpdateCourseStatusUseCase {
           }
           switch (newStatus) {
             case "completed":
-              if (course.status !== "draft") {
+              if (course.status !== "draft" && course.status !== "rejected") {
                 return {
                   statusCode: 400,
                   success: false,
-                  message: "Only drafted courses can be completed!",
+                  message:
+                    "Only drafted and rejected courses can be completed!",
                 };
               }
               break;
@@ -137,9 +138,13 @@ class UpdateCourseStatusUseCase {
       const notification = new Notification(
         "1",
         "Course Status Update",
-        `The status of your course "${course.title}" has been updated to ${newStatus} by the admin.`,
+        `The status of your course "${
+          course.title
+        }" has been updated to ${newStatus} by the ${
+          userRole === "admin" ? "admin" : "mentor"
+        }.`,
         userRole === "admin" ? course.mentorId : adminId,
-        new Date()
+        Date.now()
       );
 
       // Send notification to the mentor
