@@ -26,7 +26,7 @@ const MentorMaterialManagement: React.FC = () => {
     totalPages,
     loading,
     handleDelete,
-  } = useMaterialTableFunctionality({ itemsPerPage: 9, filterField: "type" });
+  } = useMaterialTableFunctionality({ itemsPerPage: 6, filterField: "type" });
 
   if (loading) {
     return <LoadingComponent theme="purple" item="material" />;

@@ -7,12 +7,13 @@ type User = "admin" | "mentor" | "learner";
 
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
-  async ({ email, user }: { email: string; user: User }, thunkAPI) => {
+  async ({ email, role }: { email: string; role: User }, thunkAPI) => {
     try {
       const response = await axios.post(
-        `${host}/${user}/auth/forgot-password`,
+        `${host}/api/auth/forgot-password`,
         {
           email,
+          role,
         },
         { withCredentials: true }
       );

@@ -2,7 +2,6 @@ import { emitWarning } from "process";
 import { Admin } from "../../../application/entities/Admin";
 import { IAdminRepository } from "../../../application/IRepositories/IAdminRepository";
 import AdminModel from "../models/AdminModel";
-import { IAdmin } from "../models/AdminModel";
 import { IOtpRepository } from "../../../application/IRepositories/IOtpRepository";
 import { Otp } from "../../../application/entities/Otp";
 import OtpModel, { IOtp } from "../models/OtpModel";
@@ -27,7 +26,7 @@ class OtpRepository implements IOtpRepository {
     }
   }
 
-  async findOtpByUseId(userId: string): Promise<Otp | null> {
+  async findOtpByUserId(userId: string): Promise<Otp | null> {
     try {
       const otp = await OtpModel.findOne({ userId });
       if (!otp) return null;

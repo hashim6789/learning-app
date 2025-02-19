@@ -19,9 +19,7 @@ class VerifyCurrentPasswordForMentorUseCase {
     mentorId: string
   ): Promise<ResponseModel> {
     try {
-      const existingMentor = await this.mentorRepository.fetchMentorById(
-        mentorId
-      );
+      const existingMentor = await this.mentorRepository.fetchById(mentorId);
 
       if (!existingMentor) {
         return {

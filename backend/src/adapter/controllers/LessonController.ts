@@ -46,7 +46,7 @@ const updateLessonByIdUseCase = new UpdateLessonByIdUseCase(lessonRepository);
 const deleteLessonByIdUseCase = new DeleteLessonByIdUseCase(lessonRepository);
 
 class LessonController {
-  async createLessonForMentor(req: Request, res: Response, next: NextFunction) {
+  async createLesson(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const data = req.body;
@@ -63,7 +63,7 @@ class LessonController {
       next(error);
     }
   }
-  async updateLessonOfMentor(req: Request, res: Response, next: NextFunction) {
+  async updateLesson(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const data = req.body;
@@ -81,7 +81,7 @@ class LessonController {
       next(error);
     }
   }
-  async getAllLessonsOfMentor(req: Request, res: Response, next: NextFunction) {
+  async getAllLessons(req: Request, res: Response, next: NextFunction) {
     try {
       const { search = "", page = "1", limit = "10" } = req.query as any;
       const mentorId = req.user?.userId || "";
@@ -91,8 +91,13 @@ class LessonController {
         limit,
       });
       if (response.success && response.data) {
-        const { lessons } = response.data as { lessons: Lesson[] };
-        res.status(200).json({ message: response.message, data: lessons });
+        const { lessons, docCount } = response.data as {
+          lessons: Lesson[];
+          docCount: number;
+        };
+        res
+          .status(200)
+          .json({ message: response.message, data: lessons, docCount });
       } else {
         res.status(400).json({ message: response.message });
       }
@@ -115,7 +120,7 @@ class LessonController {
       next(error);
     }
   }
-  async deleteLessonOfMentor(req: Request, res: Response, next: NextFunction) {
+  async deleteLesson(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const { lessonId } = req.params;
@@ -139,9 +144,13 @@ class LessonController {
       const mentorId = req.user?.userId || "";
       const { lessonId } = req.params;
       const response = await getMaterialsByLessonIdUseCase.execute(lessonId);
+      type Data = { materials: Material[]; docCount: number };
+
       if (response.success && response.data) {
-        const { materials } = response.data as { materials: Material[] };
-        res.status(200).json({ message: response.message, data: materials });
+        const { materials, docCount } = response.data as Data;
+        res
+          .status(200)
+          .json({ message: response.message, data: materials, docCount });
       } else {
         res.status(400).json({ message: response.message });
       }

@@ -41,7 +41,7 @@ const MentorDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await api.get(
-          `/api/mentors/67971495a41657d403187898/courses`
+          `/api/analysis/mentors/67971495a41657d403187898/courses`
         );
 
         if (response && response.status === 200) {

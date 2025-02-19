@@ -1,3 +1,4 @@
+import { UserQuery } from "../../../shared/types/query";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
 
@@ -7,9 +8,9 @@ class GetLearnersUseCase {
     this.learnerRepository = learnerRepository;
   }
 
-  async execute(): Promise<ResponseModel> {
-    const learners = await this.learnerRepository.fetchAllLearners();
-    if (!learners) {
+  async execute(query: UserQuery): Promise<ResponseModel> {
+    const fetchLearnersData = await this.learnerRepository.fetchAll(query);
+    if (!fetchLearnersData) {
       return {
         statusCode: 404,
         success: false,
@@ -21,7 +22,10 @@ class GetLearnersUseCase {
       statusCode: 200,
       success: true,
       message: "The users fetched successfully",
-      data: learners,
+      data: {
+        learners: fetchLearnersData.users,
+        docCount: fetchLearnersData.docCount,
+      },
     };
   }
 }

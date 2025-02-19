@@ -4,9 +4,10 @@ import { Request, Response, NextFunction } from "express";
 import LearnerRepository from "../../infrastructures/database/repositories/LearnerRepository";
 
 //imported the use cases
-import GetLearnersUseCase from "../../application/use_cases/admin/GetLearnersUseCase";
-import BlockUnblockLearnerUseCase from "../../application/use_cases/admin/BlockUnblockLearnerUseCase";
-import GetLearnerByIdUseCase from "../../application/use_cases/admin/GetLearnerByIdUseCase";
+import GetLearnersUseCase from "../../application/use_cases/learner/GetLearnersUseCase";
+import BlockUnblockLearnerUseCase from "../../application/use_cases/learner/BlockUnblockLearnerUseCase";
+import GetLearnerByIdUseCase from "../../application/use_cases/learner/GetLearnerByIdUseCase";
+import { Learner } from "../../application/entities/Learner";
 
 //created the instances
 const learnerRepository = new LearnerRepository();
@@ -19,17 +20,29 @@ const getLearnerByIdUseCase = new GetLearnerByIdUseCase(learnerRepository);
 //Learner controller
 class LearnerController {
   //get all learners
-  async getAllLearnersForAdmin(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async getAllLearners(req: Request, res: Response, next: NextFunction) {
     try {
-      const response = await getLearnersUseCase.execute();
+      const {
+        status = "all",
+        search = "",
+        page = "1",
+        limit = "10",
+      } = req.query as any;
+      const query = {
+        status,
+        search,
+        page,
+        limit,
+      };
+      const response = await getLearnersUseCase.execute(query);
+
+      type Data = { learners: Learner[]; docCount: number };
       if (response.success && response.data) {
+        const { learners, docCount } = response.data as Data;
         res.status(200).json({
           message: response.message,
-          data: response.data,
+          data: learners,
+          docCount,
         });
       } else {
         res.status(400).json({ message: response.message });
@@ -40,7 +53,7 @@ class LearnerController {
   }
 
   //get learner
-  async getLearnerForAdmin(req: Request, res: Response, next: NextFunction) {
+  async getLearner(req: Request, res: Response, next: NextFunction) {
     try {
       const { learnerId } = req.params;
       const response = await getLearnerByIdUseCase.execute(learnerId);

@@ -30,10 +30,10 @@ class GetMaterialsByLessonIdUseCase {
         ? materials.map((material) => material.id)
         : [];
 
-      const fetchedMaterials =
+      const fetchedData =
         await this.materialRepository.fetchMaterialsByMentorIds(materialIds);
 
-      if (!fetchedMaterials) {
+      if (!fetchedData) {
         return {
           statusCode: 404,
           success: false,
@@ -46,7 +46,10 @@ class GetMaterialsByLessonIdUseCase {
         statusCode: 200,
         success: true,
         message: "The lessons of the course is fetched successfully.",
-        data: { materials: fetchedMaterials },
+        data: {
+          materials: fetchedData.materials,
+          docCount: fetchedData.docCount,
+        },
       };
     } catch (error) {
       throw new Error(error as string);

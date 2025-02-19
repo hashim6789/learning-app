@@ -2,7 +2,8 @@ import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
 import ICourseRepository from "../../IRepositories/ICourseRepository";
 import { IMentorRepository } from "../../IRepositories/IMentorRepository";
-import ValidateAccessTokenUseCase from "./ValidateAccessTokenUseCase"; // Import the access token validation use case
+import ValidateAccessTokenUseCase from "../mentor/ValidateAccessTokenUseCase"; // Import the access token validation use case
+import { validateData } from "../../../shared/helpers/validateHelper";
 interface Payload {
   role: "admin" | "mentor" | "learner";
   email: string;
@@ -21,27 +22,21 @@ class CourseCreationUseCase {
 
   async execute(data: CreateCourseDTO): Promise<ResponseModel> {
     try {
-      const mentor = await this.mentorRepository.fetchMentorById(data.mentorId);
-      if (!mentor) {
+      await validateData(data, CreateCourseDTO);
+
+      const mentorCoursesData =
+        await this.courseRepository.fetchAllCoursesByMentorId(data.mentorId, {
+          search: data.title,
+        });
+
+      if (mentorCoursesData && mentorCoursesData.courses.length > 0) {
         return {
           statusCode: 404,
           success: false,
-          message: "The mentor doesn't exist",
+          message:
+            "The same named course is already exist on this mentor created course list!",
         };
       }
-
-      // const title = data.title.trim().toLowerCase();
-
-      // const existingCourse = await this.courseRepository.findCourseByTitle(
-      //   title
-      // );
-      // if (existingCourse) {
-      //   return {
-      //     statusCode: 400,
-      //     success: false,
-      //     message: "The course title already exists!",
-      //   };
-      // }
 
       // Create course with uppercase title (if required)
       const createdCourse = await this.courseRepository.createCourse(data);
@@ -62,10 +57,10 @@ class CourseCreationUseCase {
         };
       }
 
-      const updatedMentor = await this.mentorRepository.setCreatedCourseId(
-        createdCourse.mentorId,
-        createdCourse.id
-      );
+      // const updatedMentor = await this.mentorRepository.setCreatedCourseId(
+      //   createdCourse.mentorId,
+      //   createdCourse.id
+      // );
 
       return {
         statusCode: 201,

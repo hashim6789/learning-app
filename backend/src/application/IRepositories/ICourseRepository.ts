@@ -6,11 +6,13 @@ import Course from "../entities/Course";
 export default interface ICourseRepository {
   findCourseById(courseId: string): Promise<Course | null>;
   findCourseByTitle(title: string): Promise<Course | null>;
-  fetchAllCourses(): Promise<Course[] | null>;
+  fetchAllCourses(
+    filter: CourseQuery
+  ): Promise<{ courses: Course[]; docCount: number } | null>;
   fetchAllCoursesByMentorId(
     mentorId: string,
     filter: CourseQuery
-  ): Promise<Course[] | null>;
+  ): Promise<{ courses: Course[]; docCount: number } | null>;
   updateCourseById(
     courseId: string,
     data: Partial<Course>
@@ -24,5 +26,7 @@ export default interface ICourseRepository {
   fetchAllCoursesByFilter(
     status: CourseStatus,
     filter: CourseLearnerQuery
-  ): Promise<Course[] | null>;
+  ): Promise<{ courses: Course[]; docCount: number } | null>;
+
+  analyzeCourse(mentorId: string): Promise<any | null>;
 }

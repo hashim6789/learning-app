@@ -15,16 +15,16 @@ class GetMaterialsOfMentorUseCase {
     filter: MaterialQuery
   ): Promise<ResponseModel> {
     try {
-      const fetchedMaterials =
+      const fetchedData =
         await this.materialRepository.fetchMaterialsByMentorId(
           mentorId,
           filter
         );
-      if (!fetchedMaterials) {
+      if (!fetchedData) {
         return {
           statusCode: 400,
           success: false,
-          message: "The material creation is failed!",
+          message: "The fetch materials is failed!",
         };
       }
 
@@ -33,7 +33,8 @@ class GetMaterialsOfMentorUseCase {
         success: true,
         message: "The material fetched successfully.",
         data: {
-          materials: fetchedMaterials,
+          materials: fetchedData.materials,
+          docCount: fetchedData.docCount,
         },
       };
     } catch (error) {

@@ -45,6 +45,7 @@ import {
   MaxLength,
 } from "class-validator";
 import { Match } from "../shared/mathchDecorator";
+import { User } from "../shared/types/User";
 // import { Match } from "../shared/matchDecorator"; // Ensure this decorator is implemented correctly
 
 export class AuthSignupCredentials {
@@ -92,4 +93,6 @@ export class AuthSignupCredentials {
     message: "Confirm password must match the password.",
   })
   confirmPassword: string;
+
+  role: User;
 }

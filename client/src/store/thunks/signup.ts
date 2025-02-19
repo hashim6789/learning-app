@@ -1,30 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../shared/utils/api";
 import { AuthSignupCredentials } from "../../DTOS/AuthSignupCredentials";
+import { config } from "../../shared/configs/config";
 
-interface SignupCredentials {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-type User = "admin" | "mentor" | "learner";
-
-const host = "http://localhost:3000";
+const host = config.API_BASE_URL;
 
 export const signup = createAsyncThunk(
   "auth/signup",
-  async (
-    { credentials, user }: { credentials: AuthSignupCredentials; user: User },
-    thunkAPI
-  ) => {
+  async ({ credentials }: { credentials: AuthSignupCredentials }, thunkAPI) => {
     try {
-      const response = await api.post(
-        `${host}/${user}/auth/signup`,
-        credentials
-      );
+      const response = await api.post(`${host}/api/auth/signup`, credentials);
       return response.data; // Return response data on success
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

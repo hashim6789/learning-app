@@ -53,7 +53,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
   const verifyCurrentPassword = async (data: VerifyPasswordFormData) => {
     // Simulate an API request for password verification
     try {
-      const response = await api.post("/mentor/profile/verify-password", data);
+      const response = await api.post(
+        "/api/profile/mentor/verify-password",
+        data
+      );
       if (response.status === 200 && response.data) {
         console.log(response);
         showToast.success(response.data.message);
@@ -69,7 +72,10 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({}) => {
     // Submit new password
 
     try {
-      const response = await api.post("/mentor/profile/change-password", data);
+      const response = await api.post(
+        "/api/profile/mentor/change-password",
+        data
+      );
       if (response.status === 200 && response.data) {
         console.log(response);
         showToast.success(response.data.message);

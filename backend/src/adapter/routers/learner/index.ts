@@ -1,11 +1,11 @@
-import express from "express";
+// import express from "express";
 
-//imported learner routers
-import authRouter from "./authRoutes";
+// //imported learner routers
+// import authRouter from "./authRoutes";
 
-const learnerRouter = express.Router();
+// const learnerRouter = express.Router();
 
-//redirect all learner routes to corresponding subroutes
-learnerRouter.use("/auth", authRouter);
+// //redirect all learner routes to corresponding subroutes
+// learnerRouter.use("/auth", authRouter);
 
-export default learnerRouter;
+// export default learnerRouter;

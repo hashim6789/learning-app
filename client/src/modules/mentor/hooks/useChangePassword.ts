@@ -19,12 +19,13 @@ const useChangePassword = () => {
 
   const navigate = useNavigate();
   const { token } = useParams();
+  const role = "mentor";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await api.get(
-          `${config.API_BASE_URL}/mentor/auth/${token}/change-password`
+          `${config.API_BASE_URL}/api/auth/${token}/change-password?role=${role}`
         );
         setValid(true);
       } catch (err) {

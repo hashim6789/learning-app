@@ -90,6 +90,7 @@ const CourseCard: React.FC<CourseCardProps> = () => {
                     <p className="text-sm text-gray-600">
                       {course.category.title}
                     </p>
+                    {course.price || 0} Rs
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${getCourseStatusColor(

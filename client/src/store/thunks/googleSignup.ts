@@ -1,21 +1,22 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { config } from "../../shared/configs/config";
+import { User } from "../../shared/types/User";
 
 const host = config.API_BASE_URL;
-type User = "admin" | "mentor" | "learner";
 
 export const googleSignup = createAsyncThunk(
   "auth/googleSignup",
   async (
-    { token, user }: { token: string; user: User },
+    { token, role }: { token: string; role: User },
     { rejectWithValue }
   ) => {
     try {
       const response = await axios.post(
-        `${host}/${user}/auth/google`,
+        `${host}/api/auth/google`,
         {
           token,
+          role,
         },
         { withCredentials: true }
       );

@@ -64,7 +64,7 @@ const CreateLesson = () => {
     data,
     loading: materialsLoading,
     error: materialsError,
-  } = useFetch<IMaterial[]>("/mentor/materials");
+  } = useFetch<IMaterial[]>("/api/materials");
 
   useEffect(() => {
     // Check if the data is fetched and no errors
@@ -130,10 +130,7 @@ const CreateLesson = () => {
         (material) => material.id
       );
       const postData = { ...data, materials: titleRemovedMaterials };
-      const response = await api.post(
-        `${config.API_BASE_URL}/mentor/lessons`,
-        postData
-      );
+      const response = await api.post(`/api/lessons`, postData);
       if (response && response.status === 201 && response.data) {
         showToast.success(response.data.message);
         reset();

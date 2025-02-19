@@ -32,11 +32,7 @@ const deleteMaterialByIdUseCase = new DeleteMaterialByIdUseCase(
 );
 
 class MaterialController {
-  async createMaterialForMentor(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async createMaterial(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const { data } = req.body;
@@ -53,16 +49,13 @@ class MaterialController {
     }
   }
 
-  async updateMaterialForMentor(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async updateMaterial(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const { materialId } = req.params;
       const data = req.body;
       const response = await updateMaterialByIdUseCase.execute(
+        mentorId,
         data,
         materialId
       );
@@ -77,11 +70,7 @@ class MaterialController {
       next(error);
     }
   }
-  async deleteMaterialForMentor(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  async deleteMaterial(req: Request, res: Response, next: NextFunction) {
     try {
       const mentorId = req.user?.userId || "";
       const { materialId } = req.params;
@@ -97,7 +86,7 @@ class MaterialController {
       next(error);
     }
   }
-  async getMaterialsOfMentor(req: Request, res: Response, next: NextFunction) {
+  async getMaterials(req: Request, res: Response, next: NextFunction) {
     try {
       const {
         type = "all",
@@ -113,10 +102,13 @@ class MaterialController {
         limit,
       });
       if (response.success && response.data) {
-        const { materials } = response.data as {
+        const { materials, docCount } = response.data as {
           materials: Material[];
+          docCount: number;
         };
-        res.status(200).json({ message: response.message, data: materials });
+        res
+          .status(200)
+          .json({ message: response.message, data: materials, docCount });
       } else {
         res.status(400).json({ message: response.message });
       }

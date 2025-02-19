@@ -23,11 +23,12 @@ export function useLessonTableFunctionality({
       setLoading(true);
       try {
         const response = await api.get(
-          `/mentor/lessons?search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api/lessons?search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
+        console.log(result);
         setData(result.data);
-        setTotalPages(result.totalPages);
+        setTotalPages(Math.ceil(result.docCount / itemsPerPage));
       } catch (error) {
         console.error("Error fetching lessons:", error);
       } finally {
@@ -58,7 +59,7 @@ export function useLessonTableFunctionality({
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/mentor/lessons/${lessonId}`);
+        await api.delete(`/api/lessons/${lessonId}`);
         showToast.success("The lesson was deleted successfully!");
 
         // Remove the deleted lesson from the state

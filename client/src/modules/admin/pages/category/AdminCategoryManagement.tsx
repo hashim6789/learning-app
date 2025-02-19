@@ -14,7 +14,7 @@ import { Category } from "../../../../shared/types/Category";
 interface AdminCategoryManagementProps {}
 
 const AdminCategoryManagement: React.FC<AdminCategoryManagementProps> = () => {
-  const { data, loading, error } = useFetch<any[] | null>("/admin/categories");
+  const { data, loading, error } = useFetch<any[] | null>("/api/categories");
 
   const navigate = useNavigate();
 

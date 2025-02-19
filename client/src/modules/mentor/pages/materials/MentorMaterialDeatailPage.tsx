@@ -27,7 +27,7 @@ import { ArrowLeft } from "lucide-react";
 
 const MentorMaterialDetailPage: React.FC = () => {
   const { materialId } = useParams<{ materialId: string }>();
-  const { data } = useFetch<IMaterial>(`/mentor/materials/${materialId}`);
+  const { data } = useFetch<IMaterial>(`/api/materials/${materialId}`);
   const dispatch = useDispatch<AppDispatch>();
   const { material, error, loading } = useSelector(
     (state: RootState) => state.material
@@ -61,7 +61,6 @@ const MentorMaterialDetailPage: React.FC = () => {
       const resultAction = await dispatch(
         updateMaterial({
           data: material,
-          user: "mentor",
         })
       );
       if (updateMaterial.fulfilled.match(resultAction)) {

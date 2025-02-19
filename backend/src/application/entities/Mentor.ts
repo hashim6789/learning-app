@@ -1,4 +1,5 @@
 import Course from "./Course";
+import { IUser } from "./IUser";
 
 export class BankDetail {
   constructor(
@@ -8,27 +9,24 @@ export class BankDetail {
   ) {}
 }
 
-export class Mentor {
+export class Mentor implements IUser {
   constructor(
-    public googleId: string | null,
     public id: string,
-    public firstName: string,
-    public lastName: string | null,
     public email: string,
     public password: string | null,
-    public profilePicture: string | null,
-    public bankDetails: BankDetail[],
-    public createdCourses: string[] | null,
     public isBlocked: boolean,
     public isVerified: boolean,
     public refreshToken: string | null,
-    public resetToken: string | null
+    public resetToken: string | null,
+    public profilePicture: string | null,
+    public firstName: string,
+    public lastName: string | null,
+    public googleId: string | null,
+    public bankDetails: BankDetail[],
+    public createdCourses: string[] | null
   ) {}
 
   removeSensitive() {
-    this.googleId = null;
     this.password = null;
-    this.refreshToken = null;
-    this.resetToken = null;
   }
 }

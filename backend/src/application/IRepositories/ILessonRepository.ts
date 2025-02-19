@@ -7,7 +7,7 @@ export default interface ILessonRepository {
   fetchAllLessonsByMentorId(
     mentorId: string,
     filter: LessonQuery
-  ): Promise<Lesson[] | null>;
+  ): Promise<{ lessons: Lesson[]; docCount: number } | null>;
   updateLessonById(
     lessonId: string,
     data: Partial<Lesson>

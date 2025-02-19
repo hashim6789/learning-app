@@ -23,7 +23,7 @@ const LessonView: React.FC<LessonViewProps> = ({ lessonId, title }) => {
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
     if (!fetchUrl) {
-      setFetchUrl(`/mentor/lessons/${lessonId}/materials`);
+      setFetchUrl(`/api/lessons/${lessonId}/materials`);
     }
   }, [fetchUrl, lessonId]);
 
@@ -57,7 +57,7 @@ const MaterialList: React.FC<{
     data: materials,
     loading,
     error,
-  } = useFetch<IMaterial[]>(`/mentor/lessons/${lessonId}/materials`);
+  } = useFetch<IMaterial[]>(`/api/lessons/${lessonId}/materials`);
   if (loading)
     return <p className="p-4 text-purple-600">Loading materials...</p>;
   if (error)

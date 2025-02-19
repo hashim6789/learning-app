@@ -29,11 +29,11 @@ export function useCourseTableFunctionality({
       setLoading(true);
       try {
         const response = await api.get(
-          `/mentor/courses?status=${courseFilterStatus}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api/courses?status=${courseFilterStatus}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
         );
         const result = response.data;
         setData(result.data);
-        setTotalPages(result.totalPages);
+        setTotalPages(Math.ceil(result.docCount / itemsPerPage));
       } catch (error) {
         console.error("Error fetching courses:", error);
       } finally {

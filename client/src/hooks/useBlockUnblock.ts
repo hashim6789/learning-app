@@ -19,8 +19,6 @@ interface UseBlockUnblockResponse {
   ) => Promise<boolean>;
 }
 
-const host = "http://localhost:3000";
-
 const useBlockUnblock = (): UseBlockUnblockResponse => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,13 +47,12 @@ const useBlockUnblock = (): UseBlockUnblockResponse => {
       });
 
       if (result.isConfirmed) {
-        const endpoint = `${host}/admin/${entityType}s/${id}/block-unblock`;
+        const endpoint = `/api/${entityType}s/${id}/block-unblock`;
 
         // API call to block/unblock
         const response = await api.patch(endpoint, { change });
 
         if (response.status === 200) {
-          showToast.success(`Successfully ${action}ed the ${entityType}.`);
           return true;
         }
       } else {

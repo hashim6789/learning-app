@@ -79,14 +79,14 @@ const MentorLessonDetailsPage = () => {
     data: lesson,
     loading: lessonLoading,
     error: lessonError,
-  } = useFetch<Lesson>(`/mentor/lessons/${lessonId}`);
+  } = useFetch<Lesson>(`/api/lessons/${lessonId}`);
 
   // Fetch materials for dropdown
   const {
     data: materials,
     loading: materialsLoading,
     error: materialsError,
-  } = useFetch<IMaterial[]>("/mentor/materials");
+  } = useFetch<IMaterial[]>("/api/materials");
 
   const {
     register,
@@ -128,10 +128,7 @@ const MentorLessonDetailsPage = () => {
         (material) => material.id
       );
       const putData = { ...data, materials: titleRemovedMaterials };
-      const response = await api.put(
-        `${config.API_BASE_URL}/mentor/lessons/${lessonId}`,
-        putData
-      );
+      const response = await api.put(`/api/lessons/${lessonId}`, putData);
       if (response && response.status === 200 && response.data) {
         showToast.success("Lesson updated successfully");
         setIsEditing(false);

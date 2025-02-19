@@ -1,88 +1,53 @@
-import React, { useState } from "react";
+import React from "react";
 import { Search } from "lucide-react";
-import { Course } from "../../../shared/types/Course";
-import { CourseStatus } from "../../mentor/hooks/useCourseTableFunctionality";
-import { getCourseStatusColor } from "../../../shared/utils/colors";
 import { useNavigate } from "react-router-dom";
+import { useCourseTableFunctionality } from "../hooks/useTableCourse";
+import { getCourseStatusColor } from "../../../shared/utils/colors";
+import { CourseStatus } from "../../mentor/pages/MentorDashboard";
 
 const defaultThumbnail = "https://via.placeholder.com/150";
 
-interface CoursesTableProps {
-  courses: Course[];
-}
+interface CoursesTableProps {}
 
-const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
-  const [filterStatus, setFilterStatus] = useState<"all" | CourseStatus>("all");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [coursesPerPage] = useState(5); // Number of courses per page
+const CoursesTable: React.FC<CoursesTableProps> = ({}) => {
+  const {
+    currentPage,
+    searchQuery,
+    courseFilterType,
+    data,
+    totalPages,
+    loading,
+    handlePageChange,
+    handleSearchChange,
+    handleFilterChange,
+    handleDelete,
+  } = useCourseTableFunctionality({ itemsPerPage: 5 });
 
   const navigate = useNavigate();
 
-  // Filter courses based on status
-  const filteredCourses = courses.filter((course) => {
-    if (filterStatus === "all") return true;
-    return course.status === filterStatus;
-  });
-
-  // Calculate total pages
-  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
-
-  // Get the courses for the current page
-  const currentCourses = filteredCourses.slice(
-    (currentPage - 1) * coursesPerPage,
-    currentPage * coursesPerPage
-  );
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-gray-800">Courses</h2>
-          <span className="text-sm text-gray-500">
-            {courses.length} Courses
-          </span>
-        </div>
-      </div>
-
-      {/* Header and filters */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="relative w-80">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Search title..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Filter by</span>
-          <div className="flex gap-2">
-            {["all", "Approved", "Rejected", "Pending", "Draft"].map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status as any)}
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    filterStatus === status
-                      ? "bg-purple-100 text-purple-600"
-                      : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {status}
-                </button>
-              )
-            )}
-          </div>
-        </div>
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search courses..."
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="px-4 py-2 border rounded-md"
+        />
+        <select
+          value={courseFilterType}
+          onChange={(e) =>
+            handleFilterChange(e.target.value as "all" | CourseStatus)
+          }
+          className="ml-4 px-4 py-2 border rounded-md"
+        >
+          <option value="all">All</option>
+          <option value="requested">Requested</option>
+          <option value="published">Published</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
       </div>
 
       {/* Table */}
@@ -108,8 +73,8 @@ const CoursesTable: React.FC<CoursesTableProps> = ({ courses }) => {
             </tr>
           </thead>
           <tbody>
-            {currentCourses.length > 0 ? (
-              currentCourses.map((course) => (
+            {data.length > 0 ? (
+              data.map((course) => (
                 <tr
                   key={course.id}
                   className="border-b border-gray-200 last:border-0"

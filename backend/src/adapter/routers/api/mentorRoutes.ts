@@ -23,7 +23,7 @@ mentorRouter.get(
   "/",
   authenticateToken,
   authorizeRole(["admin"]),
-  mentorController.fetchAllMentorsForAdmin
+  mentorController.getAllMentors
 );
 
 /**
@@ -37,7 +37,7 @@ mentorRouter.get(
   "/:mentorId",
   authenticateToken,
   authorizeRole(["admin"]),
-  mentorController.fetchMentorForAdmin
+  mentorController.getMentor
 );
 
 /**
@@ -63,12 +63,12 @@ mentorRouter.patch(
  * body - {title, description, materials, duration}
  * response - {success, message, data:mentor}
  */
-mentorRouter.get(
-  "/:mentorId/courses",
-  authenticateToken,
-  checkUserBlocked,
-  authorizeRole(["mentor"]),
-  mentorController.getMentorCoursesAnalytics
-);
+// mentorRouter.get(
+//   "/:mentorId/courses",
+//   authenticateToken,
+//   checkUserBlocked,
+//   authorizeRole(["mentor"]),
+//   mentorController.getMentorCoursesAnalytics
+// );
 
 export default mentorRouter;

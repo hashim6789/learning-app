@@ -23,14 +23,14 @@ learnerRouter.get(
   "/",
   authenticateToken,
   authorizeRole(["admin"]),
-  learnerController.getAllLearnersForAdmin
+  learnerController.getAllLearners
 );
 
 learnerRouter.get(
   "/:learnerId",
   authenticateToken,
   authorizeRole(["admin"]),
-  learnerController.getLearnerForAdmin
+  learnerController.getLearner
 );
 
 learnerRouter.patch(

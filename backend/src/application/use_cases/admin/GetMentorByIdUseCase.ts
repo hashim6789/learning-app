@@ -9,7 +9,7 @@ class GetMentorByIdUseCase {
 
   async execute(mentorId: string): Promise<ResponseModel> {
     try {
-      const mentor = await this.mentorRepository.fetchMentorById(mentorId);
+      const mentor = await this.mentorRepository.fetchById(mentorId);
       if (!mentor) {
         return {
           statusCode: 404,

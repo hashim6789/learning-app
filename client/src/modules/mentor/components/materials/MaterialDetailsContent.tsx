@@ -1,5 +1,5 @@
 import { IMaterial, MaterialType } from "../../../../shared/types/Material";
-import { Book, Clock, Download } from "lucide-react";
+import { Book, Clock } from "lucide-react";
 
 // Helper function to generate the signed URL for the S3 object (PDF or video)
 const useSignedUrl = (fileKey: string, materialType: MaterialType): string => {
@@ -69,28 +69,3 @@ const MaterialDetailsContent: React.FC<{ material: IMaterial }> = ({
 };
 
 export default MaterialDetailsContent;
-
-// const useSignedUrl = (fileKey: string, materialType: MaterialType) => {
-//   const [signedUrl, setSignedUrl] = useState("");
-
-//   useEffect(() => {
-//     const fetchSignedUrl = async () => {
-//       try {
-//         const response = await api.post(
-//           `${config.API_BASE_URL}/mentor/upload/get-signed-url`,
-//           {
-//             fileKey,
-//             materialType,
-//           }
-//         );
-//         setSignedUrl(response.data.data.signedUrl);
-//       } catch (error) {
-//         console.error("Error fetching signed URL", error);
-//       }
-//     };
-
-//     fetchSignedUrl();
-//   }, [fileKey]);
-
-//   return signedUrl;
-// };

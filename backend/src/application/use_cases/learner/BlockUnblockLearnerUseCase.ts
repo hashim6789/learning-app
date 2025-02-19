@@ -11,10 +11,9 @@ class BlockUnblockLearnerUseCase {
   }
 
   async execute(learnerId: string, data: BlockData): Promise<ResponseModel> {
-    const learner = await this.learnerRepository.BlockLearner(
-      learnerId,
-      data.change
-    );
+    const learner = await this.learnerRepository.updateById(learnerId, {
+      isBlocked: !data.change,
+    });
     if (!learner)
       return {
         statusCode: 404,

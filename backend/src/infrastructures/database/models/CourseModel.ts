@@ -9,6 +9,7 @@ export interface ICourses extends Document {
   description: string | null;
   thumbnail: string;
   lessons: ObjectId[] | null;
+  price: number;
   duration: number | null;
   status: string | null;
   rejectionReason: string | null;
@@ -28,6 +29,7 @@ const CoursesSchema: Schema = new Schema(
     thumbnail: { type: String },
     lessons: [{ type: Schema.Types.ObjectId, ref: "Lessons" }],
     duration: { type: Number },
+    price: { type: Number, required: true },
     status: {
       type: String,
       enum: ["draft", " pending", " published", " rejected"],

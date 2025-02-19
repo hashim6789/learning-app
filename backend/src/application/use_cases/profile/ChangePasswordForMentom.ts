@@ -20,9 +20,7 @@ class ChangeMentorPasswordUseCase {
     mentorId: string
   ): Promise<ResponseModel> {
     try {
-      const existingMentor = await this.mentorRepository.fetchMentorById(
-        mentorId
-      );
+      const existingMentor = await this.mentorRepository.fetchById(mentorId);
 
       if (!existingMentor) {
         return {
@@ -34,10 +32,9 @@ class ChangeMentorPasswordUseCase {
 
       const hashedPassword = await bcrypt.hash(data.newPassword, 10);
 
-      const updatedProfile = await this.mentorRepository.updateMentor(
-        mentorId,
-        { password: hashedPassword }
-      );
+      const updatedProfile = await this.mentorRepository.updateById(mentorId, {
+        password: hashedPassword,
+      });
       if (!updatedProfile) {
         return {
           statusCode: 400,

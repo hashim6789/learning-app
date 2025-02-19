@@ -28,12 +28,13 @@ const useChangePassword = () => {
 
   const navigate = useNavigate();
   const { token } = useParams();
+  const role = "learner";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await api.get(
-          `${config.API_BASE_URL}/learner/auth/${token}/change-password`
+          `${config.API_BASE_URL}/api/auth/${token}/change-password?role=${role}`
         );
         setValid(true);
       } catch (err) {
@@ -57,8 +58,8 @@ const useChangePassword = () => {
     try {
       setLoading(true);
       const response = await api.patch(
-        `${config.API_BASE_URL}/learner/auth/change-password`,
-        { password: newPassword }
+        `${config.API_BASE_URL}/api/auth/reset-password`,
+        { password: newPassword, role }
       );
 
       showToast.success(

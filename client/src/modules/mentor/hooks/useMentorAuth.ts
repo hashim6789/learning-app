@@ -8,6 +8,7 @@ import useFormErrors from "../../../hooks/useFormErrors";
 import { AuthLoginCredentials } from "../../../DTOS/AuthLoginCredentials";
 import { AuthSignupCredentials } from "../../../DTOS/AuthSignupCredentials";
 import { ForgotCredentials } from "../../../DTOS/ForgotCredentials";
+import { User } from "../../../shared/types/User";
 
 const useMentorAuth = () => {
   const { loading, error, handleLogin, handleSignup, handleForgotPassword } =
@@ -26,6 +27,7 @@ const useMentorAuth = () => {
   const [lastName, setLastName] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [role] = useState<User>("mentor");
 
   // Forgot password state
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
@@ -43,11 +45,12 @@ const useMentorAuth = () => {
       const loginCredentials = new AuthLoginCredentials();
       loginCredentials.email = email.trim();
       loginCredentials.password = password.trim();
+      loginCredentials.role = role;
 
       const isValid = await validateCredentials(loginCredentials);
       if (!isValid) return;
 
-      handleLogin(loginCredentials, "mentor");
+      handleLogin(loginCredentials);
     } else {
       const signupCredentials = new AuthSignupCredentials();
       signupCredentials.email = email.trim();
@@ -55,11 +58,12 @@ const useMentorAuth = () => {
       signupCredentials.confirmPassword = confirmPassword.trim();
       signupCredentials.firstName = firstName.trim();
       signupCredentials.lastName = lastName.trim();
+      signupCredentials.role = role;
 
       const isValid = await validateCredentials(signupCredentials);
       if (!isValid) return;
 
-      handleSignup(signupCredentials, "mentor");
+      handleSignup(signupCredentials);
     }
   };
 

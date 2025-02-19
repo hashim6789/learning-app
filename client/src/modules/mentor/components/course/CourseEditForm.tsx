@@ -56,7 +56,7 @@ const courseSchema = z.object({
       },
       { message: "Duplicate or empty lesson IDs are not allowed" }
     ),
-  duration: z
+  price: z
     .number({ invalid_type_error: "Duration must be a number" })
     .min(15, "Duration must be at least 15 minute"),
 });
@@ -73,7 +73,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
     data: lessons,
     loading: lessonsLoading,
     error: lessonsError,
-  } = useFetch<Lesson[]>("/mentor/lessons");
+  } = useFetch<Lesson[]>("/api/lessons");
   const {
     register,
     handleSubmit,
@@ -90,7 +90,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
       // lessons: lessons
       //   ? lessons.map((lesson) => ({ id: "", title: lesson.title }))
       //   : [],
-      duration: 30,
+      price: 30,
     },
   });
 
@@ -115,7 +115,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
     try {
       const titleRemovedLessons = data.lessons.map((lesson) => lesson.id);
       const putData = { ...data, lessons: titleRemovedLessons };
-      const response = await api.put(`/mentor/courses/${course.id}`, putData);
+      const response = await api.put(`/api/courses/${course.id}`, putData);
       if (response && response.status === 200 && response.data) {
         showToast.success("Course updated successfully");
         onStopEditing();
@@ -205,7 +205,7 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
                           })}
                           className="flex-1 px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         >
-                          <option value="">Select Lesso</option>
+                          <option value="">Select Lessons</option>
                           {lessonsLoading ? (
                             <option>Loading...</option>
                           ) : lessonsError ? (
@@ -255,18 +255,18 @@ const CourseEditForm: React.FC<CourseEditFormProps> = ({
 
       <div className="space-y-2">
         <label className="block text-sm font-medium text-purple-700">
-          Duration (minutes)
+          Price
         </label>
         <input
-          id="duration"
+          id="price"
           type="number"
-          defaultValue={course.duration}
-          {...(register("duration"), { valueAsNumber: true })}
-          onChange={(e) => setValue("duration", Number(e.target.value) || 0)}
+          defaultValue={course.price || 0}
+          {...(register("price"), { valueAsNumber: true })}
+          onChange={(e) => setValue("price", Number(e.target.value) || 0)}
           className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
         />
-        {errors.duration && (
-          <p className="text-red-500 text-sm">{errors.duration.message}</p>
+        {errors.price && (
+          <p className="text-red-500 text-sm">{errors.price.message}</p>
         )}
       </div>
 

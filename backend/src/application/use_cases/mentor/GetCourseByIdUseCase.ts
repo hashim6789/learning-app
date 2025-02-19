@@ -22,7 +22,7 @@ class GetCourseOfMentorUseCase {
 
   async execute(mentorId: string, courseId: string): Promise<ResponseModel> {
     try {
-      const mentor = await this.mentorRepository.fetchMentorById(mentorId);
+      const mentor = await this.mentorRepository.fetchById(mentorId);
       if (!mentor || mentor.isBlocked) {
         return {
           statusCode: 404,

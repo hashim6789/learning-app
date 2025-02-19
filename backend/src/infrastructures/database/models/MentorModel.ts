@@ -1,25 +1,6 @@
 // infrastructure/models/MentorModel.ts
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
-
-export interface IMentor extends Document {
-  _id: ObjectId;
-  googleId: string | null;
-  firstName: string;
-  lastName: string | null;
-  email: string;
-  password: string | null;
-  profilePicture: string | null;
-  bankDetails: {
-    accountNumber: string | null;
-    bankName: string | null;
-    ifscCode: string | null;
-  }[];
-  createdCourses: mongoose.Types.ObjectId[] | null;
-  isBlocked: boolean;
-  isVerified: boolean;
-  refreshToken: string | null;
-  resetToken: string | null;
-}
+import { IMentor } from "../interfaces/IMentor";
 
 const MentorSchema: Schema = new Schema(
   {

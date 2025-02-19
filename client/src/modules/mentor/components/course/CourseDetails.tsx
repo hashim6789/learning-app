@@ -127,7 +127,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const confirmStatusChange = async () => {
     try {
       const response = await api.patch(
-        `/mentor/courses/${course.id}/update-status`,
+        `/api/courses/${course.id}/update-status`,
         { newStatus: newStatus }
       );
       if (response && response.status === 200) {
@@ -188,16 +188,17 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
               </button>
             </div>
           )}
-        {userRole === "mentor" && course.status === "draft" && (
-          <div>
-            <button
-              onClick={() => handleStatusChange("completed")}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Mark as Completed
-            </button>
-          </div>
-        )}
+        {userRole === "mentor" &&
+          ["draft", "rejected"].includes(course.status) && (
+            <div>
+              <button
+                onClick={() => handleStatusChange("completed")}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Mark as Completed
+              </button>
+            </div>
+          )}
         {userRole === "mentor" && course.status === "completed" && (
           <div>
             <button

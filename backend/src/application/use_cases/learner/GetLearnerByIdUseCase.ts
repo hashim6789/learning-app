@@ -9,7 +9,7 @@ class GetLearnerByIdUseCase {
 
   async execute(learnerId: string): Promise<ResponseModel> {
     try {
-      const learner = await this.learnerRepository.fetchLearnerById(learnerId);
+      const learner = await this.learnerRepository.fetchById(learnerId);
       if (!learner) {
         return {
           statusCode: 404,

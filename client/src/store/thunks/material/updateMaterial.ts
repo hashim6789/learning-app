@@ -11,12 +11,9 @@ type newMaterial = Partial<IMaterial>;
 // Create an async thunk for the login API request
 export const updateMaterial = createAsyncThunk(
   "material/update",
-  async ({ data, user }: { data: newMaterial; user: User }, thunkAPI) => {
+  async ({ data }: { data: newMaterial }, thunkAPI) => {
     try {
-      const response = await api.put(
-        `${host}/${user}/materials/${data.id}`,
-        data
-      );
+      const response = await api.put(`${host}/api/materials/${data.id}`, data);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

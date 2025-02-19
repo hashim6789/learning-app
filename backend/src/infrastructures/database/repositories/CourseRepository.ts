@@ -36,25 +36,71 @@ class CourseRepository implements ICourseRepository {
     }
   }
 
-  //fetch all courses
-  async fetchAllCourses(): Promise<Course[] | null> {
+  async fetchAllCourses({
+    status = "all",
+    search = "",
+    page = "1",
+    limit = "10",
+  }: CourseQuery): Promise<{ courses: Course[]; docCount: number } | null> {
     try {
-      const courses = await CourseModel.find({
-        status: { $in: ["requested", "approved", "published"] },
-      })
-        .populate("categoryId", "_id title isListed")
-        .orFail()
+      const query = {
+        status:
+          status !== "all"
+            ? status
+            : { $in: ["requested", "approved", "published"] },
+        title: { $regex: search, $options: "i" },
+      };
+      const courses = await CourseModel.find(query)
+        .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
+        .limit(parseInt(limit, 10))
         .sort({
           createdAt: -1,
-        });
-      return courses ? courses.map((course) => courseMapping(course)) : null;
+        })
+        .populate("categoryId", "_id title isListed");
+      // .orFail();
+
+      if (!courses) return null;
+      const totalCount = await CourseModel.countDocuments(query);
+      const mappedLessons = courses.map((course) => courseMapping(course));
+
+      return { courses: mappedLessons, docCount: totalCount };
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
-        return [];
+        return null;
       }
       throw new Error("Failed to fetch the courses!");
     }
   }
+
+  //fetch all courses
+  // async fetchAllCourses(): Promise<{
+  //   courses: Course[];
+  //   docCount: number;
+  // } | null> {
+  //   try {
+  //     const query = {
+  //       status: { $in: ["requested", "approved", "published"] },
+  //     };
+  //     const courses = await CourseModel.find(query)
+  //       .populate("categoryId", "_id title isListed")
+  //       .orFail()
+  //       .sort({
+  //         createdAt: -1,
+  //       });
+
+  //     const totalCount = await CourseModel.countDocuments(query);
+
+  //     if (!courses) return null;
+  //     const mappedLessons = courses.map((course) => courseMapping(course));
+
+  //     return { courses: mappedLessons, docCount: totalCount };
+  //   } catch (error) {
+  //     if (error instanceof Error && error.name === "DocumentNotFoundError") {
+  //       return null;
+  //     }
+  //     throw new Error("Failed to fetch the courses!");
+  //   }
+  // }
 
   //update the existing course by id
   async updateCourseById(
@@ -98,6 +144,7 @@ class CourseRepository implements ICourseRepository {
         categoryId: data.category,
         lessons,
         thumbnail: data.thumbnail,
+        price: data.price,
       });
 
       const createdCourse = await newCourse.save();
@@ -111,24 +158,29 @@ class CourseRepository implements ICourseRepository {
   async fetchAllCoursesByMentorId(
     mentorId: string,
     { status = "all", search = "", page = "1", limit = "10" }: CourseQuery
-  ): Promise<Course[] | null> {
+  ): Promise<{ courses: Course[]; docCount: number } | null> {
     try {
-      const courses = await CourseModel.find({
+      const query = {
         mentorId,
         status: status !== "all" ? status : { $exists: true },
         title: { $regex: search, $options: "i" },
-      })
+      };
+      const courses = await CourseModel.find(query)
         .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
         .limit(parseInt(limit, 10))
         .populate("categoryId", "_id title isListed")
-        .orFail()
+        // .orFail()
         .sort({ createdAt: -1 });
 
       if (!courses) return null;
-      return courses.map((course) => courseMapping(course));
+      const totalCount = await CourseModel.countDocuments(query);
+
+      const mappedCourses = courses.map((course) => courseMapping(course));
+
+      return { courses: mappedCourses, docCount: totalCount };
     } catch (error) {
       if (error instanceof Error && error.name === "DocumentNotFoundError") {
-        return [];
+        return null;
       }
       throw new Error("Failed to fetch the course");
     }
@@ -161,13 +213,14 @@ class CourseRepository implements ICourseRepository {
       page = "1",
       limit = "10",
     }: CourseLearnerQuery
-  ): Promise<Course[] | null> {
+  ): Promise<{ courses: Course[]; docCount: number } | null> {
     try {
-      const filteredCourse = await CourseModel.find({
+      const query = {
         status,
         categoryId: category !== "all" ? category : { $exists: true },
         title: { $regex: search, $options: "i" },
-      })
+      };
+      const filteredCourse = await CourseModel.find(query)
         .skip((parseInt(page, 10) - 1) * parseInt(limit, 10))
         .limit(parseInt(limit, 10))
         .populate({
@@ -175,9 +228,52 @@ class CourseRepository implements ICourseRepository {
           select: "title _id",
         });
 
-      return filteredCourse.map((course) => courseMapping(course));
+      const totalCount = await CourseModel.countDocuments(query);
+
+      if (!filteredCourse) return null;
+      const mappedCourses = filteredCourse.map((course) =>
+        courseMapping(course)
+      );
+
+      return { courses: mappedCourses, docCount: totalCount };
     } catch (error) {
       throw new Error("Failed to add lesson to the course");
+    }
+  }
+
+  async analyzeCourse(mentorId: string): Promise<any[] | null> {
+    try {
+      const aggregationPipeline = [
+        {
+          $match: {
+            mentorId: new mongoose.Types.ObjectId(mentorId),
+          },
+        },
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            status: "$_id",
+            count: 1,
+          },
+        },
+      ];
+
+      const results = await CourseModel.aggregate(aggregationPipeline).exec();
+
+      console.log(results);
+      if (!results) {
+        return null;
+      }
+
+      return results;
+    } catch (error) {
+      throw new Error(`Failed to analyze courses: ${error}`);
     }
   }
 }
@@ -217,6 +313,7 @@ export function courseMapping(course: ICourses): Course {
     description: course.description || null,
     thumbnail: course.thumbnail,
     lessons,
+    price: course.price,
     duration: course.duration || null,
     status: course.status || null,
     rejectionReason: course.rejectionReason || null,

@@ -6,7 +6,7 @@ export interface Payload {
   userId: string;
 }
 
-export const generateAccessToken = (payload: Payload): string => {
+export const generateToken = (payload: Payload): string => {
   return jwt.sign(payload, config.JWT_ACCESS_SECRET as string, {
     expiresIn: config.JWT_ACCESS_EXPIRY,
   });

@@ -9,15 +9,9 @@ const host = config.API_BASE_URL;
 // Create an async thunk for the login API request
 export const login = createAsyncThunk(
   "auth/login",
-  async (
-    { credentials, user }: { credentials: AuthLoginCredentials; user: User },
-    thunkAPI
-  ) => {
+  async ({ credentials }: { credentials: AuthLoginCredentials }, thunkAPI) => {
     try {
-      const response = await api.post(
-        `${host}/${user}/auth/login`,
-        credentials
-      );
+      const response = await api.post(`${host}/api/auth/login`, credentials);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

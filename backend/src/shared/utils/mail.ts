@@ -3,7 +3,8 @@ import { Learner } from "../../application/entities/Learner";
 import { Mentor } from "../../application/entities/Mentor";
 import { mailConfig } from "../configs/mailConfigs";
 import { config } from "../configs/config";
-import { User } from "../types/User";
+import { UserType } from "../types";
+import { User } from "../../application/entities/User";
 
 export const sendOtpEmail = async (
   email: string,
@@ -46,8 +47,8 @@ export const sendOtpEmail = async (
 };
 
 export const sendForgotPasswordMail = async (
-  role: User,
-  user: Learner | Mentor,
+  role: UserType,
+  user: User,
   resetURL: string
 ) => {
   try {

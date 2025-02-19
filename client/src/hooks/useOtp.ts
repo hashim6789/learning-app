@@ -84,9 +84,7 @@ const useOtp = (onComplete?: (otp: string) => void) => {
     inputRefs.current[0].focus();
 
     try {
-      const response = await api.post(
-        `${config.API_BASE_URL}/${user}/auth/resend`
-      );
+      const response = await api.post(`/api/auth/resend`);
       showToast.success("otp resend successfully.");
     } catch (error) {
       console.error(error);
@@ -121,13 +119,13 @@ const useOtp = (onComplete?: (otp: string) => void) => {
     };
   }, [isActive, timer]);
 
-  const handleVerify = async (user: User): Promise<void> => {
+  const handleVerify = async (role: User): Promise<void> => {
     const otpString = otp.join("");
     if (otpString.length === 6) {
       console.log(otpString);
       try {
         const resultAction = await dispatch(
-          verifyOtp({ otp: otpString, user })
+          verifyOtp({ otp: otpString, role })
         );
         if (verifyOtp.fulfilled.match(resultAction)) {
           showToast.success("The OTP verified successfully!");

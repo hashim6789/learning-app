@@ -5,7 +5,7 @@ import CourseRepository from "../../infrastructures/database/repositories/Course
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 
 //imported the use cases
-import CourseCreationUseCase from "../../application/use_cases/mentor/CourseCreationUseCase";
+import CourseCreationUseCase from "../../application/use_cases/course/CourseCreationUseCase";
 import GetAllCourseOfMentorUseCase from "../../application/use_cases/mentor/GetAllCoursesOfMentorUseCase";
 import GetAllCourseUseCase from "../../application/use_cases/admin/GetAllCourses";
 import GetCourseOfMentorUseCase from "../../application/use_cases/mentor/GetCourseByIdUseCase";
@@ -13,13 +13,21 @@ import UpdateCourseUseCase from "../../application/use_cases/mentor/UpdateCourse
 import DeleteCourseUseCase from "../../application/use_cases/mentor/DeleteCourseUseCase";
 import UpdateCourseStatusUseCase from "../../application/use_cases/course/UpdateCourseStatusUseCase";
 import GetCourseByIdUseCase from "../../application/use_cases/course/GetCourseByIdUseCase";
-import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
+// import GetMentorCoursesAnalyticsUseCase from "../../application/use_cases/course/GetMentorCoursesAnalyticsUseCase";
 import GetAllPublishedCoursesUseCase from "../../application/use_cases/course/GetAllPublishedCoursesUseCase";
 import { CourseQuery } from "../../shared/types/filters";
+import { Payload } from "../../shared/types/Payload";
+import { ResponseModel } from "../../shared/types/ResponseModel";
+import Course from "../../application/entities/Course";
+import { NotificationService } from "../../infrastructures/services/NotificationService";
+import { NotificationRepository } from "../../infrastructures/database/repositories/NotificatinRepository";
 
 //created the instances
 const mentorRepository = new MentorRepository();
 const courseRepository = new CourseRepository();
+const notificationRepository = new NotificationRepository();
+
+const notificationService = new NotificationService(notificationRepository);
 const courseCreationUseCase = new CourseCreationUseCase(
   courseRepository,
   mentorRepository
@@ -45,7 +53,8 @@ const updatedCourseUseCase = new UpdateCourseUseCase(courseRepository);
 const deleteCourseUseCase = new DeleteCourseUseCase(courseRepository);
 
 const updateCourseStatusUseCase = new UpdateCourseStatusUseCase(
-  courseRepository
+  courseRepository,
+  notificationService
 );
 
 const getCourseByIdUseCase = new GetCourseByIdUseCase(courseRepository);
@@ -57,7 +66,7 @@ const getAllPublishedCoursesUseCase = new GetAllPublishedCoursesUseCase(
 //Course controller
 class CourseController {
   //create course
-  async createCourseForMentor(
+  async createCourse(
     req: Request,
     res: Response,
     next: NextFunction
@@ -83,7 +92,7 @@ class CourseController {
   }
 
   //update course
-  async updateCourseForMentor(
+  async updateCourse(
     req: Request,
     res: Response,
     next: NextFunction
@@ -108,7 +117,7 @@ class CourseController {
   }
 
   //delete course
-  async deleteCourseForMentor(
+  async deleteCourse(
     req: Request,
     res: Response,
     next: NextFunction
@@ -137,13 +146,14 @@ class CourseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const mentorId = req.user?.userId || "";
+      const userId = req.user?.userId || "";
       const userRole = req.user?.role || "learner";
       const { courseId } = req.params;
       const { newStatus } = req.body;
       const response = await updateCourseStatusUseCase.execute(
         courseId,
         newStatus,
+        userId,
         userRole
       );
 
@@ -160,7 +170,7 @@ class CourseController {
   }
 
   //get all courses of the mentor
-  async getAllCourseOfMentor(
+  async getAllCourses(
     req: Request,
     res: Response,
     next: NextFunction
@@ -174,12 +184,17 @@ class CourseController {
         page = "1",
         limit = "10",
       } = req.query as any;
-      const response = await getAllCourseOfMentorUseCase.execute(mentorId, {
+
+      const filter = {
         status,
         search,
         page,
         limit,
-      });
+      };
+      const response = await getAllCourseOfMentorUseCase.execute(
+        mentorId,
+        filter
+      );
       if (response.success && response.data) {
         res
           .status(200)
@@ -215,18 +230,30 @@ class CourseController {
   // }
 
   //get a course of mentor
-  async getCourseOfMentorByCourseId(
+  async AuthorizedGetCourse(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
       const { courseId } = req.params;
-      const mentorId = req.user?.userId || "";
-      const response = await getCourseOfMentorUseCase.execute(
-        mentorId,
-        courseId
-      );
+      const userId = req.user?.userId;
+      const role = req.user?.role || "learner";
+
+      let response: ResponseModel = {
+        statusCode: 400,
+        success: false,
+        message: "",
+      };
+
+      if (!userId) {
+        // response = await getAllPublishedCoursesUseCase.execute(filter);
+      } else if (role === "admin") {
+        response = await getCourseByIdUseCase.execute(courseId);
+      } else if (role === "mentor") {
+        response = await getCourseOfMentorUseCase.execute(userId, courseId);
+      }
+
       if (response.success && response.data) {
         res
           .status(200)
@@ -240,24 +267,24 @@ class CourseController {
   }
 
   //get all created courses
-  async getAllCourseOfAdmin(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const response = await getAllCourseUseCase.execute();
-      if (response.success && response.data) {
-        res
-          .status(200)
-          .json({ message: response.message, data: response.data });
-      } else {
-        res.status(400).json({ message: response.message });
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async getAllCourseOfAdmin(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> {
+  //   try {
+  //     const response = await getAllCourseUseCase.execute();
+  //     if (response.success && response.data) {
+  //       res
+  //         .status(200)
+  //         .json({ message: response.message, data: response.data });
+  //     } else {
+  //       res.status(400).json({ message: response.message });
+  //     }
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
   //get course by id
   async getCourseById(
     req: Request,
@@ -280,28 +307,53 @@ class CourseController {
     }
   }
   //get all published courses
-  async getAllPublishedCourses(
+  async getCourses(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
+      const userId = req.user?.userId;
+      const role = req.user?.role || "learner";
+
+      type Data = { courses: Course[]; docCount: number };
+
       const {
         category = "all",
         search = "",
+        status = "all",
         page = "1",
         limit = "10",
       } = req.query as any;
-      const response = await getAllPublishedCoursesUseCase.execute({
+
+      const filter = {
         category,
         search,
+        status,
         page,
         limit,
-      });
+      };
+
+      let response: ResponseModel = {
+        statusCode: 400,
+        success: false,
+        message: "",
+      };
+
+      if (!userId || role === "learner") {
+        response = await getAllPublishedCoursesUseCase.execute(filter);
+      } else if (role === "admin") {
+        response = await getAllCourseUseCase.execute(filter);
+      } else if (role === "mentor") {
+        response = await getAllCourseOfMentorUseCase.execute(userId, filter);
+      }
+
+      const { courses, docCount } = response.data as Data;
+
       if (response.success && response.data) {
         res
           .status(200)
-          .json({ message: response.message, data: response.data });
+          .json({ message: response.message, data: courses, docCount });
       } else {
         res.status(400).json({ message: response.message });
       }
