@@ -7,23 +7,27 @@ import { CreatePurchaseDTO } from "../../../shared/dtos/CreatePurshaseHistoryDTO
 import { PurchaseHistory } from "../../entities/PurchaseHistory";
 import { IProgressRepository } from "../../IRepositories/IProgressRepository";
 import { Progress } from "../../entities/Progress";
+import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
 
 class CreatePurchaseHistoryUseCase {
   private courseRepository: ICourseRepository;
   private purchaseHistoryRepository: IPurchaseHistoryRepository;
   private mentorRepository: IMentorRepository;
   private progressRepository: IProgressRepository;
+  private groupChatRepository: IGroupChatRepository;
 
   constructor(
     courseRepository: ICourseRepository,
     mentorRepository: IMentorRepository,
     purchaseHistoryRepository: IPurchaseHistoryRepository,
-    progressRepository: IProgressRepository
+    progressRepository: IProgressRepository,
+    groupChatRepository: IGroupChatRepository
   ) {
     this.courseRepository = courseRepository;
     this.mentorRepository = mentorRepository;
     this.purchaseHistoryRepository = purchaseHistoryRepository;
     this.progressRepository = progressRepository;
+    this.groupChatRepository = groupChatRepository;
   }
 
   async execute(
@@ -75,11 +79,24 @@ class CreatePurchaseHistoryUseCase {
       const createdProgress = await this.progressRepository.createProgress(
         progress
       );
+
       if (!createdProgress) {
         return {
           statusCode: 400,
           success: false,
           message: "The progress course is not created!",
+        };
+      }
+
+      const chat = await this.groupChatRepository.addLearnerToGroup(
+        course.id,
+        userId
+      );
+      if (!chat) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The leaner can't be added to the group of the course",
         };
       }
 

@@ -135,7 +135,6 @@ class GoogleSignupUseCase<T extends User> {
     const fetchedUser = await this.userRepository.fetchByField({
       email: data.email,
     });
-    console.log(fetchedUser);
     const refreshToken = generateRefreshToken();
 
     let user: User | null = null;

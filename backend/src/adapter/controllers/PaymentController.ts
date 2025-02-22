@@ -23,6 +23,7 @@ import CreateSubscriptionHistoryUseCase from "../../application/use_cases/paymen
 import SubscriptionHistoryRepository from "../../infrastructures/database/repositories/SubscriptionHistoryRepository";
 import GetSubscriptionHistoryUseCase from "../../application/use_cases/payment/GetSubscriptonHistoryUseCase";
 import ProgressRepository from "../../infrastructures/database/repositories/ProgressRepository";
+import GroupChatRepository from "../../infrastructures/database/repositories/GroupChatRepository";
 
 //created the instances
 const courseRepository = new CourseRepository();
@@ -31,12 +32,14 @@ const purchaseHistoryRepository = new PurchaseHistoryRepository();
 const subscriptionHistoryRepository = new SubscriptionHistoryRepository();
 const subscriptionPlanRepository = new SubscriptionPlanRepository();
 const progressRepository = new ProgressRepository();
+const groupChatRepository = new GroupChatRepository();
 
 const createPurchaseHistoryUseCase = new CreatePurchaseHistoryUseCase(
   courseRepository,
   mentorRepository,
   purchaseHistoryRepository,
-  progressRepository
+  progressRepository,
+  groupChatRepository
 );
 
 const getPurchaseHistoryUseCase = new GetPurchaseHistoryUseCase(

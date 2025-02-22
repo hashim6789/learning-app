@@ -201,7 +201,6 @@ class AuthController {
   async getChangePassword(req: Request, res: Response, next: NextFunction) {
     const { token } = req.params;
     const role = req.query.role as UserType;
-    console.log("role", role);
     try {
       const userRepository = getRepository(role);
       const getChangePasswordUseCase = new GetChangePasswordUseCase(

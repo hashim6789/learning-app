@@ -5,19 +5,23 @@ import ICourseRepository from "../../IRepositories/ICourseRepository";
 import { INotificationService } from "../../../application/interfaces/INotificationService";
 import { Notification } from "../../entities/Notification";
 import { getIo } from "../../../framework/socket/socketSetup";
+import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
 
 const adminId = "67970be7e5fa9da392abd8a8";
 
 class UpdateCourseStatusUseCase {
   private courseRepository: ICourseRepository;
   private notificationService: INotificationService;
+  private groupChatRepository: IGroupChatRepository;
 
   constructor(
     courseRepository: ICourseRepository,
-    notificationService: INotificationService
+    notificationService: INotificationService,
+    groupChatRepository: IGroupChatRepository
   ) {
     this.courseRepository = courseRepository;
     this.notificationService = notificationService;
+    this.groupChatRepository = groupChatRepository;
   }
 
   async execute(
@@ -168,6 +172,21 @@ class UpdateCourseStatusUseCase {
           io.to(adminId).emit("receiveNotification", notification);
         }
       }
+
+      if (userRole === "admin" && newStatus === "published") {
+        const createdGroupChat = await this.groupChatRepository.createGroup(
+          courseId,
+          course.mentorId
+        );
+        if (!createdGroupChat) {
+          return {
+            statusCode: 400,
+            success: false,
+            message: "failed to create a group",
+          };
+        }
+      }
+
       return {
         statusCode: 200,
         success: true,

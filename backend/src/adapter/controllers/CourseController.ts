@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 //imported the repositories
 import CourseRepository from "../../infrastructures/database/repositories/CourseRepository";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
+import GroupChatRepository from "../../infrastructures/database/repositories/GroupChatRepository";
 
 //imported the use cases
 import CourseCreationUseCase from "../../application/use_cases/course/CourseCreationUseCase";
@@ -25,6 +26,7 @@ import { NotificationRepository } from "../../infrastructures/database/repositor
 //created the instances
 const mentorRepository = new MentorRepository();
 const courseRepository = new CourseRepository();
+const groupChatRepository = new GroupChatRepository();
 const notificationRepository = new NotificationRepository();
 
 const notificationService = new NotificationService(notificationRepository);
@@ -54,7 +56,8 @@ const deleteCourseUseCase = new DeleteCourseUseCase(courseRepository);
 
 const updateCourseStatusUseCase = new UpdateCourseStatusUseCase(
   courseRepository,
-  notificationService
+  notificationService,
+  groupChatRepository
 );
 
 const getCourseByIdUseCase = new GetCourseByIdUseCase(courseRepository);

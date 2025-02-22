@@ -35,7 +35,6 @@ const checkUserBlocked = async (
     } else if (role === "admin") {
       user = await adminRepository.fetchById(userId);
     }
-    console.log(user);
 
     if (!user) {
       res.clearCookie("accessToken");

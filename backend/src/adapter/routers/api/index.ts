@@ -17,6 +17,7 @@ import purchaseHistoryRouter from "./purchaseHistoryRoutes";
 import subscriptionHistoryRouter from "./subscriptionHistoryRoutes";
 import progressRouter from "./progressRoutes";
 import analysisRouter from "./analysisRoutes";
+import chatRouter from "./chatRoutes";
 
 const apiRouter = express.Router();
 
@@ -37,5 +38,6 @@ apiRouter.use("/purchase-history", purchaseHistoryRouter);
 apiRouter.use("/subscription-history", subscriptionHistoryRouter);
 apiRouter.use("/progress", progressRouter);
 apiRouter.use("/analysis", analysisRouter);
+apiRouter.use("/chats", chatRouter);
 
 export default apiRouter;
