@@ -27,7 +27,11 @@ const CourseDetails = () => {
       try {
         if (isAuthenticated) {
           const response = await api.get(`/api/subscription-history`);
-          if (response && response.status === 200) {
+          if (
+            response &&
+            response.status === 200 &&
+            response.data.data.length > 0
+          ) {
             setIsSubscribed(true);
           }
         }

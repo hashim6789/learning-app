@@ -10,6 +10,9 @@ import courseReducers from "./slices/courseSlice";
 import lessonReducers from "./slices/lessonsSlice";
 import materialReducers from "./slices/materialSlice";
 
+import groupReducers from "./slices/groupSlice";
+import messageReducers from "./slices/messageSlice";
+
 const store = configureStore({
   reducer: {
     auth: authReducers,
@@ -18,6 +21,8 @@ const store = configureStore({
     lesson: lessonReducers,
     material: materialReducers,
     learning: learningReducers,
+    group: groupReducers,
+    message: messageReducers,
 
     // learners: learnerReducers,
     // mentors: mentorReducers,

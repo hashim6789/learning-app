@@ -149,6 +149,16 @@ const CourseNavbar: React.FC = () => {
           >
             My Learnings
           </NavLink>
+          <NavLink
+            to="/learner/chat"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
+          >
+            My Chats
+          </NavLink>
         </div>
       </div>
     </nav>

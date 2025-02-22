@@ -49,10 +49,13 @@ class AuthController {
     try {
       const userRepository = getRepository(loginDTO.role);
       const loginUseCase = new LoginUseCase(userRepository);
+
       const response = await loginUseCase.execute(loginDTO);
+      //     ^?
 
       if (response.success && response.data) {
         const { accessToken, refreshToken, user } = response.data as Data;
+        //                                   ^?
 
         res.cookie("accessToken", accessToken, { httpOnly: false });
         res.cookie("refreshToken", refreshToken, { httpOnly: true });

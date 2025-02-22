@@ -14,7 +14,7 @@ import { config } from "../shared/configs/config";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../components/CheckoutForm";
 import SubscriptionCheckout from "../modules/learner/pages/payment/SubscriptionCheckout";
-import WrappedCourseCheckout from "../modules/learner/pages/course/CourseCheckoutPage";
+import WrappedCourseCheckout from "../modules/learner/pages/payment/CourseCheckoutPage";
 // const stripePromise = loadStripe(config.VITE_STRIPE_PK);
 import PaymentSuccess from "../modules/learner/pages/payment/PaymentSuccess";
 import SubscriptionSuccess from "../modules/learner/pages/payment/SubscriptionSuccessPage";
@@ -22,6 +22,8 @@ import LearnerProfile from "../modules/learner/pages/LearnerProfile";
 import MyLearningsPage from "../modules/learner/pages/MyLearningsPage";
 import LearningCoursePage from "../modules/learner/pages/learnings/LearningCoursePage";
 import MaterialContent from "../modules/learner/components/learnings/MaterialContent";
+import CourseGroupChat from "../modules/learner/pages/chat/LearnerChatManagement";
+import MainChatLayout from "../modules/learner/pages/chat/LearnerChatManagement";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -107,6 +109,9 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
                   // },
                 ],
               },
+
+              // { path: "chat", element: <CourseGroupChat /> },
+              { path: "chat", element: <MainChatLayout /> },
             ],
           },
         ],
