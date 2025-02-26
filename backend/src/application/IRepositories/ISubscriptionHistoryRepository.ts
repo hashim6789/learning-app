@@ -1,4 +1,4 @@
-import { SubscriptionHistory } from "../entities/SubscriptionHistroy";
+import { SubscriptionHistory } from "../entities/subscription-history.entity";
 
 export interface ISubscriptionHistoryRepository {
   createSubscriptionHistory(

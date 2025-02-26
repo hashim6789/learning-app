@@ -1,5 +1,5 @@
 import { CreateLessonDTO } from "../../../shared/dtos/createLessonDTO";
-import Lesson from "../../../application/entities/Lesson";
+import Lesson from "../../../application/entities/lesson.entity";
 import ILessonRepository from "../../../application/IRepositories/ILessonRepository";
 import LessonModel, { ILessons } from "../models/LessonModel";
 import mongoose from "mongoose";

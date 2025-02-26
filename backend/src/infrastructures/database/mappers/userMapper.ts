@@ -1,8 +1,8 @@
 // infrastructures/database/mappers/userMapper.ts
-import { User } from "../../../application/entities/User";
-import { Admin } from "../../../application/entities/Admin";
-import { Mentor } from "../../../application/entities/Mentor";
-import { Learner } from "../../../application/entities/Learner";
+import { User } from "../../../application/entities/user.entity";
+import { Admin } from "../../../application/entities/admin.entity";
+import { Mentor } from "../../../application/entities/mentor.entity";
+import { Learner } from "../../../application/entities/learner.entity";
 import { Document } from "mongoose";
 
 export const mapToUser = (doc: Document): User => {

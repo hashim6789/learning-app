@@ -1,4 +1,4 @@
-import { Category } from "../../../application/entities/Category";
+import { Category } from "../../../application/entities/category.entity";
 import { ICategoryRepository } from "../../../application/IRepositories/ICategoryRepository";
 import CategoryModel, { ICategory } from "../../database/models/CategoryModel";
 

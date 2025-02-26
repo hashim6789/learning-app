@@ -1,6 +1,6 @@
 import { CreateLessonDTO } from "../../shared/dtos/createLessonDTO";
 import { LessonQuery } from "../../shared/types/filters";
-import Lesson from "../entities/Lesson";
+import Lesson from "../entities/lesson.entity";
 
 export default interface ILessonRepository {
   fetchLessonById(lessonId: string): Promise<Lesson | null>;

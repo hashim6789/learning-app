@@ -1,5 +1,5 @@
 //imported the entity
-import { Learner } from "../../../application/entities/Learner";
+import { Learner } from "../../../application/entities/learner.entity";
 
 //imported the interface
 import { ILearnerRepository } from "../../../application/IRepositories/ILearnerRepository";

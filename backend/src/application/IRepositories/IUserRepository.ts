@@ -1,5 +1,5 @@
 import { UserQuery } from "../../shared/types/query";
-import { User } from "../entities/User";
+import { User } from "../entities/user.entity";
 
 // export interface IUserRepository {
 //   fetchById(userId: string): Promise<User | null>;

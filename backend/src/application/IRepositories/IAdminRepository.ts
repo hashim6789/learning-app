@@ -1,6 +1,6 @@
 // application/IRepositories/IAdminRepository.ts
 import { IUserRepository } from "./IUserRepository";
-import { Admin } from "../entities/Admin";
+import { Admin } from "../entities/admin.entity";
 
 export interface IAdminRepository extends IUserRepository<Admin> {}
 

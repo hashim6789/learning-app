@@ -1,11 +1,11 @@
 import ICourseRepository from "../../../application/IRepositories/ICourseRepository";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
-import Course from "../../../application/entities/Course";
+import Course from "../../../application/entities/course.entity";
 import CourseModel, { ICourses } from "../models/CourseModel";
 import { ICategory } from "../models/CategoryModel";
 // import Lesson from "../../../application/entities/Lesson";
 import { ILessons } from "../models/LessonModel";
-import { Category } from "../../../application/entities/Category";
+import { Category } from "../../../application/entities/category.entity";
 import mongoose from "mongoose";
 import { CourseLearnerQuery, CourseQuery } from "../../../shared/types/filters";
 import { CourseStatus } from "../../../shared/types";

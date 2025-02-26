@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "../../../application/entities/SubcriptionPlan";
+import { SubscriptionPlan } from "../../../application/entities/subsctiption-plan.entity";
 import { ISubscriptionPlanRepository } from "../../../application/IRepositories/ISubscriptionRepository";
 import { ISubscriptionPlan } from "../interfaces/ISubscriptionPlan";
 import SubscriptionPlanModel from "../models/SubscriptionPlanModel";

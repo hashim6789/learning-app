@@ -1,12 +1,12 @@
 import mongoose, { PipelineStage } from "mongoose";
-import { Notification } from "../../../application/entities/Notification";
+import { Notification } from "../../../application/entities/notification.entity";
 import IGroupChatRepository from "../../../application/IRepositories/IGroupChatRepository";
 import { INotificationRepository } from "../../../application/IRepositories/INotificationRepository";
 import { INotification } from "../interfaces/INotification";
 import ChatGroupModel from "../models/ChatGroupModel";
 import NotificationModel from "../models/NotificationModel";
 import { IChatGroup } from "../interfaces/IChatGroup";
-import { ChatGroup } from "../../../application/entities/ChatGroup";
+import { ChatGroup } from "../../../application/entities/chat-group.entity";
 import { Document } from "mongoose";
 import { pipeline } from "stream";
 

@@ -1,5 +1,5 @@
 // src/infrastructure/services/NotificationService.ts
-import { Notification } from "../../application/entities/Notification";
+import { Notification } from "../../application/entities/notification.entity";
 import { INotificationService } from "../../application/interfaces/INotificationService";
 import { INotificationRepository } from "../../application/IRepositories/INotificationRepository";
 

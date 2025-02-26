@@ -1,4 +1,4 @@
-import { Mentor } from "../entities/Mentor";
+import { Mentor } from "../entities/mentor.entity";
 import { IUserRepository } from "./IUserRepository";
 
 export interface IMentorRepository extends IUserRepository<Mentor> {}

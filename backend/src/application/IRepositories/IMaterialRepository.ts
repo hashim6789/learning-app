@@ -1,4 +1,4 @@
-import Material from "../entities/Material";
+import Material from "../entities/material.entity";
 import { CreateMaterialDTO } from "../../shared/dtos/CreateMaterialDTO";
 import { MaterialQuery } from "../../shared/types/filters";
 

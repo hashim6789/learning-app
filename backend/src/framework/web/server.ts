@@ -8,18 +8,16 @@ import cookieParser from "cookie-parser";
 
 // Custom configs
 import corsConfig from "../../shared/configs/corsConfig";
-import cookieConfig from "../../shared/configs/cookieConfig"; // Not used yet, so may be omitted if unnecessary
-import sessionConfig from "../../shared/configs/sessionConfig";
+// import cookieConfig from "../../shared/configs/cookieConfig"; // Not used yet, so may be omitted if unnecessary
+// import sessionConfig from "../../shared/configs/sessionConfig";
 
 // Importing router level routes
 import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
-// import learnerRouter from "../../adapter/routers/learner";
-// import adminRouter from "../../adapter/routers/admin";
-// import mentorRouter from "../../adapter/routers/mentor";
+
 import apiRouter from "../../adapter/routers/api";
 
 // Custom middlewares
-import errorHandler from "../../adapter/middleware/errorHandler";
+import errorHandler from "../../adapter/middleware/error-handling.middleware";
 
 // Redis connection setup
 import { connectRedis } from "../redis/redisSetup";

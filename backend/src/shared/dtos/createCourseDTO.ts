@@ -6,7 +6,7 @@ import {
   IsNumber,
   IsIn,
 } from "class-validator";
-import { Category } from "../../application/entities/Category";
+import { Category } from "../../application/entities/category.entity";
 
 export class CreateCourseDTO {
   @IsString()

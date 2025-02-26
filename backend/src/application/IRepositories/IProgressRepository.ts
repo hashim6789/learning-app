@@ -1,5 +1,5 @@
 import { IProgress } from "../../infrastructures/database/interfaces/IProgress";
-import { Progress } from "../entities/Progress";
+import { Progress } from "../entities/progress.entity";
 
 export interface IProgressRepository {
   createProgress(progress: Progress): Promise<Progress | null>;

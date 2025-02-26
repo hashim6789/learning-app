@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
-import { generateToken } from "../../shared/utils/jwt"; // Import from your jwt file
-import { generateRefreshToken } from "../../shared/utils/uuid";
+import { generateToken } from "../../shared/utils/jwt.util"; // Import from your jwt file
+import { generateRefreshToken } from "../../shared/utils/uuid.util";
 import AdminRepository from "../../infrastructures/database/repositories/AdminRepository";
 import cookieConfig from "../../shared/configs/cookieConfig";
-import { Admin } from "../../application/entities/Admin";
-import { Mentor } from "../../application/entities/Mentor";
-import { Learner } from "../../application/entities/Learner";
+import { Admin } from "../../application/entities/admin.entity";
+import { Mentor } from "../../application/entities/mentor.entity";
+import { Learner } from "../../application/entities/learner.entity";
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import LearnerRepository from "../../infrastructures/database/repositories/LearnerRepository";
 import { User } from "../../shared/types/User";

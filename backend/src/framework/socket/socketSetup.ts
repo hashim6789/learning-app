@@ -48,6 +48,7 @@ import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { handleGroupChat } from "./groupChat";
 import { handleNotification } from "./notification";
+import { handleVideoCall } from "./videoCall";
 
 let io: SocketIOServer | undefined;
 
@@ -65,6 +66,7 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
     if (io) {
       handleGroupChat(io, socket);
       handleNotification(io, socket);
+      handleVideoCall(io, socket);
     }
 
     socket.on("disconnect", () => {

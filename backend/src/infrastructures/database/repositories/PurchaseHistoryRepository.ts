@@ -1,4 +1,4 @@
-import { PurchaseHistory } from "../../../application/entities/PurchaseHistory";
+import { PurchaseHistory } from "../../../application/entities/purchase-history.entity";
 import { IPurchaseHistoryRepository } from "../../../application/IRepositories/IPurchaseHistoryRepository";
 import { IPurchaseHistory } from "../interfaces/IPurchaseHistory";
 import PurchaseHistoryModel from "../models/PurchaseHistoryModel";

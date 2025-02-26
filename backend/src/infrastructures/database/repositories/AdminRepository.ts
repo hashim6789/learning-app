@@ -1,10 +1,10 @@
 import { emitWarning } from "process";
-import { Admin } from "../../../application/entities/Admin";
+import { Admin } from "../../../application/entities/admin.entity";
 import { IAdminRepository } from "../../../application/IRepositories/IAdminRepository";
 import AdminModel from "../models/AdminModel";
 import { IAdmin } from "../interfaces/IAdmin";
 import { mapToAdmin, mapToUser } from "../mappers/userMapper";
-import { User } from "../../../application/entities/User";
+import { User } from "../../../application/entities/user.entity";
 import { UserQuery } from "../../../shared/types/query";
 
 const ADMIN = {

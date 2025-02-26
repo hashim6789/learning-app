@@ -2,7 +2,7 @@ import mongoose, { Schema, model, Types, Document } from "mongoose";
 import { IChatMessage } from "../interfaces/IChatMessage";
 import ChatMessageModel from "../models/ChatMessageModel";
 import { IChatMessageRepository } from "../../../application/IRepositories/IChatMessageRepository";
-import { ChatMessage } from "../../../application/entities/ChatMessage";
+import { ChatMessage } from "../../../application/entities/chat-message.entity";
 
 class ChatMessageRepository implements IChatMessageRepository {
   async createMessage(message: ChatMessage): Promise<ChatMessage | null> {

@@ -1,4 +1,4 @@
-import { Notification } from "../../../application/entities/Notification";
+import { Notification } from "../../../application/entities/notification.entity";
 import { INotificationRepository } from "../../../application/IRepositories/INotificationRepository";
 import { INotification } from "../interfaces/INotification";
 import NotificationModel from "../models/NotificationModel";

@@ -1,23 +1,24 @@
 import express from "express";
 
 //imported api routers
-import lessonRouter from "./lessonRoutes";
-import materialRouter from "./materialRoutes";
-import courseRouter from "./courseRoutes";
-import mentorRouter from "./mentorRoutes";
-import categoryRouter from "./categoryRoutes";
-import learnerRouter from "./learnerRoutes";
-import authRouter from "./authRoutes";
-import uploadRouter from "./uploadRoutes";
-import notifyRouter from "./notificationRoutes";
-import noAuthRouter from "./noAuthRoutes";
-import paymentRouter from "./paymentRoutes";
-import profileRouter from "./profileRoutes";
-import purchaseHistoryRouter from "./purchaseHistoryRoutes";
-import subscriptionHistoryRouter from "./subscriptionHistoryRoutes";
-import progressRouter from "./progressRoutes";
-import analysisRouter from "./analysisRoutes";
-import chatRouter from "./chatRoutes";
+import lessonRouter from "./lesson.routes";
+import materialRouter from "./material.routes";
+import courseRouter from "./course.routes";
+import mentorRouter from "./mentor.routes";
+import categoryRouter from "./category.routes";
+import learnerRouter from "./learner.routes";
+import authRouter from "./auth.routes";
+import uploadRouter from "./upload.routes";
+import notifyRouter from "./notification.routes";
+import noAuthRouter from "./no-auth.routes";
+import paymentRouter from "./payment.routes";
+import profileRouter from "./profile.routes";
+import purchaseHistoryRouter from "./purchase-history.routes";
+import subscriptionHistoryRouter from "./subscription-history.routes";
+import progressRouter from "./progress.routes";
+import analysisRouter from "./analysis.routes";
+import chatRouter from "./chat.routes";
+import meetRouter from "./meet.routes";
 
 const apiRouter = express.Router();
 
@@ -39,5 +40,6 @@ apiRouter.use("/subscription-history", subscriptionHistoryRouter);
 apiRouter.use("/progress", progressRouter);
 apiRouter.use("/analysis", analysisRouter);
 apiRouter.use("/chats", chatRouter);
+apiRouter.use("/meets", meetRouter);
 
 export default apiRouter;

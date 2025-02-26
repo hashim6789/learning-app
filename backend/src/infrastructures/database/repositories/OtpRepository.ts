@@ -1,9 +1,9 @@
 import { emitWarning } from "process";
-import { Admin } from "../../../application/entities/Admin";
+import { Admin } from "../../../application/entities/admin.entity";
 import { IAdminRepository } from "../../../application/IRepositories/IAdminRepository";
 import AdminModel from "../models/AdminModel";
 import { IOtpRepository } from "../../../application/IRepositories/IOtpRepository";
-import { Otp } from "../../../application/entities/Otp";
+import { Otp } from "../../../application/entities/otp.entity";
 import OtpModel, { IOtp } from "../models/OtpModel";
 
 const ADMIN = {
