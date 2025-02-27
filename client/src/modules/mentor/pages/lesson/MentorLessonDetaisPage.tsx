@@ -20,51 +20,20 @@ import {
 import useFetch from "../../../../hooks/useFetch";
 import { IMaterial } from "../../../../shared/types/Material";
 import api from "../../../../shared/utils/api";
-import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import { useNavigate, useParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import LoadingComponent from "../../components/LoadingComponent";
 import ErrorComponent from "../../components/ErrorComponent";
+import { lessonSchema } from "../../../../shared/schema/lesson-create.schema";
 
 interface Lesson {
   id: string;
   title: string;
   description: string;
-  materials: { id: string; title: string }[];
+  materials: { id: string; title: string; duration: number }[];
   duration: number;
 }
-
-const lessonSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  materials: z
-    .array(
-      z.object({
-        id: z.string().nonempty("Material ID is required"),
-        title: z.string().nonempty("Material title is required"),
-      })
-    )
-    .refine(
-      (materials) => {
-        const ids = materials.map((material) => material.id);
-        const uniqueIds = new Set(ids);
-        console.log("Checking materials: ", ids, uniqueIds);
-
-        // Check for duplicate IDs or empty IDs
-        if (uniqueIds.size !== ids.length) {
-          showToast.error("Duplicate or empty material IDs are not allowed");
-          return false; // Trigger validation failure
-        }
-        return true; // No duplicates and no empty IDs
-      },
-      { message: "Duplicate or empty material IDs are not allowed" }
-    ),
-  duration: z
-    .number({ invalid_type_error: "Duration must be a number" })
-    .min(15, "Duration must be at least 15 minute"),
-});
 
 const MentorLessonDetailsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -95,13 +64,12 @@ const MentorLessonDetailsPage = () => {
     formState: { errors },
     setValue,
     reset,
-  } = useForm<Lesson>({
+  } = useForm<Omit<Lesson, "duration">>({
     resolver: zodResolver(lessonSchema),
     defaultValues: lesson || {
       title: "",
       description: "",
       materials: [],
-      duration: 20,
     },
   });
 
@@ -121,7 +89,7 @@ const MentorLessonDetailsPage = () => {
     move(result.source.index, result.destination.index);
   };
 
-  const onSubmit = async (data: Lesson) => {
+  const onSubmit = async (data: Omit<Lesson, "duration">) => {
     setIsSubmitting(true);
     try {
       const titleRemovedMaterials = data.materials.map(
@@ -299,36 +267,12 @@ const MentorLessonDetailsPage = () => {
 
                 <button
                   type="button"
-                  onClick={() => append({ id: "", title: "" })}
+                  onClick={() => append({ id: "", title: "", duration: 0 })}
                   className="w-full py-2 px-4 border border-purple-200 rounded-md text-purple-700 hover:bg-purple-50 transition-colors flex items-center justify-center gap-2"
                 >
                   <Plus className="h-4 w-4" />
                   Add Material
                 </button>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="duration"
-                  className="block text-sm font-medium text-purple-700"
-                >
-                  Duration (minutes)
-                </label>
-                <input
-                  id="duration"
-                  type="number"
-                  defaultValue={lesson.duration}
-                  {...(register("duration"), { valueAsNumber: true })}
-                  onChange={(e) =>
-                    setValue("duration", Number(e.target.value) || 0)
-                  }
-                  className="w-full px-4 py-2 rounded-md border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-                {errors.duration && (
-                  <p className="text-red-500 text-sm">
-                    {errors.duration.message}
-                  </p>
-                )}
               </div>
 
               <button
@@ -357,7 +301,15 @@ const MentorLessonDetailsPage = () => {
                 <div className="flex items-center space-x-6">
                   <div className="flex items-center">
                     <Clock className="h-5 w-5 mr-2" />
-                    <span>{lesson.duration} minutes</span>
+                    <span>
+                      {lesson.materials.length > 0
+                        ? lesson.materials.reduce(
+                            (acc, item) => acc + item.duration,
+                            0
+                          )
+                        : 0}{" "}
+                      minutes
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <Book className="h-5 w-5 mr-2" />
@@ -397,6 +349,9 @@ const MentorLessonDetailsPage = () => {
                             {material.title}
                           </h3>
                         </div>
+                        <span className="h-8 w-8 flex items-center justify-center bg-purple-200 text-purple-700 rounded-full mr-4">
+                          {material.duration}
+                        </span>
                       </div>
                     ))}
                   </div>

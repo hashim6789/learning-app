@@ -10,47 +10,15 @@ import {
 import useFetch from "../../../../hooks/useFetch";
 import { IMaterial } from "../../../../shared/types/Material";
 import api from "../../../../shared/utils/api";
-import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useNavigate } from "react-router-dom";
-
-const lessonSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  materials: z
-    .array(
-      z.object({
-        id: z.string().nonempty("Material ID is required"),
-        title: z.string().nonempty("Material title is required"),
-      })
-    )
-    .refine(
-      (materials) => {
-        const ids = materials.map((material) => material.id);
-        const uniqueIds = new Set(ids);
-        console.log("Checking materials: ", ids, uniqueIds);
-
-        // Check for duplicate IDs or empty IDs
-        if (uniqueIds.size !== ids.length) {
-          showToast.error("Duplicate or empty material IDs are not allowed");
-          return false; // Trigger validation failure
-        }
-        return true; // No duplicates and no empty IDs
-      },
-      { message: "Duplicate or empty material IDs are not allowed" }
-    ),
-  duration: z
-    .number({ invalid_type_error: "Duration must be a number" })
-    .min(15, "Duration must be at least 15 minute"),
-});
+import { lessonSchema } from "../../../../shared/schema/lesson-create.schema";
 
 type FormValues = {
   title: string;
   description: string;
   materials: { id: string; title: string }[];
-  duration: number;
 };
 
 const CreateLesson = () => {
@@ -102,7 +70,6 @@ const CreateLesson = () => {
       materials: materials
         ? materials.map((material) => ({ id: "", title: material.title }))
         : [],
-      duration: 20,
     },
   });
 
@@ -303,7 +270,7 @@ const CreateLesson = () => {
               )}
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label
                 htmlFor="duration"
                 className="block text-sm font-medium text-purple-700"
@@ -325,7 +292,7 @@ const CreateLesson = () => {
                   {errors.duration.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <button
               type="submit"

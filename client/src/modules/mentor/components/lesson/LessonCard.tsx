@@ -31,10 +31,10 @@ const LessonCard: React.FC<LessonCardProps> = ({ lesson, onDelete }) => {
               {lesson.description}
             </p>
             <div className="flex items-center space-x-4 text-sm text-gray-500">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <Clock className="w-4 h-4 mr-1" />
                 <span>{lesson.duration || 0} minutes</span>
-              </div>
+              </div> */}
               <div className="flex items-center">
                 <Book className="w-4 h-4 mr-1" />
                 <span>{lesson.materials.length} materials</span>
