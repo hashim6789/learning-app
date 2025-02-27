@@ -24,6 +24,7 @@ import LearningCoursePage from "../modules/learner/pages/learnings/LearningCours
 import MaterialContent from "../modules/learner/components/learnings/MaterialContent";
 import CourseGroupChat from "../modules/learner/pages/chat/LearnerChatManagement";
 import MainChatLayout from "../modules/learner/pages/chat/LearnerChatManagement";
+import VideoCallPage from "../modules/learner/pages/video/VideoCallPage";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -112,6 +113,7 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
 
               // { path: "chat", element: <CourseGroupChat /> },
               { path: "chat", element: <MainChatLayout /> },
+              { path: "video-call", element: <VideoCallPage /> },
             ],
           },
         ],

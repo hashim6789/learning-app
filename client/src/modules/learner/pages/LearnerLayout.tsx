@@ -1,150 +1,103 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+// import { io } from "socket.io-client";
 
 import LearnerNavbar from "../components/LearnerNavbar";
 import LearnerFooter from "../components/LearnerFooter";
-// LearnerLayout Component
+// import MeetingInvitationModal from "../../../components/MeetingINvitationModalProps";
+
+// interface User {
+//   id: string;
+// }
+
+// interface MeetingInvitation {
+//   _id: string;
+//   courseId: any;
+//   learnerId: string;
+//   time: string;
+//   roomId: string;
+// }
+
+// // Connect to the Socket.io server
+// const socket = io("http://localhost:3000", {
+//   transports: ["websocket"],
+//   upgrade: false,
+// });
+
 const LearnerLayout: React.FC = () => {
+  // const [meetingInvitation, setMeetingInvitation] =
+  //   useState<MeetingInvitation | null>(null);
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const user: User = JSON.parse(localStorage.getItem("data") ?? "{}");
+
+  //   const handleMeetInvite = (meet: MeetingInvitation) => {
+  //     setMeetingInvitation(meet);
+
+  //     const handleJoinMeet = () => {
+  //       setMeetingInvitation(null);
+  //       console.log("Navigating to meet:", meet.roomId);
+  //       // navigate(`/meet/${meet.roomId}`);
+  //     };
+
+  //     socket.on(`call:join-${meet.roomId}`, handleJoinMeet);
+  //     socket.on(`call:declined-${meet.roomId}`, () =>
+  //       setMeetingInvitation(null)
+  //     );
+
+  //     return () => {
+  //       socket.off(`call:join-${meet.roomId}`, handleJoinMeet);
+  //     };
+  //   };
+
+  //   socket.on(`call:invite-${user.id}`, handleMeetInvite);
+
+  //   return () => {
+  //     socket.off(`call:invite-${user.id}`, handleMeetInvite);
+  //   };
+  // }, [navigate]);
+
+  // const handleAccept = async () => {
+  //   if (meetingInvitation) {
+  //     try {
+  //       socket.emit("call:accepted", { roomId: meetingInvitation.roomId });
+  //     } catch (error) {
+  //       console.error("Error accepting call:", error);
+  //     }
+  //   } else {
+  //     console.error("No meeting invitation found");
+  //   }
+  // };
+
+  // const handleDecline = () => {
+  //   if (meetingInvitation) {
+  //     socket.emit("call:declined", { roomId: meetingInvitation.roomId });
+  //     console.log("Call declined");
+  //   } else {
+  //     console.error("No meeting invitation found");
+  //   }
+  // };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Notification Banner */}
-
-      {/* Navbar */}
-      <LearnerNavbar />
-
-      {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-6">
-        <Outlet />
-      </main>
-
-      {/* Footer */}
-      <LearnerFooter />
-    </div>
+    <>
+      <div className="min-h-screen flex flex-col bg-white">
+        <LearnerNavbar />
+        <main className="flex-grow container mx-auto px-4 py-6">
+          <Outlet />
+        </main>
+        <LearnerFooter />
+      </div>
+      {/* {meetingInvitation && (
+        <MeetingInvitationModal
+          role="learner"
+          course={meetingInvitation.courseId}
+          onAccept={handleAccept}
+          onDecline={handleDecline}
+        />
+      )} */}
+    </>
   );
 };
 
 export default LearnerLayout;
-
-// import React from "react";
-// import { Outlet } from "react-router-dom";
-
-// //imported child components
-// import LearnerFooter from "../components/LearnerFooter";
-// import LearnerNavbar from "../components/LearnerNavbar";
-
-// interface LayoutProps {
-//   className?: string;
-// }
-
-// // Main Layout for Learner Component
-// const LearnerLayout: React.FC<LayoutProps> = ({ className = "" }) => {
-//   return (
-//     <div className={`min-h-screen flex flex-col ${className}`}>
-//       <LearnerNavbar />
-//       <main className="flex-grow">
-//         <Outlet />
-//       </main>
-//       <LearnerFooter />
-//     </div>
-//   );
-// };
-
-// export default LearnerLayout;
-
-// <nav className="border-b border-gray-200 bg-white">
-//   <div className="container mx-auto px-4">
-//     <div className="flex items-center justify-between h-16">
-//       {/* Left Section */}
-//       <div className="flex items-center gap-8">
-//         <img src="/coursera-logo.svg" alt="Coursera" className="h-8" />
-//         <button className="text-blue-800 hover:text-blue-900 font-medium flex items-center gap-2">
-//           Explore
-//           <ChevronDown size={20} />
-//         </button>
-//       </div>
-
-//       {/* Search Bar */}
-//       <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-//         <div className="relative w-full">
-//           <input
-//             type="text"
-//             placeholder="What do you want to learn?"
-//             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-//           />
-//           <Search
-//             className="absolute left-3 top-2.5 text-gray-500"
-//             size={20}
-//           />
-//         </div>
-//       </div>
-
-//       {/* Right Section */}
-//       <div className="flex items-center gap-4">
-//         <button
-//           onClick={() => setShowNotification((prev) => !prev)}
-//           className="hover:bg-gray-100 p-2 rounded-full"
-//         >
-//           <NotificationPanel />
-//         </button>
-//         <button className="hover:bg-gray-100 p-2 rounded-full">
-//           <Globe size={20} className="text-gray-800" />
-//         </button>
-//         <div className="h-8 w-8 bg-blue-800 rounded-full flex items-center justify-center text-white font-medium">
-//           M
-//         </div>
-//       </div>
-//     </div>
-
-//     {/* Navigation Links */}
-//     <div className="flex space-x-8 -mb-px">
-//       <NavLink
-//         to="/home"
-//         className={({ isActive }) =>
-//           `border-b-2 px-1 py-4 text-sm font-medium ${
-//             isActive
-//               ? "border-blue-800 text-blue-800"
-//               : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800"
-//           }`
-//         }
-//       >
-//         Home
-//       </NavLink>
-//       <NavLink
-//         to="/my-learning"
-//         className={({ isActive }) =>
-//           `border-b-2 px-1 py-4 text-sm font-medium ${
-//             isActive
-//               ? "border-blue-800 text-blue-800"
-//               : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800"
-//           }`
-//         }
-//       >
-//         My Learning
-//       </NavLink>
-//       <NavLink
-//         to="/online-degrees"
-//         className={({ isActive }) =>
-//           `border-b-2 px-1 py-4 text-sm font-medium ${
-//             isActive
-//               ? "border-blue-800 text-blue-800"
-//               : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800"
-//           }`
-//         }
-//       >
-//         Online Degrees
-//       </NavLink>
-//       <NavLink
-//         to="/careers"
-//         className={({ isActive }) =>
-//           `border-b-2 px-1 py-4 text-sm font-medium ${
-//             isActive
-//               ? "border-blue-800 text-blue-800"
-//               : "border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-800"
-//           }`
-//         }
-//       >
-//         Careers
-//       </NavLink>
-//     </div>
-//   </div>
-// </nav>

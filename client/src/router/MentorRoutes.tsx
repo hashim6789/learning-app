@@ -18,6 +18,8 @@ import MentorLessonDetailsPage from "../modules/mentor/pages/lesson/MentorLesson
 import Layout from "../modules/mentor/pages/Layout";
 import MentorProfile from "../modules/mentor/pages/ProfilePage";
 import MentorCreateCourse from "../modules/mentor/pages/course/MentorCreateCourse";
+import VideoCallManagement from "../modules/mentor/pages/video/VideoCallManamgemtnt";
+import LobbyScreen from "../modules/mentor/pages/video/LobbyScreen";
 
 export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -67,6 +69,8 @@ export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
                 path: "my-lessons/:lessonId",
                 element: <MentorLessonDetailsPage />,
               },
+              // { path: "meetings", element: <VideoCallManagement /> },
+              { path: "meetings", element: <LobbyScreen /> },
             ],
           },
         ],

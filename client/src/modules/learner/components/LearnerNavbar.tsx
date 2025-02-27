@@ -9,7 +9,7 @@ import NotificationPanel from "../../../components/NotificationPanel";
 const CourseNavbar: React.FC = () => {
   const { handleLogout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  // const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Redux state selectors
   const { isAuthenticated, isVerified, isBlocked } = useSelector(
@@ -158,6 +158,16 @@ const CourseNavbar: React.FC = () => {
             }
           >
             My Chats
+          </NavLink>
+          <NavLink
+            to="/learner/video-call"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
+          >
+            Video Call
           </NavLink>
         </div>
       </div>

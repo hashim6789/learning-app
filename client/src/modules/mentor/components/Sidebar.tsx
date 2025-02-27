@@ -14,6 +14,7 @@ const sidebarItems: SidebarItem[] = [
   { icon: BookOpen, label: "My Courses", href: "/mentor/my-courses" },
   { icon: Video, label: "My Lessons", href: "/mentor/my-lessons" },
   { icon: FileText, label: "My Materials", href: "/mentor/my-materials" },
+  { icon: Video, label: "Meetings", href: "/mentor/meetings" },
 ];
 
 const Sidebar: React.FC<{ isSidebarOpen: boolean }> = ({ isSidebarOpen }) => {

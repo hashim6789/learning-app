@@ -12,6 +12,9 @@ import materialReducers from "./slices/materialSlice";
 
 import groupReducers from "./slices/groupSlice";
 import messageReducers from "./slices/messageSlice";
+import videoCallReducers from "./slices/videoCallSlice";
+
+// import socketReducers from "./slices/socketSlice";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +26,8 @@ const store = configureStore({
     learning: learningReducers,
     group: groupReducers,
     message: messageReducers,
+    videoCall: videoCallReducers,
+    // socket: socketReducers,
 
     // learners: learnerReducers,
     // mentors: mentorReducers,

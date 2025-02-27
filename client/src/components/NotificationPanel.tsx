@@ -40,7 +40,6 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
   }, [userId]);
 
   useEffect(() => {
-    console.log("userId", userId);
     // Mentor joins their respective room
     socket.emit("joinRoom", userId);
 
