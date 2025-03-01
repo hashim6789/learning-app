@@ -2,11 +2,11 @@
 import bcrypt from "bcryptjs";
 
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IUserRepository } from "../../IRepositories/IUserRepository";
+import { IUserRepository } from "../../../infrastructures/database/repositories/interface/IUserRepository";
 
 import generateOtp from "../../../shared/utils/otp.util";
 import { sendOtpEmail } from "../../../shared/utils/mail.util";
-import { IOtpRepository } from "../../IRepositories/IOtpRepository";
+import { IOtpRepository } from "../../../infrastructures/database/repositories/interface/IOtpRepository";
 import { Otp } from "../../entities/otp.entity";
 import { User } from "../../entities/user.entity";
 import { validateData } from "../../../shared/helpers/validateHelper";

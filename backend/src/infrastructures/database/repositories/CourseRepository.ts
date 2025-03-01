@@ -1,7 +1,7 @@
-import ICourseRepository from "../../../application/IRepositories/ICourseRepository";
+import ICourseRepository from "./interface/ICourseRepository";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
 import Course from "../../../application/entities/course.entity";
-import CourseModel, { ICourses } from "../models/CourseModel";
+import CourseModel from "../models/CourseModel";
 import { ICategory } from "../models/CategoryModel";
 // import Lesson from "../../../application/entities/Lesson";
 import { ILessons } from "../models/LessonModel";
@@ -9,6 +9,7 @@ import { Category } from "../../../application/entities/category.entity";
 import mongoose from "mongoose";
 import { CourseLearnerQuery, CourseQuery } from "../../../shared/types/filters";
 import { CourseStatus } from "../../../shared/types";
+import { ICourses } from "../interfaces/ICourse";
 
 class CourseRepository implements ICourseRepository {
   //find a course by id
@@ -290,14 +291,14 @@ interface Lesson {
 }
 
 export function courseMapping(course: ICourses): Course {
-  const category: Category =
-    course.categoryId && typeof course.categoryId === "object"
-      ? {
-          id: (course.categoryId as ICategory)._id.toString(),
-          title: (course.categoryId as ICategory).title,
-          isListed: (course.categoryId as ICategory).isListed,
-        }
-      : { id: "", title: "Unknown", isListed: false };
+  // const category: Category =
+  //   course.categoryId && typeof course.categoryId === "object"
+  //     ? {
+  //         // id: (course.categoryId as ICategory)._id.toString(),
+  //         // title: (course.categoryId as ICategory).title,
+  //         // isListed: (course.categoryId as ICategory).isListed,
+  //       }
+  //     : { id: "", title: "Unknown", isListed: false };
 
   const lessons = course.lessons
     ? course.lessons.map<Lesson>((lesson: any) => {
@@ -309,15 +310,15 @@ export function courseMapping(course: ICourses): Course {
     id: course._id.toString(),
     title: course.title,
     mentorId: course.mentorId.toString(),
-    category: category,
+    category: course.categoryId.toString(),
     description: course.description || null,
     thumbnail: course.thumbnail,
     lessons,
     price: course.price,
-    duration: course.duration || null,
+    // duration: course.duration || null,
     status: course.status || null,
-    rejectionReason: course.rejectionReason || null,
-    purchaseCount: course.purchaseCount || 0,
+    // rejectionReason: course.rejectionReason || null,
+    // purchaseCount: course.purchaseCount || 0,
   };
 }
 

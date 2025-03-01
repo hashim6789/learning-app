@@ -1,6 +1,6 @@
 import { getIo } from "../../../framework/socket/socketSetup";
 import { generateUniqueKey } from "../../../shared/utils/uuid.util";
-import IMeetingRepository from "../../IRepositories/IMeetingRepository";
+import IMeetingRepository from "../../../infrastructures/database/repositories/interface/IMeetingRepository";
 
 class MeetStartUseCase {
   private meetingRepository: IMeetingRepository;

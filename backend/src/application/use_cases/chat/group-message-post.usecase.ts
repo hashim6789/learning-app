@@ -1,10 +1,10 @@
 import { validateData } from "../../../shared/helpers/validateHelper";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { ChatMessage } from "../../entities/chat-message.entity";
-import { IChatMessageRepository } from "../../IRepositories/IChatMessageRepository";
-import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
+import { IChatMessageRepository } from "../../../infrastructures/database/repositories/interface/IChatMessageRepository";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 import { getIo } from "../../../framework/socket/socketSetup";
-import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
+import { ILearnerRepository } from "../../../infrastructures/database/repositories/interface/ILearnerRepository";
 
 interface CreateMessageDTO {
   message: string;
@@ -57,6 +57,7 @@ class CreateMessageOfSenderUseCase {
 
       const messageData = {
         _id: newMessage.id,
+        groupId,
         message: message.message,
         sender: {
           _id: fetchUser.id,
@@ -65,18 +66,18 @@ class CreateMessageOfSenderUseCase {
         },
         createdAt: newMessage.createdAt,
       };
-      // Emit the message to the group via socket.io
-      const io = getIo();
-      if (io) {
-        console.log("Emitting message to group:", groupId);
-        io.to(groupId).emit("receiveChat", messageData);
-      }
+      // // Emit the message to the group via socket.io
+      // const io = getIo();
+      // if (io) {
+      //   console.log("Emitting message to group:", groupId);
+      //   io.to(groupId).emit("receiveMessages", messageData);
+      // }
 
       return {
         statusCode: 201,
         success: true,
         message: "The message is created successfully.",
-        data: newMessage,
+        data: messageData,
       };
     } catch (error) {
       throw new Error(

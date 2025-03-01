@@ -1,4 +1,4 @@
-import { SubscriptionPlan } from "../entities/subsctiption-plan.entity";
+import { SubscriptionPlan } from "../../../../application/entities/subsctiption-plan.entity";
 
 export interface ISubscriptionPlanRepository {
   createSubscriptionPlan(

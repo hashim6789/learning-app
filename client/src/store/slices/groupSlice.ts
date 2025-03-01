@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { sampleGroups } from "../../shared/sample/sampleGroups";
-import { string } from "zod";
 
-const learners = ["Alice", "John Doe", "Mark", "Sarah"];
-const mentor = { name: "Prof. Smith", expertise: "Web Development" };
 interface User {
   _id: string;
   firstName: string;
@@ -25,14 +21,17 @@ interface GroupState {
   selectedGroupId: string | null;
   loading: boolean;
   error: string | null;
+  isTyping: boolean;
+  typeName: string;
 }
 
 const initialState: GroupState = {
-  //   groups: [],
   groups: [],
   selectedGroupId: null,
   loading: false,
   error: null,
+  isTyping: false,
+  typeName: "",
 };
 
 const groupSlice = createSlice({
@@ -70,6 +69,15 @@ const groupSlice = createSlice({
     selectGroup(state, action: PayloadAction<string>) {
       state.selectedGroupId = action.payload;
     },
+
+    startTyping(state, action) {
+      state.isTyping = true;
+      state.typeName = action.payload;
+    },
+    stopTyping(state) {
+      state.isTyping = false;
+      state.typeName = "";
+    },
   },
 });
 
@@ -81,6 +89,8 @@ export const {
   updateGroup,
   deleteGroup,
   selectGroup,
+  startTyping,
+  stopTyping,
 } = groupSlice.actions;
 
 export default groupSlice.reducer;

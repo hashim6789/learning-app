@@ -1,48 +1,3 @@
-// // src/infrastructure/socket/socketSetup.ts
-// import { Server as HttpServer } from "http";
-// import { Server as SocketIOServer } from "socket.io";
-
-// let io: SocketIOServer | undefined;
-
-// export const connectSocket = (server: HttpServer): SocketIOServer => {
-//   io = new SocketIOServer(server, {
-//     cors: {
-//       origin: "http://localhost:3000", // Update with your client URL
-//       methods: ["GET", "POST"],
-//     },
-//   });
-
-//   io.on("connection", (socket) => {
-//     console.log("A user connected:", socket.id);
-
-//     socket.on("joinRoom", (mentorId) => {
-//       socket.join(mentorId);
-//       console.log(`Mentor ${mentorId} joined room ${mentorId}`);
-//     });
-
-//     socket.on("disconnect", () => {
-//       console.log("A user disconnected:", socket.id);
-//     });
-
-//     socket.on("sendNotification", (data) => {
-//       if (io) {
-//         const { mentorId, notification } = data;
-//         console.log("Sending notification to mentor:", mentorId);
-//         io.to(mentorId).emit("receiveNotification", notification);
-//       }
-//     });
-//   });
-
-//   return io;
-// };
-
-// export const getIo = (): SocketIOServer => {
-//   if (!io) {
-//     throw new Error("Socket.io not initialized!");
-//   }
-//   return io;
-// };
-
 // src/infrastructure/socket/socketSetup.ts
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
@@ -60,17 +15,33 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
     },
   });
 
-  io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
-
-    if (io) {
-      handleGroupChat(io, socket);
-      handleNotification(io, socket);
-      handleVideoCall(io, socket);
-    }
-
+  // Namespace for Chats
+  const chatNamespace = io.of("/chats");
+  chatNamespace.on("connection", (socket) => {
+    console.log("A user connected to /chats namespace:", socket.id);
+    handleGroupChat(chatNamespace, socket); // Pass Namespace instead of Server
     socket.on("disconnect", () => {
-      console.log("A user disconnected:", socket.id);
+      console.log("A user disconnected from /chats namespace:", socket.id);
+    });
+  });
+
+  // Namespace for Notifications
+  const notificationNamespace = io.of("/notify");
+  notificationNamespace.on("connection", (socket) => {
+    console.log("A user connected to /notify namespace:", socket.id);
+    handleNotification(notificationNamespace, socket); // Pass Namespace instead of Server
+    socket.on("disconnect", () => {
+      console.log("A user disconnected from /notify namespace:", socket.id);
+    });
+  });
+
+  // Namespace for Video Calls
+  const callNamespace = io.of("/calls");
+  callNamespace.on("connection", (socket) => {
+    console.log("A user connected to /calls namespace:", socket.id);
+    handleVideoCall(callNamespace, socket); // Pass Namespace instead of Server
+    socket.on("disconnect", () => {
+      console.log("A user disconnected from /calls namespace:", socket.id);
     });
   });
 

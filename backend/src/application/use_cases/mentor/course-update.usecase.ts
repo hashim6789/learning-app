@@ -1,7 +1,7 @@
 import { UpdateCourseDTO } from "../../../shared/dtos/updateCourse";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import Course from "../../entities/course.entity";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 
 class UpdateCourseUseCase {
   private courseRepository: ICourseRepository;

@@ -1,7 +1,7 @@
 import { CourseStatus } from "../../../shared/types";
 import { CourseLearnerQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 
 class GetAllPublishedCoursesUseCase {
   private courseRepository: ICourseRepository;

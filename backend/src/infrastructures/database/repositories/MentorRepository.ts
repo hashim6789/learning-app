@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { Mentor } from "../../../application/entities/mentor.entity";
-import { IMentorRepository } from "../../../application/IRepositories/IMentorRepository";
+import { IMentorRepository } from "./interface/IMentorRepository";
 import MentorModel from "../models/MentorModel";
-import { IUserRepository } from "../../../application/IRepositories/IUserRepository";
+import { IUserRepository } from "./interface/IUserRepository";
 import { User } from "../../../application/entities/user.entity";
 import { IMentor } from "../interfaces/IMentor";
 import { UserQuery } from "../../../shared/types/query";

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-const errorHandler = (
+export const errorHandler = (
   err: unknown,
   req: Request,
   res: Response,
@@ -20,5 +20,3 @@ const errorHandler = (
       .json({ success: false, error: "An unknown error occurred" });
   }
 };
-
-export default errorHandler;

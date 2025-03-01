@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../IRepositories/IUserRepository";
+import { IUserRepository } from "../../../infrastructures/database/repositories/interface/IUserRepository";
 import axios from "axios";
 import { generateToken } from "../../../shared/utils/jwt.util";
 import { User } from "../../entities/user.entity";

@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { ICategoryRepository } from "../../IRepositories/ICategoryRepository";
+import { ICategoryRepository } from "../../../infrastructures/database/repositories/interface/ICategoryRepository";
 
 class GetCategoriesUseCase {
   private categoryRepository: ICategoryRepository;

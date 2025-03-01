@@ -1,4 +1,4 @@
-import { PurchaseHistory } from "../entities/purchase-history.entity";
+import { PurchaseHistory } from "../../../../application/entities/purchase-history.entity";
 
 export interface IPurchaseHistoryRepository {
   createPurchaseHistory(data: PurchaseHistory): Promise<PurchaseHistory | null>;

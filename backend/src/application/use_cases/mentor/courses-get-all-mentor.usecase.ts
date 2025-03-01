@@ -1,7 +1,7 @@
 import { CourseQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 
 class GetAllCourseOfMentorUseCase {
   private courseRepository: ICourseRepository;

@@ -1,8 +1,11 @@
 // src/adapters/routes/subscriptionHistoryRoutes.ts
 import { Router } from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import { SubscriptionHistoryController } from "../../controllers/subscription-history.controller";
 
 const subscriptionHistoryRouter = Router();

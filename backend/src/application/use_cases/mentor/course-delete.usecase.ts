@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 
 class DeleteCourseUseCase {
   private courseRepository: ICourseRepository;

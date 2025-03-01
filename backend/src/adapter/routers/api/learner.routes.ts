@@ -1,6 +1,10 @@
 import express from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import LearnerController from "../../controllers/learner.controller";
 
 //authController instance created.

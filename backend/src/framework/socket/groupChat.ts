@@ -1,26 +1,55 @@
 // src/infrastructure/socket/groupChat.ts
-import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as SocketIOServer, Socket, Namespace } from "socket.io";
 
-export const handleGroupChat = (io: SocketIOServer, socket: Socket): void => {
-  socket.on("joinGroup", (groupId) => {
-    socket.join(groupId);
-    console.log(`User ${socket.id} joined group ${groupId}`);
+// src/infrastructure/socket/groupChat.ts
+export const handleGroupChat = (namespace: Namespace, socket: Socket): void => {
+  socket.on("setup", (userData) => {
+    socket.join(userData._id);
+    console.log("room created and user joined", userData);
+    socket.emit("connected");
   });
 
-  socket.on("leaveGroup", (groupId) => {
-    socket.leave(groupId);
-    console.log(`User ${socket.id} left group ${groupId}`);
+  socket.on("join chat", (roomData) => {
+    socket.join(roomData.groupId);
+    console.log("user joined the group", roomData.groupId);
   });
 
-  socket.on("sendMessage", (data) => {
-    const { groupId, message } = data;
-    io.to(groupId).emit("receiveMessage", { message, sender: socket.id });
-    console.log(`Message sent to group ${groupId} from user ${socket.id}`);
-  });
+  socket.on("start typing", (typeData) =>
+    socket
+      .to(typeData.groupId)
+      .emit("start typing", { typeName: typeData.firstName })
+  );
+  socket.on("stop typing", (roomData) =>
+    socket.to(roomData.groupId).emit("stop typing")
+  );
 
-  socket.on("sendNotification", (data) => {
-    const { groupId, notification } = data;
-    io.to(groupId).emit("receiveNotification", notification);
-    console.log("Notification sent to group:", groupId);
+  socket.on("send message", (message) => {
+    console.log("message", message);
+
+    socket.to(message.groupId).emit("receive message", message);
   });
+  // socket.emit("successConnection", true);
+  // socket.on("joinGroup", (data: { groupId: string }) => {
+  //   console.log("joinGroup event received with data:", data); // Add this line
+  //   socket.join(data.groupId);
+  //   console.log(`User ${socket.id} joined group ${data.groupId}`);
+  // });
+
+  // socket.on("leaveGroup", (groupId) => {
+  //   socket.leave(groupId);
+  //   console.log(`User ${socket.id} left group ${groupId}`);
+  // });
+
+  // socket.on("sendMessage", (messageData) => {
+  //   console.log("message", messageData);
+  //   const { groupId } = messageData;
+  //   namespace.to(groupId).emit("receiveMessage", messageData);
+  //   console.log(`Message sent to group ${groupId} from user ${socket.id}`);
+  // });
+
+  // socket.on("sendNotification", (data) => {
+  //   const { groupId, notification } = data;
+  //   namespace.to(groupId).emit("receiveNotification", notification);
+  //   console.log("Notification sent to group:", groupId);
+  // });
 };

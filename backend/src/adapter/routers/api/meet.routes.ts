@@ -1,7 +1,10 @@
 import express from "express";
-import CategoryController from "../../controllers/category.controller";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import MeetController from "../../controllers/meet.controller";
 
 const meetController = new MeetController();

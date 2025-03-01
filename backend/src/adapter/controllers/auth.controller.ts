@@ -5,7 +5,7 @@ import AdminRepository from "../../infrastructures/database/repositories/AdminRe
 import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 import LoginUseCase from "../../application/use_cases/auth/login.usecase";
 import LogoutUseCase from "../../application/use_cases/auth/logout.usecase";
-import { IUserRepository } from "../../application/IRepositories/IUserRepository";
+import { IUserRepository } from "../../infrastructures/database/repositories/interface/IUserRepository";
 import { User } from "../../application/entities/user.entity";
 import GoogleSignupUseCase from "../../application/use_cases/auth/google-signup.usecase";
 import { UserType } from "aws-sdk/clients/workdocs";

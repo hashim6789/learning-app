@@ -1,4 +1,4 @@
-import { Category } from "../entities/category.entity";
+import { Category } from "../../../../application/entities/category.entity";
 
 export interface ICategoryRepository {
   fetchAllCategories(): Promise<Category[] | null>;

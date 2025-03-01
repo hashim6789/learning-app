@@ -2,7 +2,7 @@ import { Progress } from "../../../application/entities/progress.entity";
 import { IProgress } from "../interfaces/IProgress";
 import ProgressModel from "../models/ProgressModel";
 import mongoose, { ObjectId, PipelineStage } from "mongoose";
-import { IProgressRepository } from "../../../application/IRepositories/IProgressRepository";
+import { IProgressRepository } from "./interface/IProgressRepository";
 import Course from "../../../application/entities/course.entity";
 
 class ProgressRepository implements IProgressRepository {

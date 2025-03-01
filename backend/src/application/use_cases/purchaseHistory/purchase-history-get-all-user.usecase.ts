@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IPurchaseHistoryRepository } from "../../IRepositories/IPurchaseHistoryRepository";
+import { IPurchaseHistoryRepository } from "../../../infrastructures/database/repositories/interface/IPurchaseHistoryRepository";
 
 class GetAllPurchaseHistoriesUseCase {
   private purchaseHistoryRepository: IPurchaseHistoryRepository;

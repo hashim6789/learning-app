@@ -2,14 +2,14 @@ import bcrypt from "bcryptjs";
 import { SignupDTO } from "../../../shared/dtos/SignupDTO";
 import { validateData } from "../../../shared/helpers/validateHelper";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IOtpRepository } from "../../IRepositories/IOtpRepository";
+import { IOtpRepository } from "../../../infrastructures/database/repositories/interface/IOtpRepository";
 import { generateToken } from "../../../shared/utils/jwt.util";
 import { generateRefreshToken } from "../../../shared/utils/uuid.util";
 import generateOtp from "../../../shared/utils/otp.util";
 import { sendOtpEmail } from "../../../shared/utils/mail.util";
 import { Otp } from "../../entities/otp.entity";
 import { User } from "../../entities/user.entity";
-import { IUserRepository } from "../../IRepositories/IUserRepository";
+import { IUserRepository } from "../../../infrastructures/database/repositories/interface/IUserRepository";
 
 class SignupUseCase<T extends User> {
   private userRepository: IUserRepository<T>;

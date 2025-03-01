@@ -1,5 +1,5 @@
 // src/domain/repositories/INotificationRepository.ts
-import { Notification } from "../entities/notification.entity";
+import { Notification } from "../../../../application/entities/notification.entity";
 
 export interface INotificationRepository {
   save(notification: Notification): Promise<Notification | null>;

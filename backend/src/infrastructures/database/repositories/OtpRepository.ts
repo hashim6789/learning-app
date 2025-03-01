@@ -1,8 +1,8 @@
 import { emitWarning } from "process";
 import { Admin } from "../../../application/entities/admin.entity";
-import { IAdminRepository } from "../../../application/IRepositories/IAdminRepository";
+import { IAdminRepository } from "./interface/IAdminRepository";
 import AdminModel from "../models/AdminModel";
-import { IOtpRepository } from "../../../application/IRepositories/IOtpRepository";
+import { IOtpRepository } from "./interface/IOtpRepository";
 import { Otp } from "../../../application/entities/otp.entity";
 import OtpModel, { IOtp } from "../models/OtpModel";
 

@@ -1,6 +1,6 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { Category } from "../../entities/category.entity";
-import { ICategoryRepository } from "../../IRepositories/ICategoryRepository";
+import { ICategoryRepository } from "../../../infrastructures/database/repositories/interface/ICategoryRepository";
 
 class CreateCategoryUseCase {
   private categoryRepository: ICategoryRepository;

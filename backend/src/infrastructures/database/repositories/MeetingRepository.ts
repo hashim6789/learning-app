@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
 import { IMeeting } from "../interfaces/IMeeting";
 import MeetingModel from "../models/MeetingModel"; // Adjust the import path as needed
-import IMeetingRepository from "../../../application/IRepositories/IMeetingRepository";
+import IMeetingRepository from "./interface/IMeetingRepository";
 
 class MeetingRepository implements IMeetingRepository {
   private model: Model<IMeeting>;

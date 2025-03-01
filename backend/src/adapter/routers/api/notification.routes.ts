@@ -1,9 +1,12 @@
 // src/adapters/routes/notificationRoutes.ts
 import { Router } from "express";
 import { NotificationController } from "../../controllers/notification.controller";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 
 const notificationRouter = Router();
 

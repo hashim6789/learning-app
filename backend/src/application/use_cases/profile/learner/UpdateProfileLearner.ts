@@ -1,4 +1,4 @@
-import { ILearnerRepository } from "../../../IRepositories/ILearnerRepository";
+import { ILearnerRepository } from "../../../../infrastructures/database/repositories/interface/ILearnerRepository";
 import { ResponseModel } from "../../../../shared/types/ResponseModel";
 
 interface UpdateProfileDTO {

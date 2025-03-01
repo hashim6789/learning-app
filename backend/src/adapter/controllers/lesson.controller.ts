@@ -7,7 +7,7 @@
 //mentor signup
 
 import { Request, Response, NextFunction } from "express";
-import LessonRepository from "../../infrastructures/database/repositories/LessonRepository";
+import LessonRepository from "../../infrastructures/database/repositories/lesson.reposiotory";
 import CreateLessonUseCase from "../../application/use_cases/lesson/lesson-create.usecase";
 import GetAllLessonsOfMentorUseCase from "../../application/use_cases/lesson/lessons-get-all-mentor.usecase";
 import CourseRepository from "../../infrastructures/database/repositories/CourseRepository";
@@ -25,10 +25,7 @@ const materialRepository = new MaterialRepository();
 //   lessonRepository
 // );
 
-const createLessonUseCase = new CreateLessonUseCase(
-  lessonRepository,
-  courseRepository
-);
+const createLessonUseCase = new CreateLessonUseCase(lessonRepository);
 
 const getAllLessonsOfMentorUseCase = new GetAllLessonsOfMentorUseCase(
   lessonRepository

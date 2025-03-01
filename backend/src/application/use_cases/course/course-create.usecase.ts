@@ -1,7 +1,7 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 import ValidateAccessTokenUseCase from "../mentor/access-token-validate.usecase"; // Import the access token validation use case
 import { validateData } from "../../../shared/helpers/validateHelper";
 interface Payload {

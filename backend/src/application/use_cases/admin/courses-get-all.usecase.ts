@@ -1,6 +1,6 @@
 import { CourseQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 
 interface Payload {
   role: "admin" | "mentor" | "learner";

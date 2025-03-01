@@ -1,8 +1,11 @@
 import express from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import MentorController from "../../controllers/mentor.controller";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
 
 //mentorController instance created.
 const mentorController = new MentorController();

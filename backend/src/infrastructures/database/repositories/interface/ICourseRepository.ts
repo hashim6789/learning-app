@@ -1,7 +1,10 @@
-import { CreateCourseDTO } from "../../shared/dtos/createCourseDTO";
-import { CourseStatus } from "../../shared/types";
-import { CourseLearnerQuery, CourseQuery } from "../../shared/types/filters";
-import Course from "../entities/course.entity";
+import { CreateCourseDTO } from "../../../../shared/dtos/createCourseDTO";
+import { CourseStatus } from "../../../../shared/types";
+import {
+  CourseLearnerQuery,
+  CourseQuery,
+} from "../../../../shared/types/filters";
+import Course from "../../../../application/entities/course.entity";
 
 export default interface ICourseRepository {
   findCourseById(courseId: string): Promise<Course | null>;

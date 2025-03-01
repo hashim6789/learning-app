@@ -1,7 +1,7 @@
 import mongoose, { PipelineStage } from "mongoose";
 import { Notification } from "../../../application/entities/notification.entity";
-import IGroupChatRepository from "../../../application/IRepositories/IGroupChatRepository";
-import { INotificationRepository } from "../../../application/IRepositories/INotificationRepository";
+import IGroupChatRepository from "./interface/IGroupChatRepository";
+import { INotificationRepository } from "./interface/INotificationRepository";
 import { INotification } from "../interfaces/INotification";
 import ChatGroupModel from "../models/ChatGroupModel";
 import NotificationModel from "../models/NotificationModel";
@@ -33,13 +33,10 @@ export class GroupChatRepository implements IGroupChatRepository {
     userId: string
   ): Promise<any | null> {
     try {
-      console.log("courseId", courseId);
       const result = await ChatGroupModel.updateOne(
         { course: courseId },
         { $addToSet: { learners: userId } }
       ).exec();
-
-      console.log("result =", result);
 
       if (result.modifiedCount === 0) {
         return null;
@@ -120,7 +117,6 @@ export class GroupChatRepository implements IGroupChatRepository {
       ];
       const groups = await ChatGroupModel.aggregate(pipeline);
 
-      console.log(groups);
       return groups;
     } catch (error) {
       throw new Error(`The error when fetching groups of learner:${error}`);

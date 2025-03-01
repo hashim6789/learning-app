@@ -1,16 +1,24 @@
 import { CreateLessonDTO } from "../../../shared/dtos/createLessonDTO";
 import Lesson from "../../../application/entities/lesson.entity";
-import ILessonRepository from "../../../application/IRepositories/ILessonRepository";
+import ILessonRepository from "./interface/ILessonRepository";
 import LessonModel, { ILessons } from "../models/LessonModel";
 import mongoose from "mongoose";
 import { LessonQuery } from "../../../shared/types/filters";
+import { BaseRepository } from "./base.repository";
+import { LessonType } from "../../../shared/schemas/lesson.schema";
 
-class LessonRepository implements ILessonRepository {
+class LessonRepository
+  extends BaseRepository<ILessons>
+  implements ILessonRepository
+{
+  constructor() {
+    super(LessonModel);
+  }
   async fetchLessonById(lessonId: string): Promise<Lesson | null> {
     try {
       const lesson = await LessonModel.findById(lessonId).populate(
         "materials",
-        "title _id"
+        "title _id duration"
       );
       return lesson ? mappedLesson(lesson) : null;
     } catch (error) {
@@ -45,7 +53,7 @@ class LessonRepository implements ILessonRepository {
   }
   async updateLessonById(
     lessonId: string,
-    data: Partial<Lesson>
+    data: Omit<LessonType, "duration">
   ): Promise<Lesson | null> {
     try {
       const lesson = await LessonModel.findByIdAndUpdate(lessonId, data, {
@@ -83,7 +91,7 @@ class LessonRepository implements ILessonRepository {
     }
   }
   async createLesson(
-    data: CreateLessonDTO,
+    data: Omit<LessonType, "duration">,
     mentorId: string
   ): Promise<Lesson | null> {
     try {
@@ -93,7 +101,6 @@ class LessonRepository implements ILessonRepository {
       const newLesson = new LessonModel({
         title: data.title,
         description: data.description,
-        duration: data.duration,
         mentorId,
         materials,
       });
@@ -109,6 +116,7 @@ class LessonRepository implements ILessonRepository {
 interface Material {
   id: string;
   title: string;
+  duration: number;
 }
 
 function mappedLesson(data: ILessons): Lesson {
@@ -116,18 +124,15 @@ function mappedLesson(data: ILessons): Lesson {
   const mentorId = data.mentorId.toString();
   const materials = data.materials
     ? data.materials.map<Material>((material: any) => {
-        return { id: material._id.toString(), title: material.title };
+        return {
+          id: material._id.toString(),
+          title: material.title,
+          duration: material.duration,
+        };
       })
     : [];
 
-  return new Lesson(
-    id,
-    data.title,
-    mentorId,
-    data.description,
-    materials,
-    data.duration
-  );
+  return new Lesson(id, data.title, mentorId, data.description, materials);
 }
 
 export default LessonRepository;

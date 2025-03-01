@@ -9,13 +9,20 @@ import {
   fetchGroupsFailure,
   fetchGroupsStart,
   fetchGroupsSuccess,
+  startTyping,
+  stopTyping,
 } from "../../../../store/slices/groupSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../../store";
+import { io, Socket } from "socket.io-client";
+import { config } from "../../../../shared/configs/config";
+
+const socket = io(`${config.API_BASE_URL}/chats`);
 
 const MainChatLayout = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [socketConnected, setConnected] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -36,11 +43,36 @@ const MainChatLayout = () => {
     fetchGroups();
   }, [dispatch]);
 
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("data") || "{}");
+
+    socket.emit("setup", userData.id);
+
+    const handleConnected = () => {
+      console.log("user connected");
+      setConnected(true);
+    };
+
+    const handleStartTyping = (typeData: { typeName: string }) =>
+      dispatch(startTyping(typeData.typeName));
+    const handleStopTyping = () => dispatch(stopTyping());
+
+    socket.on("connected", handleConnected);
+    socket.on("start typing", handleStartTyping);
+    socket.on("stop typing", handleStopTyping);
+
+    return () => {
+      socket.off("connected", handleConnected);
+      socket.off("start typing", handleStartTyping);
+      socket.off("stop typing", handleStopTyping);
+    };
+  }, [dispatch]);
+
   return (
     <div className="h-[600px] w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg flex overflow-hidden">
       {/* Main chat area */}
       <div className={`md:block ${showSidebar ? "hidden" : "block"} md:w-64`}>
-        <ChatSidebar />
+        <ChatSidebar socket={socket} />
       </div>
 
       {/* Chat content */}
@@ -55,8 +87,8 @@ const MainChatLayout = () => {
               showInfo ? "hidden md:flex" : "flex"
             }`}
           >
-            <ChatMessages />
-            <MessageInput />
+            <ChatMessages socket={socket} />
+            <MessageInput socket={socket} />
           </div>
           {showInfo && <GroupInfoSidebar onClose={() => setShowInfo(false)} />}
         </div>

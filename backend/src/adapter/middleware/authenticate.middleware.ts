@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../../shared/utils/jwt.util";
 import session from "express-session";
 
-const authenticateToken = (
+export const authenticateToken = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -25,5 +25,3 @@ const authenticateToken = (
   req.user = decoded;
   next();
 };
-
-export default authenticateToken;

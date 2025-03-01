@@ -1,8 +1,8 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { sendForgotPasswordMail } from "../../../shared/utils/mail.util";
-import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
+import { ILearnerRepository } from "../../../infrastructures/database/repositories/interface/ILearnerRepository";
 import { verifyAccessToken as verifyToken } from "../../../shared/utils/jwt.util";
-import { IUserRepository } from "../../IRepositories/IUserRepository";
+import { IUserRepository } from "../../../infrastructures/database/repositories/interface/IUserRepository";
 import { User } from "../../entities/user.entity";
 import { UserType } from "../../../shared/types";
 

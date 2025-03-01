@@ -1,8 +1,11 @@
 import express from "express";
 import ProfileController from "../../controllers/profile.controller";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 
 //profileController instance created.
 const profileController = new ProfileController();

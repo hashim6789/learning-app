@@ -1,7 +1,10 @@
 import express from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import AnalysisController from "../../controllers/analysys.controller";
 
 const analysisController = new AnalysisController();

@@ -1,8 +1,8 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { validateData } from "../../../shared/helpers/validateHelper";
-import { ISubscriptionHistoryRepository } from "../../IRepositories/ISubscriptionHistoryRepository";
+import { ISubscriptionHistoryRepository } from "../../../infrastructures/database/repositories/interface/ISubscriptionHistoryRepository";
 import { CreateSubscriptionHistoryDTO } from "../../../shared/dtos/CreateSubscruiptionHistoryDTO";
-import { ISubscriptionPlanRepository } from "../../IRepositories/ISubscriptionRepository";
+import { ISubscriptionPlanRepository } from "../../../infrastructures/database/repositories/interface/ISubscriptionRepository";
 import { SubscriptionHistory } from "../../entities/subscription-history.entity";
 
 class CreateSubscriptionHistoryUseCase {

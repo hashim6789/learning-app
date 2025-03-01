@@ -1,20 +1,6 @@
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
 import { ICategory } from "./CategoryModel";
-
-export interface ICourses extends Document {
-  _id: ObjectId;
-  title: string;
-  mentorId: ObjectId;
-  categoryId: ICategory | ObjectId;
-  description: string | null;
-  thumbnail: string;
-  lessons: ObjectId[] | null;
-  price: number;
-  duration: number | null;
-  status: string | null;
-  rejectionReason: string | null;
-  purchaseCount: number | null;
-}
+import { ICourses } from "../interfaces/ICourse";
 
 const CoursesSchema: Schema = new Schema(
   {
@@ -28,15 +14,15 @@ const CoursesSchema: Schema = new Schema(
     description: { type: String },
     thumbnail: { type: String },
     lessons: [{ type: Schema.Types.ObjectId, ref: "Lessons" }],
-    duration: { type: Number },
     price: { type: Number, required: true },
     status: {
       type: String,
       enum: ["draft", " pending", " published", " rejected"],
       default: "draft",
     },
-    rejectionReason: { type: String },
-    purchaseCount: { type: Number },
+    // duration: { type: Number },
+    // rejectionReason: { type: String },
+    // purchaseCount: { type: Number },
   },
   {
     timestamps: true,

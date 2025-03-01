@@ -1,15 +1,15 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 import ValidateAccessTokenUseCase from "../mentor/access-token-validate.usecase"; // Import the access token validation use case
 import { validateData } from "../../../shared/helpers/validateHelper";
-import { IPurchaseHistoryRepository } from "../../IRepositories/IPurchaseHistoryRepository";
+import { IPurchaseHistoryRepository } from "../../../infrastructures/database/repositories/interface/IPurchaseHistoryRepository";
 import { CreatePurchaseDTO } from "../../../shared/dtos/CreatePurshaseHistoryDTO";
 import { PurchaseHistory } from "../../entities/purchase-history.entity";
 
 import Stripe from "stripe";
-import { ISubscriptionPlanRepository } from "../../IRepositories/ISubscriptionRepository";
+import { ISubscriptionPlanRepository } from "../../../infrastructures/database/repositories/interface/ISubscriptionRepository";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-01-27.acacia",
 });

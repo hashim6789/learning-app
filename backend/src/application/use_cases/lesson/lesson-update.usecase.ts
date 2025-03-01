@@ -1,6 +1,7 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import Lesson from "../../entities/lesson.entity";
-import ILessonRepository from "../../IRepositories/ILessonRepository";
+import ILessonRepository from "../../../infrastructures/database/repositories/interface/ILessonRepository";
+import { LessonType } from "../../../shared/schemas/lesson.schema";
 
 class UpdateLessonByIdUseCase {
   private lessonRepository: ILessonRepository;
@@ -10,7 +11,7 @@ class UpdateLessonByIdUseCase {
   }
 
   async execute(
-    data: Partial<Lesson>,
+    data: Omit<LessonType, "duration">,
     lessonId: string
   ): Promise<ResponseModel> {
     try {

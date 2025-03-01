@@ -9,9 +9,12 @@ import {
 } from "../../middleware/upload.middleware";
 import { CloudinaryService } from "../../../application/services/cloudinary.service";
 import UploadCourseImageUseCase from "../../../application/use_cases/mentor/course-upload-thumbnail.usecase";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 
 //authController instance created.
 const uploadRouter = Router();

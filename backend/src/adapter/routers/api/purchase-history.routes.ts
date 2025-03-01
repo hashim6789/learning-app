@@ -1,9 +1,12 @@
 // src/adapters/routes/purchaseHistoryRoutes.ts
 import { Router } from "express";
 import { PurchaseHistoryController } from "../../controllers/purchase-history.controller";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 
 const purchaseHistoryRouter = Router();
 

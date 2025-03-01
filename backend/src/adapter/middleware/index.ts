@@ -1,6 +1,11 @@
-export * from "./authenticate.middleware";
-export * from "./authorize.middleware";
-export * from "./check-blocked.middleware";
-export * from "./error-handling.middleware";
-export * from "./upload.middleware";
-export * from "./validate-body.middleware";
+export { authenticateToken } from "./authenticate.middleware";
+export { authorizeRole } from "./authorize.middleware";
+export { checkUserBlocked } from "./check-blocked.middleware";
+export { errorHandler } from "./error-handling.middleware";
+export {
+  s3Upload,
+  deleteFileFromS3,
+  getObjectUrl,
+  putObject,
+} from "./upload.middleware";
+export { validate } from "./validate-body.middleware";

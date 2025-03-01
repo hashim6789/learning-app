@@ -1,24 +1,49 @@
-// Chat Sidebar Component
-
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../store";
-import { selectGroup } from "../../../../store/slices/groupSlice";
+import {
+  selectGroup,
+  fetchGroupsFailure,
+  fetchGroupsStart,
+  fetchGroupsSuccess,
+} from "../../../../store/slices/groupSlice";
 import LoadingComponent from "../../../mentor/components/LoadingComponent";
 import ErrorComponent from "../../../mentor/components/ErrorComponent";
+import api from "../../../../shared/utils/api";
+import { useEffect } from "react";
+import { Socket } from "socket.io-client";
 import {
   fetchMessagesFailure,
   fetchMessagesStart,
   fetchMessagesSuccess,
 } from "../../../../store/slices/messageSlice";
-import api from "../../../../shared/utils/api";
 
-interface ChatSidebarProps {}
+interface ChatSidebarProps {
+  socket: Socket;
+}
 
-const ChatSidebar = ({}: ChatSidebarProps) => {
+const ChatSidebar = ({ socket }: ChatSidebarProps) => {
   const { groups, selectedGroupId, loading, error } = useSelector(
     (state: RootState) => state.group
   );
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      dispatch(fetchGroupsStart());
+      try {
+        const response = await api.get("/api/chats/groups");
+        if (response && response.status === 200) {
+          dispatch(fetchGroupsSuccess(response.data.data));
+        } else {
+          dispatch(fetchGroupsFailure("failed to fetch groups"));
+        }
+      } catch (error: any) {
+        dispatch(fetchGroupsFailure(error.response.data.message));
+      }
+    };
+
+    fetchGroups();
+  }, [dispatch]);
 
   const handleGroupChat = async (groupId: string) => {
     try {
@@ -27,6 +52,8 @@ const ChatSidebar = ({}: ChatSidebarProps) => {
       if (response && response.status === 200) {
         dispatch(selectGroup(groupId));
         dispatch(fetchMessagesSuccess(response.data.data));
+        socket.emit("join chat", { groupId });
+        console.log("user joined groupid", groupId);
       }
     } catch (error: any) {
       dispatch(fetchMessagesFailure(error.response.data.message));

@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 
 class GetAllGroupsOfLearnerUseCase {
   private groupChatRepository: IGroupChatRepository;
@@ -13,7 +13,6 @@ class GetAllGroupsOfLearnerUseCase {
       const groupChats = await this.groupChatRepository.fetchAllByLearnerId(
         learnerId
       );
-      console.log("data", groupChats);
       if (!groupChats) {
         return {
           statusCode: 404,

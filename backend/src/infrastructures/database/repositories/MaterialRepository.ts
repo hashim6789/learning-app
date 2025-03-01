@@ -1,6 +1,6 @@
 import { CreateMaterialDTO } from "../../../shared/dtos/CreateMaterialDTO";
 import Material from "../../../application/entities/material.entity";
-import IMaterialRepository from "../../../application/IRepositories/IMaterialRepository";
+import IMaterialRepository from "./interface/IMaterialRepository";
 import MaterialModel, { IMaterial } from "../models/MaterialModel";
 import { MaterialQuery } from "../../../shared/types/filters";
 

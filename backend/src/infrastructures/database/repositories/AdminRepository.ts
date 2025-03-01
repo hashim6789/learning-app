@@ -1,6 +1,6 @@
 import { emitWarning } from "process";
 import { Admin } from "../../../application/entities/admin.entity";
-import { IAdminRepository } from "../../../application/IRepositories/IAdminRepository";
+import { IAdminRepository } from "./interface/IAdminRepository";
 import AdminModel from "../models/AdminModel";
 import { IAdmin } from "../interfaces/IAdmin";
 import { mapToAdmin, mapToUser } from "../mappers/userMapper";

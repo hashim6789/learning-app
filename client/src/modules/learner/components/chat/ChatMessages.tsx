@@ -1,13 +1,37 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../store";
 import { formatTo12HourTime } from "../../../../shared/utils/date";
+import { useEffect } from "react";
+import { Socket } from "socket.io-client";
+import { addMessage } from "../../../../store/slices/messageSlice";
 
-const ChatMessages = ({}) => {
+interface ChatMessagesProps {
+  socket: Socket;
+}
+
+const ChatMessages = ({ socket }: ChatMessagesProps) => {
   const user = JSON.parse(localStorage.getItem("data") ?? "{}");
   const userId = user.id;
   const { messages, loading, error } = useSelector(
     (state: RootState) => state.message
   );
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    const handleMessage = (newMessage: any) => {
+      console.log("message received successfully.");
+      dispatch(addMessage(newMessage));
+    };
+
+    socket.on("receive message", handleMessage);
+
+    return () => {
+      socket.off("receive message", handleMessage);
+    };
+  }, [dispatch, socket]);
+
+  console.log("messages", messages);
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -39,7 +63,6 @@ const ChatMessages = ({}) => {
                 <div className="flex flex-col items-center space-y-1 mr-2">
                   <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                     <img src={message.sender.profilePicture} alt="" />
-                    {/* {message.sender.name.charAt(0)} */}
                   </div>
                 </div>
               )}

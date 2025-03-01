@@ -1,6 +1,6 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ILessonRepository from "../../IRepositories/ILessonRepository";
-import IMaterialRepository from "../../IRepositories/IMaterialRepository";
+import ILessonRepository from "../../../infrastructures/database/repositories/interface/ILessonRepository";
+import IMaterialRepository from "../../../infrastructures/database/repositories/interface/IMaterialRepository";
 
 class GetMaterialsByLessonIdUseCase {
   private lessonRepository: ILessonRepository;

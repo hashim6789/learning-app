@@ -1,5 +1,5 @@
 import { Model } from "mongoose";
-import { IMeeting } from "../../infrastructures/database/interfaces/IMeeting";
+import { IMeeting } from "../../interfaces/IMeeting";
 
 interface IMeetingRepository {
   createMeeting(meeting: IMeeting): Promise<IMeeting>;

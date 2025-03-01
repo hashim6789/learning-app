@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { INotificationRepository } from "../../IRepositories/INotificationRepository";
+import { INotificationRepository } from "../../../infrastructures/database/repositories/interface/INotificationRepository";
 
 class GetAllNotificationOfUserUseCase {
   private notificationRepository: INotificationRepository;

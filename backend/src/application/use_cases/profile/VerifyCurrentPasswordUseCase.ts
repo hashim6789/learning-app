@@ -1,6 +1,6 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import { ILearnerRepository } from "../../../infrastructures/database/repositories/interface/ILearnerRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 import { User } from "../../../shared/types/User";
 import bcrypt from "bcryptjs";
 

@@ -1,13 +1,13 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 import { validateData } from "../../../shared/helpers/validateHelper";
-import { IPurchaseHistoryRepository } from "../../IRepositories/IPurchaseHistoryRepository";
+import { IPurchaseHistoryRepository } from "../../../infrastructures/database/repositories/interface/IPurchaseHistoryRepository";
 import { CreatePurchaseDTO } from "../../../shared/dtos/CreatePurshaseHistoryDTO";
 import { PurchaseHistory } from "../../entities/purchase-history.entity";
-import { IProgressRepository } from "../../IRepositories/IProgressRepository";
+import { IProgressRepository } from "../../../infrastructures/database/repositories/interface/IProgressRepository";
 import { Progress } from "../../entities/progress.entity";
-import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 
 class CreatePurchaseHistoryUseCase {
   private courseRepository: ICourseRepository;

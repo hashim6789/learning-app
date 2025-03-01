@@ -1,5 +1,5 @@
 import { Category } from "../../../application/entities/category.entity";
-import { ICategoryRepository } from "../../../application/IRepositories/ICategoryRepository";
+import { ICategoryRepository } from "./interface/ICategoryRepository";
 import CategoryModel, { ICategory } from "../../database/models/CategoryModel";
 
 class CategoryRepository implements ICategoryRepository {

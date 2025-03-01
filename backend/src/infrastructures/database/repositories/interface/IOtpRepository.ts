@@ -1,4 +1,4 @@
-import { Otp } from "../entities/otp.entity";
+import { Otp } from "../../../../application/entities/otp.entity";
 
 export interface IOtpRepository {
   deleteOtpByUserId(userId: string): Promise<number>;

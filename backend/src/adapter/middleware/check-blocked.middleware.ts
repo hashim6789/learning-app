@@ -11,7 +11,7 @@ const learnerRepository = new LearnerRepository();
 const mentorRepository = new MentorRepository();
 const adminRepository = new AdminRepository();
 
-const checkUserBlocked = async (
+export const checkUserBlocked = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -61,5 +61,3 @@ const checkUserBlocked = async (
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
-export default checkUserBlocked;

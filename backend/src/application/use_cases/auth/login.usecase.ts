@@ -1,5 +1,5 @@
 // application/use_cases/auth/LoginUseCase.ts
-import { IUserRepository } from "../../IRepositories/IUserRepository";
+import { IUserRepository } from "../../../infrastructures/database/repositories/interface/IUserRepository";
 import { LoginDTO } from "../../../shared/dtos/LoginDTO";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { generateToken } from "../../../shared/utils/jwt.util";

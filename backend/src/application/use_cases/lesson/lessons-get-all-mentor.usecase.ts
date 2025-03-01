@@ -1,6 +1,6 @@
 import { LessonQuery } from "../../../shared/types/filters";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ILessonRepository from "../../IRepositories/ILessonRepository";
+import ILessonRepository from "../../../infrastructures/database/repositories/interface/ILessonRepository";
 
 class GetAllLessonsOfMentorUseCase {
   private lessonRepository: ILessonRepository;

@@ -8,11 +8,11 @@ interface NotificationPanelProps {
   userId: string;
 }
 
-// Connect to the Socket.io server
-const socket = io("http://localhost:3000", {
-  transports: ["websocket"],
-  upgrade: false,
-});
+// // Connect to the Socket.io server
+// const socket = io("http://localhost:3000", {
+//   transports: ["websocket"],
+//   upgrade: false,
+// });
 
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
   const [showNotification, setShowNotification] = useState(false);
@@ -24,11 +24,11 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await api.get(`/api/notify`);
-        if (response && response.data) {
-          const result = response.data;
-          setNotifications(result.data);
-        }
+        // const response = await api.get(`/api/notify`);
+        // if (response && response.data) {
+        //   const result = response.data;
+        //   setNotifications(result.data);
+        // }
       } catch (error) {
         setError("Failed to fetch notifications");
       } finally {
@@ -39,25 +39,25 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ userId }) => {
     fetchNotifications();
   }, [userId]);
 
-  useEffect(() => {
-    // Mentor joins their respective room
-    socket.emit("joinRoom", userId);
+  // useEffect(() => {
+  //   // Mentor joins their respective room
+  //   socket.emit("joinRoom", userId);
 
-    // Listen for 'receiveNotification' events
-    socket.on("receiveNotification", (notification: Notification) => {
-      setCount((prev) => prev + 1);
-      console.log("Received notification: ", notification);
-      setNotifications((prevNotifications) => [
-        notification,
-        ...prevNotifications,
-      ]);
-    });
+  //   // Listen for 'receiveNotification' events
+  //   socket.on("receiveNotification", (notification: Notification) => {
+  //     setCount((prev) => prev + 1);
+  //     console.log("Received notification: ", notification);
+  //     setNotifications((prevNotifications) => [
+  //       notification,
+  //       ...prevNotifications,
+  //     ]);
+  //   });
 
-    // Clean up the event listener on component unmount
-    return () => {
-      socket.off("receiveNotification");
-    };
-  }, [userId]);
+  //   // Clean up the event listener on component unmount
+  //   return () => {
+  //     socket.off("receiveNotification");
+  //   };
+  // }, [userId]);
 
   const handleShowNotification = () => {
     setCount(0);

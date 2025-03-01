@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { ISubscriptionHistoryRepository } from "../../IRepositories/ISubscriptionHistoryRepository";
+import { ISubscriptionHistoryRepository } from "../../../infrastructures/database/repositories/interface/ISubscriptionHistoryRepository";
 
 class GetAllSubscriptionHistoriesUseCase {
   private subscriptionHistoryRepository: ISubscriptionHistoryRepository;

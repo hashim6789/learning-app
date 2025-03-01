@@ -1,6 +1,6 @@
 import { CourseStatus } from "../../../shared/types";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 
 class GetPublishedCourseUseCase {
   private courseRepository: ICourseRepository;

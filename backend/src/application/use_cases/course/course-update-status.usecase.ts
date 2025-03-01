@@ -1,11 +1,11 @@
 import { CourseStatus } from "../../../shared/types";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { User } from "../../../shared/types/User";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
 import { INotificationService } from "../../interfaces/INotificationService";
 import { Notification } from "../../entities/notification.entity";
 import { getIo } from "../../../framework/socket/socketSetup";
-import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 
 const adminId = "67970be7e5fa9da392abd8a8";
 

@@ -5,29 +5,23 @@ export default class Course {
   id: string | null;
   title: string;
   mentorId: string;
-  category: string | Category;
+  category: string;
   description: string | null;
   thumbnail: string | null;
   lessons: { id: string; title: string }[] | null;
   price: number;
-  duration: number | null;
   status: string | null;
-  rejectionReason: string | null;
-  purchaseCount: number | null;
 
   constructor(
     id: string | null,
     title: string,
     mentorId: string,
-    category: string | Category,
+    category: string,
     description: string | null,
     thumbnail: string | null,
     lessons: { id: string; title: string }[] | null,
     price: number,
-    duration: number | null,
-    status: string | null,
-    rejectionReason: string | null,
-    purchaseCount: number | null
+    status: string | null
   ) {
     this.id = id;
     this.title = title;
@@ -36,23 +30,6 @@ export default class Course {
     this.description = description;
     this.thumbnail = thumbnail;
     this.lessons = lessons;
-    this.duration = duration;
     this.status = status;
-    this.rejectionReason = rejectionReason;
-    this.purchaseCount = purchaseCount;
   }
 }
-
-// interface Course {
-//   id: string;
-//   title: string;
-//   mentorId: string;
-//   category: string | null;
-//   description: string | null;
-//   thumbnail: string | null;
-//   lessons: Lesson[];
-//   duration: string | null;
-//   status: string | null;
-//   rejectionReason: string | null;
-//   purchaseCount: number;
-// }

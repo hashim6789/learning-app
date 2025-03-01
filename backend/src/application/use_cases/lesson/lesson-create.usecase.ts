@@ -2,9 +2,10 @@ import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateCourseDTO } from "../../../shared/dtos/createCourseDTO";
 import { CreateLessonDTO } from "../../../shared/dtos/createLessonDTO";
 import Lesson from "../../entities/lesson.entity";
-import ICourseRepository from "../../IRepositories/ICourseRepository";
-import ILessonRepository from "../../IRepositories/ILessonRepository";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import ICourseRepository from "../../../infrastructures/database/repositories/interface/ICourseRepository";
+import ILessonRepository from "../../../infrastructures/database/repositories/interface/ILessonRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
+import { LessonType } from "../../../shared/schemas/lesson.schema";
 // import ValidateAccessTokenUseCase from "./ValidateAccessTokenUseCase"; // Import the access token validation use case
 interface Payload {
   role: "admin" | "mentor" | "learner";
@@ -12,18 +13,13 @@ interface Payload {
 }
 class CreateLessonUseCase {
   private lessonRepository: ILessonRepository;
-  private courseRepository: ICourseRepository;
 
-  constructor(
-    lessonRepository: ILessonRepository,
-    courseRepository: ICourseRepository
-  ) {
+  constructor(lessonRepository: ILessonRepository) {
     this.lessonRepository = lessonRepository;
-    this.courseRepository = courseRepository;
   }
 
   async execute(
-    data: CreateLessonDTO,
+    data: Omit<LessonType, "duration">,
     mentorId: string
   ): Promise<ResponseModel> {
     try {
@@ -58,26 +54,6 @@ class CreateLessonUseCase {
         message: "The lesson is created successfully.",
         data: { lesson: createdLesson },
       };
-
-      // const updatedCourse = await this.courseRepository.addLessonsToCourse(
-      //   data.courseId,
-      //   createdLesson.courseId
-      // );
-
-      // if (updatedCourse) {
-      //   return {
-      //     statusCode: 201,
-      //     success: true,
-      //     message: "The lesson is created successfully.",
-      //     data: updatedCourse,
-      //   };
-      // } else {
-      //   return {
-      //     statusCode: 400,
-      //     success: false,
-      //     message: "The lesson didn't create!",
-      //   };
-      // }
     } catch (error) {
       throw new Error(error as string);
     }

@@ -1,6 +1,6 @@
-import Material from "../entities/material.entity";
-import { CreateMaterialDTO } from "../../shared/dtos/CreateMaterialDTO";
-import { MaterialQuery } from "../../shared/types/filters";
+import Material from "../../../../application/entities/material.entity";
+import { CreateMaterialDTO } from "../../../../shared/dtos/CreateMaterialDTO";
+import { MaterialQuery } from "../../../../shared/types/filters";
 
 export default interface IMaterialRepository {
   fetchMaterialById(materialId: string): Promise<Material | null>;

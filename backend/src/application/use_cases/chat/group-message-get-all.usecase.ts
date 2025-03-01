@@ -1,6 +1,6 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IChatMessageRepository } from "../../IRepositories/IChatMessageRepository";
-import IGroupChatRepository from "../../IRepositories/IGroupChatRepository";
+import { IChatMessageRepository } from "../../../infrastructures/database/repositories/interface/IChatMessageRepository";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 
 class GetAllMessagesOfGroupUseCase {
   private chatMessageRepository: IChatMessageRepository;

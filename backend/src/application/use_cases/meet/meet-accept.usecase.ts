@@ -1,5 +1,5 @@
 import { getIo } from "../../../framework/socket/socketSetup";
-import IMeetingRepository from "../../IRepositories/IMeetingRepository";
+import IMeetingRepository from "../../../infrastructures/database/repositories/interface/IMeetingRepository";
 
 class AcceptMeetUseCase {
   private meetingRepository: IMeetingRepository;

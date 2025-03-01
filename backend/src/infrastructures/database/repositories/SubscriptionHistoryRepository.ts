@@ -1,6 +1,6 @@
 import mongoose, { ObjectId } from "mongoose";
 import { SubscriptionHistory } from "../../../application/entities/subscription-history.entity";
-import { ISubscriptionHistoryRepository } from "../../../application/IRepositories/ISubscriptionHistoryRepository";
+import { ISubscriptionHistoryRepository } from "./interface/ISubscriptionHistoryRepository";
 import { ISubscriptionHistory } from "../interfaces/ISubscriptionHistory";
 import SubscriptionHistoryModel from "../models/subscriptionHistoryModel";
 

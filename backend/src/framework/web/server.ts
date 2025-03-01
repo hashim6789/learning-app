@@ -17,7 +17,6 @@ import refreshTokenRouter from "../../adapter/routers/reFreshTokenRoutes";
 import apiRouter from "../../adapter/routers/api";
 
 // Custom middlewares
-import errorHandler from "../../adapter/middleware/error-handling.middleware";
 
 // Redis connection setup
 import { connectRedis } from "../redis/redisSetup";
@@ -27,6 +26,7 @@ import connectDB from "../db/dbSetup";
 
 // SOCKET connection setup
 import { connectSocket } from "../socket/socketSetup";
+import { errorHandler } from "../../adapter/middleware";
 
 // Load environment variables
 dotenv.config();

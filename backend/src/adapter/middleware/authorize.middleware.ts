@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "../../shared/types/User";
 
 // Authorization middleware to check the user role
-const authorizeRole = (allowedRoles: User[]) => {
+export const authorizeRole = (allowedRoles: User[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const userRole = req.user?.role ?? "learner";
     if (!userRole) {
@@ -19,5 +19,3 @@ const authorizeRole = (allowedRoles: User[]) => {
     });
   };
 };
-
-export default authorizeRole;

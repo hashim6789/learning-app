@@ -1,8 +1,8 @@
 // src/infrastructure/socket/groupChat.ts
-import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as SocketIOServer, Socket, Namespace } from "socket.io";
 
 export const handleNotification = (
-  io: SocketIOServer,
+  namespace: Namespace,
   socket: Socket
 ): void => {
   socket.on("joinRoom", (userId) => {

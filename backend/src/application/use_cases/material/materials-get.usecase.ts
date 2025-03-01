@@ -1,6 +1,6 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { CreateMaterialDTO } from "../../../shared/dtos/CreateMaterialDTO";
-import IMaterialRepository from "../../IRepositories/IMaterialRepository";
+import IMaterialRepository from "../../../infrastructures/database/repositories/interface/IMaterialRepository";
 
 class GetMateriaByIdUseCase {
   private materialRepository: IMaterialRepository;

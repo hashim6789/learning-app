@@ -14,7 +14,6 @@ const LessonsSchema: Schema = new Schema(
     title: { type: String, required: true },
     description: { type: String },
     mentorId: { type: Schema.Types.ObjectId, required: true },
-    duration: { type: Number, required: true },
     materials: [{ type: Schema.Types.ObjectId, ref: "Materials" }],
   },
   {

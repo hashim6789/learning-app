@@ -1,5 +1,5 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { ILearnerRepository } from "../../IRepositories/ILearnerRepository";
+import { ILearnerRepository } from "../../../infrastructures/database/repositories/interface/ILearnerRepository";
 
 interface BlockData {
   change: boolean;

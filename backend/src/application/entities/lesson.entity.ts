@@ -4,7 +4,6 @@ export default class Lesson {
     public title: string,
     public mentorId: string,
     public description: string | null,
-    public materials: { id: string; title: string }[] | null,
-    public duration: number
+    public materials: { id: string; title: string; duration: number }[] | null
   ) {}
 }

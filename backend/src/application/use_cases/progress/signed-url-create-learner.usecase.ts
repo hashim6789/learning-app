@@ -1,6 +1,6 @@
 import { MaterialType } from "../../../shared/types";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IProgressRepository } from "../../IRepositories/IProgressRepository";
+import { IProgressRepository } from "../../../infrastructures/database/repositories/interface/IProgressRepository";
 import S3Service from "../../services/s3.service";
 
 const s3Service = new S3Service();

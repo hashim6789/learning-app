@@ -1,8 +1,11 @@
 import express from "express";
 import CourseController from "../../controllers/course.controller";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 
 //courseController instance created.
 const courseController = new CourseController();

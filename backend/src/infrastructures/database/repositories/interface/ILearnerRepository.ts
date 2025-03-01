@@ -1,4 +1,4 @@
-import { Learner } from "../entities/learner.entity";
+import { Learner } from "../../../../application/entities/learner.entity";
 import { IUserRepository } from "./IUserRepository";
 
 export interface ILearnerRepository extends IUserRepository<Learner> {}

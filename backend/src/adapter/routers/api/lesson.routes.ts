@@ -1,8 +1,13 @@
 import express from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
 import LessonController from "../../controllers/lesson.controller";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
+import { createLessonSchema } from "../../../shared/schemas";
+import { lessonSchema } from "../../../shared/schemas/lesson.schema";
 
 //lessonController instance created.
 const lessonController = new LessonController();
@@ -21,6 +26,7 @@ const lessonRouter = express.Router();
  */
 lessonRouter.post(
   "/",
+  validate(lessonSchema.omit({ duration: true })),
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),
@@ -67,6 +73,7 @@ lessonRouter.get(
  */
 lessonRouter.put(
   "/:lessonId",
+  validate(lessonSchema.omit({ duration: true })),
   authenticateToken,
   checkUserBlocked,
   authorizeRole(["mentor"]),

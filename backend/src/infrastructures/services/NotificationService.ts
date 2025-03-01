@@ -1,7 +1,7 @@
 // src/infrastructure/services/NotificationService.ts
 import { Notification } from "../../application/entities/notification.entity";
 import { INotificationService } from "../../application/interfaces/INotificationService";
-import { INotificationRepository } from "../../application/IRepositories/INotificationRepository";
+import { INotificationRepository } from "../database/repositories/interface/INotificationRepository";
 
 export class NotificationService implements INotificationService {
   private notificationRepository: INotificationRepository;

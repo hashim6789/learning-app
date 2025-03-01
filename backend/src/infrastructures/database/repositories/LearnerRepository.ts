@@ -2,12 +2,12 @@
 import { Learner } from "../../../application/entities/learner.entity";
 
 //imported the interface
-import { ILearnerRepository } from "../../../application/IRepositories/ILearnerRepository";
+import { ILearnerRepository } from "./interface/ILearnerRepository";
 
 //imported the mode\
 import LearnerModel from "../models/LearnerModel";
 import { ILearner } from "../interfaces/ILearner";
-import { IUserRepository } from "../../../application/IRepositories/IUserRepository";
+import { IUserRepository } from "./interface/IUserRepository";
 import { mapToLearner } from "../mappers/userMapper";
 import { UserQuery } from "../../../shared/types/query";
 

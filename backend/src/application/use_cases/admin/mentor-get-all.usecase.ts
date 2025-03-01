@@ -1,6 +1,6 @@
 import { UserQuery } from "../../../shared/types/query";
 import { ResponseModel } from "../../../shared/types/ResponseModel";
-import { IMentorRepository } from "../../IRepositories/IMentorRepository";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface/IMentorRepository";
 
 class GetMentorsUseCase {
   private mentorRepository;

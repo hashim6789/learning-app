@@ -1,8 +1,11 @@
 // src/adapters/routes/chatRoutes.ts
 import { Router } from "express";
-import authenticateToken from "../../middleware/authenticate.middleware";
-import checkUserBlocked from "../../middleware/check-blocked.middleware";
-import authorizeRole from "../../middleware/authorize.middleware";
+import {
+  authenticateToken,
+  authorizeRole,
+  checkUserBlocked,
+  validate,
+} from "../../middleware";
 import ChatController from "../../controllers/chat.controller";
 
 const chatRouter = Router();
