@@ -10,13 +10,9 @@ interface ChatHeaderProps {
 }
 
 const ChatHeader = ({ onMenuClick, onInfoClick }: ChatHeaderProps) => {
-  const { groups, selectedGroupId, isTyping, typeName } = useSelector(
-    (state: RootState) => state.group
-  );
+  const { groups, selectedGroupId, isTyping, typeName, onlineCount } =
+    useSelector((state: RootState) => state.group);
   const group = groups.find((group) => group._id === selectedGroupId);
-
-  // Calculate online count (assuming this data is available in your group object)
-  const onlineCount = group?.onlineCount || 1;
 
   return (
     <div className="h-16 border-b bg-white flex items-center justify-between px-4">

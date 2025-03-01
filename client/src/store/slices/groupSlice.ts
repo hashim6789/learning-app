@@ -23,6 +23,7 @@ interface GroupState {
   error: string | null;
   isTyping: boolean;
   typeName: string;
+  onlineCount: number;
 }
 
 const initialState: GroupState = {
@@ -32,6 +33,7 @@ const initialState: GroupState = {
   error: null,
   isTyping: false,
   typeName: "",
+  onlineCount: 0,
 };
 
 const groupSlice = createSlice({
@@ -78,6 +80,9 @@ const groupSlice = createSlice({
       state.isTyping = false;
       state.typeName = "";
     },
+    setOnlineUserCount(state, action) {
+      state.onlineCount = action.payload;
+    },
   },
 });
 
@@ -91,6 +96,7 @@ export const {
   selectGroup,
   startTyping,
   stopTyping,
+  setOnlineUserCount,
 } = groupSlice.actions;
 
 export default groupSlice.reducer;

@@ -9,6 +9,7 @@ import {
   fetchGroupsFailure,
   fetchGroupsStart,
   fetchGroupsSuccess,
+  setOnlineUserCount,
   startTyping,
   stopTyping,
 } from "../../../../store/slices/groupSlice";
@@ -56,10 +57,13 @@ const MainChatLayout = () => {
     const handleStartTyping = (typeData: { typeName: string }) =>
       dispatch(startTyping(typeData.typeName));
     const handleStopTyping = () => dispatch(stopTyping());
+    const handleOnlineCount = (data: { count: number }) =>
+      dispatch(setOnlineUserCount(data.count));
 
     socket.on("connected", handleConnected);
     socket.on("start typing", handleStartTyping);
     socket.on("stop typing", handleStopTyping);
+    socket.on("online", handleOnlineCount);
 
     return () => {
       socket.off("connected", handleConnected);
