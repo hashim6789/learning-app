@@ -36,6 +36,14 @@ class MeetingRepository implements IMeetingRepository {
     }
   }
 
+  async getAllMeetingsByMentor(mentorId: string): Promise<IMeeting[]> {
+    try {
+      return await this.model.find({ mentorId }).exec();
+    } catch (error: any) {
+      throw new Error(`Error getting all meetings: ${error.message}`);
+    }
+  }
+
   async updateMeeting(
     id: string,
     updatedMeeting: Partial<IMeeting>

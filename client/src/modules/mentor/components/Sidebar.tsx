@@ -1,4 +1,4 @@
-import { Home, BookOpen, FileText, Video } from "lucide-react";
+import { Home, BookOpen, FileText, Video, ChartBarBigIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { RootState } from "../../../store";
@@ -15,6 +15,11 @@ const sidebarItems: SidebarItem[] = [
   { icon: Video, label: "My Lessons", href: "/mentor/my-lessons" },
   { icon: FileText, label: "My Materials", href: "/mentor/my-materials" },
   { icon: Video, label: "Meetings", href: "/mentor/meetings" },
+  {
+    icon: ChartBarBigIcon,
+    label: "My Chats",
+    href: "/mentor/my-chats",
+  },
 ];
 
 const Sidebar: React.FC<{ isSidebarOpen: boolean }> = ({ isSidebarOpen }) => {
@@ -50,7 +55,7 @@ const Sidebar: React.FC<{ isSidebarOpen: boolean }> = ({ isSidebarOpen }) => {
             className={({ isActive }) =>
               `
               flex items-center ${style} ${shadowClass}
-              ${isSidebarOpen ? "px-4" : "justify-center"} 
+              ${isSidebarOpen ? "px-4" : "justify-center"}
               py-3 my-2
               transition duration-200 rounded-md
               ${isActive ? activeStyle : ""}

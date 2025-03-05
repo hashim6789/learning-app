@@ -7,5 +7,5 @@ export interface IMeeting {
   courseId: ObjectId;
   learnerId: ObjectId;
   roomId: string;
-  time: Date;
+  slotId: ObjectId;
 }

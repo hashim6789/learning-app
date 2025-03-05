@@ -26,11 +26,10 @@ class MeetStartUseCase {
       const io = getIo();
       if (io) {
         io.emit(`call:invite-${fetchMeeting.learnerId.toString()}`, {
+          _id: fetchMeeting._id,
           roomId: fetchMeeting.roomId,
           course: fetchMeeting.courseId,
-          time: fetchMeeting.time,
           learnerId: fetchMeeting.learnerId,
-          _id: fetchMeeting._id,
         });
       }
 

@@ -1,21 +1,25 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Search } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import NotificationPanel from "../../../components/NotificationPanel";
+import NotificationPanel from "../../common/components/NotificationPanel";
 
 const CourseNavbar: React.FC = () => {
   const { handleLogout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  // const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isSubscribePanelOpen, setIsSubscribePanelOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // Redux state selectors
   const { isAuthenticated, isVerified, isBlocked } = useSelector(
     (state: RootState) => state.auth
   );
   const user = JSON.parse(localStorage.getItem("data") ?? "{}");
+
+  const handleSubscribeClick = () => {
+    setIsSubscribePanelOpen(false);
+    navigate("/learner/subscription-plans ");
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200">
@@ -34,24 +38,29 @@ const CourseNavbar: React.FC = () => {
             </div>
           </div>
 
-          {/* Center section - Search */}
-          {/* <div className="flex-1 max-w-2xl mx-8">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="What do you want to learn?"
-                className={`w-full pl-10 pr-4 py-2 border ${
-                  isSearchFocused ? "border-blue-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:border-blue-500`}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-            </div>
-          </div> */}
-
           {/* Right section */}
           <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsSubscribePanelOpen(!isSubscribePanelOpen)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              Subscribe Now
+            </button>
+            {isSubscribePanelOpen && (
+              <div className="absolute top-16 right-0 w-64 bg-white border border-gray-200 shadow-lg rounded-md z-50">
+                <div className="px-4 py-3">
+                  <p className="text-sm font-medium text-gray-900">
+                    Get access to all courses during the subscribed period!
+                  </p>
+                  <button
+                    onClick={handleSubscribeClick}
+                    className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    Subscribe Now
+                  </button>
+                </div>
+              </div>
+            )}
             {isAuthenticated && !isBlocked && isVerified ? (
               <>
                 <NotificationPanel userId={user.id} />
@@ -119,16 +128,7 @@ const CourseNavbar: React.FC = () => {
           >
             Home
           </NavLink>
-          {/* <NavLink
-            to="/my-learnings"
-            className={({ isActive }) =>
-              isActive
-                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
-                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
-            }
-          >
-            My Learning
-          </NavLink> */}
+
           <NavLink
             to="/learner/courses"
             className={({ isActive }) =>

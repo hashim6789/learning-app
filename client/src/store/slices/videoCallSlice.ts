@@ -1,11 +1,19 @@
 // src/features/videoCall/videoCallSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface CallStatus {
+  haveMedia: boolean;
+  videoEnabled: boolean | null;
+  audioEnabled: boolean;
+}
 interface VideoCallState {
   localStream: MediaStream | null;
   remoteStream: MediaStream | null;
   peerConnection: RTCPeerConnection | null;
+  callStatus: CallStatus;
   connected: boolean;
+  userName: string;
+  offerData: null;
 }
 
 const initialState: VideoCallState = {
@@ -13,6 +21,9 @@ const initialState: VideoCallState = {
   remoteStream: null,
   peerConnection: null,
   connected: false,
+  callStatus: { haveMedia: false, videoEnabled: false, audioEnabled: false },
+  userName: "Hashim",
+  offerData: null,
 };
 
 const videoCallSlice = createSlice({
@@ -21,6 +32,7 @@ const videoCallSlice = createSlice({
   reducers: {
     setLocalStream(state, action: PayloadAction<MediaStream>) {
       state.localStream = action.payload;
+      console.log(state.localStream, "localStream");
     },
     setRemoteStream(state, action: PayloadAction<MediaStream>) {
       state.remoteStream = action.payload;
@@ -31,6 +43,18 @@ const videoCallSlice = createSlice({
     setConnected(state, action: PayloadAction<boolean>) {
       state.connected = action.payload;
     },
+
+    updateCallStatus(state, action: PayloadAction<CallStatus>) {
+      state.callStatus = action.payload;
+    },
+
+    setUserName(state, action: PayloadAction<string>) {
+      state.userName = action.payload;
+    },
+
+    setOfferData(state, action: PayloadAction<any>) {
+      state.offerData = action.payload;
+    },
   },
 });
 
@@ -39,6 +63,9 @@ export const {
   setRemoteStream,
   setPeerConnection,
   setConnected,
+  updateCallStatus,
+  setUserName,
+  setOfferData,
 } = videoCallSlice.actions;
 
 export default videoCallSlice.reducer;

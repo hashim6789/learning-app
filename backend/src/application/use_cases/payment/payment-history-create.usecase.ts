@@ -65,6 +65,21 @@ class CreatePurchaseHistoryUseCase {
         };
       }
 
+      const existingCourseProgress =
+        await this.progressRepository.getProgressByUserAndCourse(
+          userId,
+          data.courseId
+        );
+
+      if (existingCourseProgress) {
+        return {
+          statusCode: 201,
+          success: true,
+          message: "The purchase history is created successfully.",
+          data: createPurchase,
+        };
+      }
+
       const progress = new Progress(
         "",
         userId,

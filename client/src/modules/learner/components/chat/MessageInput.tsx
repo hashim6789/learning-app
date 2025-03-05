@@ -6,8 +6,8 @@ import api from "../../../../shared/utils/api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../../store";
 import { addMessage } from "../../../../store/slices/messageSlice";
-import { useState } from "react";
 import { Socket } from "socket.io-client";
+import { useState } from "react";
 
 interface MessageInputProps {
   socket: Socket;
@@ -18,7 +18,7 @@ interface FormData {
 }
 
 const messageSchema = z.object({
-  message: z.string().min(1, "Message cannot be empty"),
+  message: z.string(),
 });
 
 const MessageInput = ({ socket }: MessageInputProps) => {
@@ -37,6 +37,8 @@ const MessageInput = ({ socket }: MessageInputProps) => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      data.message = data.message.trim();
+      if (data.message === "") return;
       const response = await api.post(
         `api/chats/groups/${selectedGroupId}/message`,
         data
@@ -59,11 +61,10 @@ const MessageInput = ({ socket }: MessageInputProps) => {
       setIsTyping(true);
       socket.emit("start typing", { groupId: selectedGroupId });
 
-      // Optionally, stop typing state after a certain delay
       setTimeout(() => {
         setIsTyping(false);
         socket.emit("stop typing", { groupId: selectedGroupId });
-      }, 2000); // Adjust the delay as needed
+      }, 2000);
     }
   };
 

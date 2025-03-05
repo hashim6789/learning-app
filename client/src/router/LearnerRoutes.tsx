@@ -12,7 +12,7 @@ import LearnerCoursesPage from "../modules/learner/pages/course/LearnerCoursesPa
 import { loadStripe } from "@stripe/stripe-js";
 import { config } from "../shared/configs/config";
 import { Elements } from "@stripe/react-stripe-js";
-import PaymentForm from "../components/CheckoutForm";
+// import PaymentForm from "../components/CheckoutForm";
 import SubscriptionCheckout from "../modules/learner/pages/payment/SubscriptionCheckout";
 import WrappedCourseCheckout from "../modules/learner/pages/payment/CourseCheckoutPage";
 // const stripePromise = loadStripe(config.VITE_STRIPE_PK);
@@ -23,9 +23,13 @@ import MyLearningsPage from "../modules/learner/pages/MyLearningsPage";
 import LearningCoursePage from "../modules/learner/pages/learnings/LearningCoursePage";
 import MaterialContent from "../modules/learner/components/learnings/MaterialContent";
 import CourseGroupChat from "../modules/learner/pages/chat/LearnerChatManagement";
-import MainChatLayout from "../modules/learner/pages/chat/LearnerChatManagement";
 import VideoCallPage from "../modules/learner/pages/video/VideoCallPage";
 import { SocketProvider } from "../context/socketContext";
+import MainChatLayout from "../modules/chat/LearnerChatManagement";
+import MainPage from "../modules/video/VideoCallManagement";
+import { VideoCallProvider } from "../context/videoCallContext";
+import CallingPage from "../modules/video/CallingPage";
+import AnswerVideo from "../modules/video/AnsweringPage";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -70,15 +74,6 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
             children: [
               { path: "dashboard", element: <LearnerDashboard /> },
               { path: "profile", element: <LearnerProfile /> },
-
-              // {
-              //   path: "payment/:courseId",
-              //   element: (
-              //     <Elements stripe={stripePromise}>
-              //       <PaymentForm />
-              //     </Elements>
-              //   ),
-              // },
               {
                 path: "checkout/:courseId",
                 element: <WrappedCourseCheckout />,
@@ -103,16 +98,8 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
               {
                 path: "my-learnings/:progressId",
                 element: <LearningCoursePage />,
-                children: [
-                  // { path: "welcome", element: <LearnerDashboard /> },
-                  // {
-                  //   path: "lessons/:lessonId/materials/materialId",
-                  //   element: <MaterialContent />,
-                  // },
-                ],
               },
 
-              // { path: "chat", element: <CourseGroupChat /> },
               {
                 path: "chat",
                 element: (
@@ -121,7 +108,19 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
                   // </SocketProvider>
                 ),
               },
-              { path: "video-call", element: <VideoCallPage /> },
+              {
+                path: "meets",
+                element: <MainChatLayout />,
+              },
+              // { path: "video-call", element: <VideoCallPage /> },
+              {
+                path: "video-call",
+                element: <MainPage />,
+              },
+              {
+                path: "video-call/answer/:roomId",
+                element: <AnswerVideo />,
+              },
             ],
           },
         ],

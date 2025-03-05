@@ -20,6 +20,14 @@ progressRouter.get(
   progressController.getProgressesByUserId
 );
 
+progressRouter.post(
+  "/",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["learner"]),
+  progressController.postProgressesByUserId
+);
+
 progressRouter.get(
   "/courses/:courseId",
   authenticateToken,

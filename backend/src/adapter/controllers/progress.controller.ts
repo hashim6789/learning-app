@@ -8,16 +8,23 @@ import GetAllProgressOfUserUseCase from "../../application/use_cases/progress/pr
 import GetProgressOfCourseUseCase from "../../application/use_cases/progress/progress-get-course.usecase";
 import CreateSignedUrlForLearnerUseCase from "../../application/use_cases/progress/signed-url-create-learner.usecase";
 import UpdateProgressUseCase from "../../application/use_cases/progress/progress-update.usecase";
+import CreateProgressUseCase from "../../application/use_cases/progress/progress-post.usecase";
+import SubscriptionHistoryRepository from "../../infrastructures/database/repositories/SubscriptionHistoryRepository";
+import PurchaseHistoryRepository from "../../infrastructures/database/repositories/PurchaseHistoryRepository";
 
 // const progressService = new ProgressService(progressRepository);
 // const sendProgress = new SendProgress(progressService);
 const progressRepository = new ProgressRepository();
+const subscriptionHistoryRepository = new SubscriptionHistoryRepository();
 const getAllProgressOfUserUseCase = new GetAllProgressOfUserUseCase(
   progressRepository
 );
+const purchaseHistoryRepository = new PurchaseHistoryRepository();
 
 const getProgressOfCourseUseCase = new GetProgressOfCourseUseCase(
-  progressRepository
+  progressRepository,
+  subscriptionHistoryRepository,
+  purchaseHistoryRepository
 );
 
 const createSignedUrlForLearnerUseCase = new CreateSignedUrlForLearnerUseCase(
@@ -25,6 +32,11 @@ const createSignedUrlForLearnerUseCase = new CreateSignedUrlForLearnerUseCase(
 );
 
 const updateProgressUseCase = new UpdateProgressUseCase(progressRepository);
+
+const createProgressUseCase = new CreateProgressUseCase(
+  progressRepository,
+  subscriptionHistoryRepository
+);
 
 export class ProgressController {
   constructor() {}
@@ -38,6 +50,30 @@ export class ProgressController {
     try {
       const userId = req.user?.userId || "";
       const response = await getAllProgressOfUserUseCase.execute(userId);
+      if (response.success && response.data) {
+        res
+          .status(200)
+          .json({ message: response.message, data: response.data });
+      } else {
+        res.status(400).json({ message: response.message });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+  //get progress of a user
+  async postProgressesByUserId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const userId = req.user?.userId || "";
+      const { subscriptionId, courseId } = req.body;
+      const response = await createProgressUseCase.execute(userId, {
+        subscriptionId,
+        courseId,
+      });
       if (response.success && response.data) {
         res
           .status(200)

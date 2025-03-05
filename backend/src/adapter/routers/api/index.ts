@@ -19,6 +19,7 @@ import progressRouter from "./progress.routes";
 import analysisRouter from "./analysis.routes";
 import chatRouter from "./chat.routes";
 import meetRouter from "./meet.routes";
+import slotRouter from "./slot.routes";
 
 const apiRouter = express.Router();
 
@@ -41,5 +42,6 @@ apiRouter.use("/progress", progressRouter);
 apiRouter.use("/analysis", analysisRouter);
 apiRouter.use("/chats", chatRouter);
 apiRouter.use("/meets", meetRouter);
+apiRouter.use("/slots", slotRouter);
 
 export default apiRouter;

@@ -5,6 +5,8 @@ import { IChatMessageRepository } from "../../../infrastructures/database/reposi
 import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 import { getIo } from "../../../framework/socket/socketSetup";
 import { ILearnerRepository } from "../../../infrastructures/database/repositories/interface/ILearnerRepository";
+import { UserType } from "../../../shared/types";
+import { IMentorRepository } from "../../../infrastructures/database/repositories/interface";
 
 interface CreateMessageDTO {
   message: string;
@@ -12,28 +14,37 @@ interface CreateMessageDTO {
 class CreateMessageOfSenderUseCase {
   private chatMessageRepository: IChatMessageRepository;
   private learnerRepository: ILearnerRepository;
+  private mentorRepository: IMentorRepository;
 
   constructor(
     chatMessageRepository: IChatMessageRepository,
-    learnerRepository: ILearnerRepository
+    learnerRepository: ILearnerRepository,
+    mentorRepository: IMentorRepository
   ) {
     this.chatMessageRepository = chatMessageRepository;
     this.learnerRepository = learnerRepository;
+    this.mentorRepository = mentorRepository;
   }
 
   async execute(
+    role: UserType,
     senderId: string,
     groupId: string,
     data: CreateMessageDTO
   ): Promise<ResponseModel> {
     try {
       // await validateData(data, CreateMessageDTO)
-      const fetchUser = await this.learnerRepository.fetchById(senderId);
+      let fetchUser;
+      if (role === "mentor") {
+        fetchUser = await this.mentorRepository.fetchById(senderId);
+      } else {
+        fetchUser = await this.learnerRepository.fetchById(senderId);
+      }
       if (!fetchUser) {
         return {
           statusCode: 404,
           success: false,
-          message: "The learner doesn't exist!",
+          message: "The user doesn't exist!",
         };
       }
 

@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import MeetingRepository from "../../infrastructures/database/repositories/MeetingRepository";
 import MeetStartUseCase from "../../application/use_cases/meet/meet-start.usecase";
+import GetAllMeetOfMentorUseCase from "../../application/use_cases/meet/meet-get-all-mentor";
 
 //imported the repositories
 const meetRepository = new MeetingRepository();
 
 const meetStartUseCase = new MeetStartUseCase(meetRepository);
+
+const getAllMeetingsUseCase = new GetAllMeetOfMentorUseCase(meetRepository);
 
 //imported the use cases
 
@@ -70,8 +73,24 @@ class MeetController {
       next(error);
     }
   }
-  //get published courses
-  //get published courses
+  async getMeetings(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.userId || "";
+      const response = await getAllMeetingsUseCase.execute(userId);
+      if (response && response.data) {
+        res.status(200).json({
+          message: response.message,
+          data: response.data,
+        });
+      } else {
+        res.status(400).json({
+          message: response.message,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default MeetController;

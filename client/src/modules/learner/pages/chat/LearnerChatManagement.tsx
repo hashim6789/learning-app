@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import ChatHeader from "../../components/chat/ChatHeader";
 import MessageInput from "../../components/chat/MessageInput";
@@ -18,31 +18,11 @@ import { AppDispatch } from "../../../../store";
 import { io, Socket } from "socket.io-client";
 import { config } from "../../../../shared/configs/config";
 
+// Initialize socket outside the component
 const socket = io(`${config.API_BASE_URL}/chats`);
 
-const MainChatLayout = () => {
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
-  const [socketConnected, setConnected] = useState<boolean>(false);
+const useSocket = (socket: Socket) => {
   const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    const fetchGroups = async () => {
-      dispatch(fetchGroupsStart());
-      try {
-        const response = await api.get("/api/chats/groups");
-        if (response && response.status === 200) {
-          dispatch(fetchGroupsSuccess(response.data.data));
-        } else {
-          dispatch(fetchGroupsFailure("failed to fetch groups"));
-        }
-      } catch (error: any) {
-        dispatch(fetchGroupsFailure(error.response.data.message));
-      }
-    };
-
-    fetchGroups();
-  }, [dispatch]);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("data") || "{}");
@@ -51,14 +31,15 @@ const MainChatLayout = () => {
 
     const handleConnected = () => {
       console.log("user connected");
-      setConnected(true);
     };
 
     const handleStartTyping = (typeData: { typeName: string }) =>
       dispatch(startTyping(typeData.typeName));
     const handleStopTyping = () => dispatch(stopTyping());
-    const handleOnlineCount = (data: { count: number }) =>
-      dispatch(setOnlineUserCount(data.count));
+    const handleOnlineCount = (data: { onlineCount: number }) => {
+      console.log("online counts", data.onlineCount);
+      dispatch(setOnlineUserCount(data.onlineCount));
+    };
 
     socket.on("connected", handleConnected);
     socket.on("start typing", handleStartTyping);
@@ -69,7 +50,34 @@ const MainChatLayout = () => {
       socket.off("connected", handleConnected);
       socket.off("start typing", handleStartTyping);
       socket.off("stop typing", handleStopTyping);
+      socket.off("online", handleOnlineCount);
     };
+  }, [dispatch, socket]);
+};
+
+const MainChatLayout = () => {
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useSocket(socket);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      dispatch(fetchGroupsStart());
+      try {
+        const response = await api.get("/api/chats/groups");
+        if (response && response.status === 200) {
+          dispatch(fetchGroupsSuccess(response.data.data));
+        } else {
+          dispatch(fetchGroupsFailure("Failed to fetch groups"));
+        }
+      } catch (error: any) {
+        dispatch(fetchGroupsFailure(error.response.data.message));
+      }
+    };
+
+    fetchGroups();
   }, [dispatch]);
 
   return (

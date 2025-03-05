@@ -16,8 +16,8 @@ chatRouter.get(
   "/groups",
   authenticateToken,
   checkUserBlocked,
-  authorizeRole(["learner"]),
-  chatController.getGroupsDetailsOfLearner
+  authorizeRole(["learner", "mentor"]),
+  chatController.getGroupsDetails
 );
 
 chatRouter.post(

@@ -5,8 +5,8 @@ import { toggleTheme } from "../../../store/slices/themeSlice";
 import { useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import userImage from "../../../assets/img/user_image.avif";
-import NotificationPanel from "../../../components/NotificationPanel";
 import { useNavigate } from "react-router-dom";
+import NotificationPanel from "../../common/components/NotificationPanel";
 
 const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

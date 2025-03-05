@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoutes";
-import MentorLayout from "../modules/mentor/pages/MentorLayout";
 import MentorDashboard from "../modules/mentor/pages/MentorDashboard";
 import MentorLogin from "../modules/mentor/pages/MentorLogin";
 import MentorOtpPage from "../modules/mentor/pages/MentorOtp";
@@ -20,6 +19,10 @@ import MentorProfile from "../modules/mentor/pages/ProfilePage";
 import MentorCreateCourse from "../modules/mentor/pages/course/MentorCreateCourse";
 import VideoCallManagement from "../modules/mentor/pages/video/VideoCallManamgemtnt";
 import LobbyScreen from "../modules/mentor/pages/video/LobbyScreen";
+import MainChatLayout from "../modules/chat/LearnerChatManagement";
+import SlotManager from "../modules/mentor/pages/meetings/MentorMeetingManagement";
+import MainPage from "../modules/video/VideoCallManagement";
+import CallingPage from "../modules/video/CallingPage";
 
 export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -70,7 +73,14 @@ export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
                 element: <MentorLessonDetailsPage />,
               },
               // { path: "meetings", element: <VideoCallManagement /> },
-              { path: "meetings", element: <LobbyScreen /> },
+              // { path: "meetings", element: <LobbyScreen /> },
+              { path: "meetings", element: <SlotManager /> },
+              { path: "my-chats", element: <MainChatLayout /> },
+              { path: "video-call", element: <MainPage /> },
+              {
+                path: "video-call/offer/:roomId",
+                element: <CallingPage />,
+              },
             ],
           },
         ],

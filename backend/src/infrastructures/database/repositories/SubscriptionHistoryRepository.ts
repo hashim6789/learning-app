@@ -48,7 +48,10 @@ class SubscriptionHistoryRepository implements ISubscriptionHistoryRepository {
     userId: string
   ): Promise<SubscriptionHistory[]> {
     try {
-      const histories = await SubscriptionHistoryModel.find({ userId });
+      const histories = await SubscriptionHistoryModel.find({
+        userId,
+        endDate: { $gt: Date.now() },
+      });
       return histories.map(mappedSubscriptionHistory);
     } catch (error) {
       throw new Error(

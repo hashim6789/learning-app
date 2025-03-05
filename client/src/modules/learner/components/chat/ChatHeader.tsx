@@ -2,7 +2,7 @@ import React from "react";
 import { Users, Menu, Activity } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import TypingIndicator from "../../../../components/TypingIndicator";
+import TypingIndicator from "../../../common/components/TypingIndicator";
 
 interface ChatHeaderProps {
   onMenuClick: () => void;

@@ -13,6 +13,7 @@ import { Course } from "../../../../shared/types/Course";
 import { useNavigate, useParams } from "react-router-dom";
 import useUnAuthorizedFetch from "../../../../hooks/useUnAuthorizedFetch";
 import { showToast } from "../../../../shared/utils/toastUtils";
+import useFetch from "../../../../hooks/useFetch";
 
 const stripePromise = loadStripe(config.VITE_STRIPE_PK);
 
@@ -23,7 +24,7 @@ const CourseCheckout = () => {
     data: course,
     loading: courseLoading,
     error: courseError,
-  } = useUnAuthorizedFetch<Course>(`/api/no-auth/courses/${courseId}`);
+  } = useFetch<Course>(`/api/courses/${courseId}`);
 
   const [loading, setLoading] = useState(false);
 

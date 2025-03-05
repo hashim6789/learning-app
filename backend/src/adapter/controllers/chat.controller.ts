@@ -6,10 +6,12 @@ import CreateMessageOfSenderUseCase from "../../application/use_cases/chat/group
 import ChatMessageRepository from "../../infrastructures/database/repositories/ChatMessageRepository";
 import GetAllMessagesOfGroupUseCase from "../../application/use_cases/chat/group-message-get-all.usecase";
 import LearnerRepository from "../../infrastructures/database/repositories/LearnerRepository";
+import MentorRepository from "../../infrastructures/database/repositories/MentorRepository";
 
 const groupChatRepository = new GroupChatRepository();
 const chatMessageRepository = new ChatMessageRepository();
 const learnerRepository = new LearnerRepository();
+const mentorRepository = new MentorRepository();
 
 const getAllGroupsOfLearnerUseCase = new GetAllGroupsOfLearnerUseCase(
   groupChatRepository
@@ -21,21 +23,23 @@ const getAllMessagesOfGroupUseCase = new GetAllMessagesOfGroupUseCase(
 
 const createMessageOfSenderUseCase = new CreateMessageOfSenderUseCase(
   chatMessageRepository,
-  learnerRepository
+  learnerRepository,
+  mentorRepository
 );
 
 class ChatController {
   constructor() {}
 
-  async getGroupsDetailsOfLearner(
+  async getGroupsDetails(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
       const userId = req.user?.userId || "";
+      const role = req.user?.role || "learner";
       // const userId = "679714e0a41657d40318789d";
-      const response = await getAllGroupsOfLearnerUseCase.execute(userId);
+      const response = await getAllGroupsOfLearnerUseCase.execute(userId, role);
       if (response.success && response.data) {
         res
           .status(200)
@@ -54,8 +58,10 @@ class ChatController {
   ): Promise<void> {
     try {
       const userId = req.user?.userId || "";
+      const role = req.user?.role || "learner";
       const { groupId } = req.params;
       const response = await createMessageOfSenderUseCase.execute(
+        role,
         userId,
         groupId,
         req.body

@@ -1,18 +1,23 @@
 import { ResponseModel } from "../../../shared/types/ResponseModel";
 import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
+import { UserType } from "../../../shared/types";
 
-class GetAllGroupsOfLearnerUseCase {
+class GetAllGroupsOfUserUseCase {
   private groupChatRepository: IGroupChatRepository;
 
   constructor(groupChatRepository: IGroupChatRepository) {
     this.groupChatRepository = groupChatRepository;
   }
 
-  async execute(learnerId: string): Promise<ResponseModel> {
+  async execute(userId: string, role: UserType): Promise<ResponseModel> {
     try {
-      const groupChats = await this.groupChatRepository.fetchAllByLearnerId(
-        learnerId
-      );
+      let groupChats;
+
+      if (role === "mentor") {
+        groupChats = await this.groupChatRepository.fetchAllByMentorId(userId);
+      } else {
+        groupChats = await this.groupChatRepository.fetchAllByLearnerId(userId);
+      }
       if (!groupChats) {
         return {
           statusCode: 404,
@@ -35,4 +40,4 @@ class GetAllGroupsOfLearnerUseCase {
   }
 }
 
-export default GetAllGroupsOfLearnerUseCase;
+export default GetAllGroupsOfUserUseCase;

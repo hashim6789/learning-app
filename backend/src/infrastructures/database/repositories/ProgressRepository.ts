@@ -66,13 +66,14 @@ class ProgressRepository implements IProgressRepository {
 
   async fetchCourseProgressDetails(
     userId: string,
-    courseId: string
+    progressId: string
   ): Promise<any | null> {
     try {
       const pipeline: PipelineStage[] = [
         {
           $match: {
-            _id: new mongoose.Types.ObjectId(courseId),
+            _id: new mongoose.Types.ObjectId(progressId),
+            userId: new mongoose.Types.ObjectId(userId),
           },
         },
         {

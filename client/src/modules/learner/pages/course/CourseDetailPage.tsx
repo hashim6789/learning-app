@@ -7,12 +7,12 @@ import useUnAuthorizedFetch from "../../../../hooks/useUnAuthorizedFetch";
 import BackComponent from "../../components/BackComponent";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
 import api from "../../../../shared/utils/api";
+import { showToast } from "../../../../shared/utils/toastUtils";
+import { PurchaseHistory } from "../../../../shared/types/PurchaseHistory";
 
 const CourseDetails = () => {
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -22,30 +22,28 @@ const CourseDetails = () => {
     loading,
   } = useUnAuthorizedFetch<Course>(`/api/no-auth/courses/${courseId}`);
 
-  useEffect(() => {
-    const fetchSubscriptionStatus = async () => {
-      try {
-        if (isAuthenticated) {
-          const response = await api.get(`/api/subscription-history`);
-          if (
-            response &&
-            response.status === 200 &&
-            response.data.data.length > 0
-          ) {
-            setIsSubscribed(true);
-          }
-        }
-      } catch (err) {
-        // setError('Failed to fetch subscription status.');
-      } finally {
-        // setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSubscriptionStatus = async () => {
+  //     try {
+  //       if (isAuthenticated) {
+  //         const response = await api.get(`/api/subscription-history`);
+  //         if (
+  //           response &&
+  //           response.status === 200 &&
+  //           response.data.data.length > 0
+  //         ) {
+  //           setIsSubscribed(true);
+  //         }
+  //       }
+  //     } catch (err) {
+  //       // setError('Failed to fetch subscription status.');
+  //     } finally {
+  //       // setLoading(false);
+  //     }
+  //   };
 
-    fetchSubscriptionStatus();
-  }, []);
-
-  console.log("test", isSubscribed);
+  //   fetchSubscriptionStatus();
+  // }, []);
 
   if (loading) {
     return <LoadingComponent theme="blue" item="course" />;
@@ -54,9 +52,23 @@ const CourseDetails = () => {
     return <ErrorComponent theme="blue" item="course" />;
   }
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (isAuthenticated) {
-      navigate(`/learner/checkout/${courseId}`);
+      const response = await api.get("/api/purchase-history");
+      if (response && response.status === 200) {
+        const data: PurchaseHistory[] = response.data.data;
+        const isPurchased = data.some(
+          (purchase) => purchase.courseId === courseId
+        );
+        if (isPurchased) {
+          showToast.info("you are already purchased this course.");
+          navigate("/learner/my-learnings");
+        } else {
+          navigate(`/learner/checkout/${courseId}`);
+        }
+      } else {
+        navigate(`/learner/checkout/${courseId}`);
+      }
     } else {
       navigate("/login");
     }
@@ -68,10 +80,27 @@ const CourseDetails = () => {
       navigate("/login");
     }
   };
-  const handleEnrollment = () => {
-    if (isAuthenticated && isSubscribed) {
-      // const response = await api.post(``);
-      console.log("course enrolled");
+  const handleEnrollment = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      const response = await api.get(`/api/subscription-history`);
+      if (
+        response &&
+        response.status === 200 &&
+        response.data.data.length > 0
+      ) {
+        const subscriptions = response.data.data;
+        const progressResponse = await api.post(`/api/progress`, {
+          courseId,
+          subscriptionId: subscriptions[0].id,
+        });
+        if (progressResponse && progressResponse.status === 200) {
+          navigate("/learner/my-learnings");
+        }
+      } else {
+        showToast.error("you have no subscription exist");
+      }
     }
   };
 
@@ -132,29 +161,27 @@ const CourseDetails = () => {
               </span> */}
             </div>
 
-            {!isSubscribed ? (
-              <>
-                <button
-                  className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
-                  onClick={handlePurchase}
-                >
-                  Buy Now
-                </button>
-                <button
-                  className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
-                  onClick={handleSubscription}
-                >
-                  Subscription Plans
-                </button>
-              </>
-            ) : (
+            <>
+              <button
+                className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
+                onClick={handlePurchase}
+              >
+                Buy Now
+              </button>
               <button
                 className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
                 onClick={handleEnrollment}
               >
-                Enroll Course
+                Enroll now
               </button>
-            )}
+              {/* <button
+                  className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-6"
+                  onClick={handleSubscription}
+                >
+                  Subscription Plans
+                </button> */}
+            </>
+
             <div className="space-y-4">
               <div className="flex items-center text-gray-600">
                 <Clock className="w-5 h-5 mr-2" />

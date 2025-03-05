@@ -122,6 +122,80 @@ export class GroupChatRepository implements IGroupChatRepository {
       throw new Error(`The error when fetching groups of learner:${error}`);
     }
   }
+  async fetchAllByMentorId(mentorId: string): Promise<any | null> {
+    try {
+      const pipeline = [
+        { $match: { mentor: new mongoose.Types.ObjectId(mentorId) } }, // Match first
+        {
+          $lookup: {
+            from: "courses",
+            localField: "course",
+            foreignField: "_id",
+            as: "courseDetails",
+          },
+        },
+        { $unwind: "$courseDetails" },
+        {
+          $lookup: {
+            from: "learners", // Assuming 'users' is the collection where learner details are stored
+            localField: "learners",
+            foreignField: "_id",
+            as: "learnerDetails",
+          },
+        },
+        {
+          $lookup: {
+            from: "mentors", // Assuming 'users' is the collection where mentor details are stored
+            localField: "mentor",
+            foreignField: "_id",
+            as: "mentorDetails",
+          },
+        },
+        {
+          $project: {
+            _id: "$_id",
+            title: "$courseDetails.title",
+            thumbnail: "$courseDetails.thumbnail",
+            memberCount: { $size: "$learners" }, // Calculating the number of learners
+            learners: {
+              $map: {
+                input: "$learnerDetails",
+                as: "learner",
+                in: {
+                  _id: "$$learner._id",
+                  firstName: "$$learner.firstName",
+                  lastName: "$$learner.lastName",
+                  profilePicture: "$$learner.profilePicture",
+                },
+              },
+            },
+            mentor: {
+              $arrayElemAt: [
+                {
+                  $map: {
+                    input: "$mentorDetails",
+                    as: "mentor",
+                    in: {
+                      _id: "$$mentor._id",
+                      firstName: "$$mentor.firstName",
+                      lastName: "$$mentor.lastName",
+                      profilePicture: "$$mentor.profilePicture",
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+          },
+        },
+      ];
+      const groups = await ChatGroupModel.aggregate(pipeline);
+
+      return groups;
+    } catch (error) {
+      throw new Error(`The error when fetching groups of learner:${error}`);
+    }
+  }
   //   async c(notification: Notification): Promise<Notification | null> {
   //     const newNotification = new NotificationModel({
   //       title: notification.title,

@@ -45,15 +45,31 @@ const ChatSidebar = ({ socket }: ChatSidebarProps) => {
     fetchGroups();
   }, [dispatch]);
 
+  useEffect(() => {
+    if (selectedGroupId) {
+      socket.emit("join chat", { groupId: selectedGroupId });
+      console.log("user joined groupid", selectedGroupId);
+    }
+
+    () => {
+      if (selectedGroupId) {
+        socket.emit("leave chat", { groupId: selectedGroupId });
+        console.log("user joined groupid", selectedGroupId);
+      }
+    };
+  });
+
   const handleGroupChat = async (groupId: string) => {
     try {
       dispatch(fetchMessagesStart());
       const response = await api.get(`/api/chats/groups/${groupId}/messages`);
       if (response && response.status === 200) {
+        socket.emit("leave chat", { groupId: selectedGroupId });
+        console.log("user joined groupid", selectedGroupId);
         dispatch(selectGroup(groupId));
         dispatch(fetchMessagesSuccess(response.data.data));
-        socket.emit("join chat", { groupId });
-        console.log("user joined groupid", groupId);
+        // socket.emit("join chat", { groupId });
+        // console.log("user joined groupid", groupId);
       }
     } catch (error: any) {
       dispatch(fetchMessagesFailure(error.response.data.message));

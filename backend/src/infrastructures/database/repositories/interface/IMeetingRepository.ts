@@ -7,6 +7,7 @@ interface IMeetingRepository {
   getMeetingById(id: string): Promise<IMeeting | null>;
 
   getAllMeetings(): Promise<IMeeting[]>;
+  getAllMeetingsByMentor(mentorId: string): Promise<IMeeting[]>;
   updateMeeting(
     id: string,
     updatedMeeting: Partial<IMeeting>

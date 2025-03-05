@@ -251,7 +251,7 @@ class CourseController {
 
       if (!userId) {
         // response = await getAllPublishedCoursesUseCase.execute(filter);
-      } else if (role === "admin") {
+      } else if (role === "admin" || role === "learner") {
         response = await getCourseByIdUseCase.execute(courseId);
       } else if (role === "mentor") {
         response = await getCourseOfMentorUseCase.execute(userId, courseId);

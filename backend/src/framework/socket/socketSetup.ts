@@ -38,7 +38,6 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
   // Namespace for Video Calls
   const callNamespace = io.of("/calls");
   callNamespace.on("connection", (socket) => {
-    console.log("A user connected to /calls namespace:", socket.id);
     handleVideoCall(callNamespace, socket); // Pass Namespace instead of Server
     socket.on("disconnect", () => {
       console.log("A user disconnected from /calls namespace:", socket.id);

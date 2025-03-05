@@ -156,11 +156,14 @@ const CourseLearningLayout = () => {
         {/* Footer */}
         <div className="border-t border-gray-200 p-4 space-y-2">
           {/* <button className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 rounded-lg">
-              Course Community
-            </button>
-            <button className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 rounded-lg">
-              Connect Mentor
-            </button> */}
+            Course Community
+          </button> */}
+          <button
+            onClick={() => navigate("/learner/meets")}
+            className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 rounded-lg"
+          >
+            Connect Mentor
+          </button>
         </div>
       </div>
 
