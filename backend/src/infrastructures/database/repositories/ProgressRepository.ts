@@ -122,6 +122,8 @@ class ProgressRepository implements IProgressRepository {
             lessonId: { $first: "$allLessons._id" },
             lessonTitle: { $first: "$allLessons.title" },
             lessonDuration: { $first: "$allLessons.duration" },
+            mentorId: { $first: "$courseDetails.mentorId" }, // Add mentorId here
+            courseId: { $first: "$courseDetails._id" }, // Add mentorId here
             materials: {
               $push: {
                 id: "$allMaterials._id",
@@ -141,6 +143,8 @@ class ProgressRepository implements IProgressRepository {
             id: "$lessonId",
             title: "$lessonTitle",
             duration: "$lessonDuration",
+            mentorId: "$mentorId",
+            courseId: "$courseId",
             materials: 1,
           },
         },

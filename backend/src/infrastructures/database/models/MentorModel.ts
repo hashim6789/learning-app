@@ -28,6 +28,6 @@ const MentorSchema: Schema = new Schema(
   }
 );
 
-const MentorModel = mongoose.model<IMentor>("Mentor", MentorSchema);
+const MentorModel = mongoose.model<IMentor>("Mentors", MentorSchema);
 
 export default MentorModel;

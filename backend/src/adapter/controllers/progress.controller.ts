@@ -11,6 +11,7 @@ import UpdateProgressUseCase from "../../application/use_cases/progress/progress
 import CreateProgressUseCase from "../../application/use_cases/progress/progress-post.usecase";
 import SubscriptionHistoryRepository from "../../infrastructures/database/repositories/SubscriptionHistoryRepository";
 import PurchaseHistoryRepository from "../../infrastructures/database/repositories/PurchaseHistoryRepository";
+import GroupChatRepository from "../../infrastructures/database/repositories/GroupChatRepository";
 
 // const progressService = new ProgressService(progressRepository);
 // const sendProgress = new SendProgress(progressService);
@@ -19,6 +20,8 @@ const subscriptionHistoryRepository = new SubscriptionHistoryRepository();
 const getAllProgressOfUserUseCase = new GetAllProgressOfUserUseCase(
   progressRepository
 );
+
+const groupChatRepository = new GroupChatRepository();
 const purchaseHistoryRepository = new PurchaseHistoryRepository();
 
 const getProgressOfCourseUseCase = new GetProgressOfCourseUseCase(
@@ -35,7 +38,8 @@ const updateProgressUseCase = new UpdateProgressUseCase(progressRepository);
 
 const createProgressUseCase = new CreateProgressUseCase(
   progressRepository,
-  subscriptionHistoryRepository
+  subscriptionHistoryRepository,
+  groupChatRepository
 );
 
 export class ProgressController {

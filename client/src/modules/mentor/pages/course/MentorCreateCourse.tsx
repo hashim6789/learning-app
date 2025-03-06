@@ -6,7 +6,6 @@ import "react-advanced-cropper/dist/style.css";
 import { toast } from "react-toastify";
 import useCourseManagement from "../../../../hooks/useCourseManagement";
 import api from "../../../../shared/utils/api";
-import { config } from "../../../../shared/configs/config";
 import { showToast } from "../../../../shared/utils/toastUtils";
 import Breadcrumbs from "../../components/BreadCrumbs";
 import { Course } from "../../../../shared/types/Course";

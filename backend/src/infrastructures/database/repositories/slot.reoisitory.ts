@@ -3,6 +3,8 @@ import { ObjectId } from "mongoose";
 import SlotModel from "../models/slots.model";
 import { ISlotRepository } from "./interface/ISlotRepository";
 import { CreateSlotDTO } from "../../../shared/dtos/CreateSlotDTO";
+import { Slot } from "../../../application/entities/slot.entiry";
+import { Document } from "mongoose";
 
 class SlotRepository implements ISlotRepository {
   /**
@@ -10,7 +12,7 @@ class SlotRepository implements ISlotRepository {
    * @param slotData ISlot
    * @returns Created Slot Document
    */
-  async createSlot(slotData: CreateSlotDTO): Promise<ISlot> {
+  async createSlot(slotData: CreateSlotDTO): Promise<Slot> {
     console.log("Received Slot Data:", slotData); // Debugging output
     const dateTime = new Date(`${slotData.date}T${slotData.time}:00Z`);
 
@@ -19,16 +21,17 @@ class SlotRepository implements ISlotRepository {
       duration: slotData.duration,
       dateTime,
     });
-    const newSlot = await SlotModel.create(slot);
-    return newSlot;
+    const createdSlot = await SlotModel.create(slot);
+    return this.mapToSlot(createdSlot);
   }
 
   /**
    * Get all available slots (not booked)
    * @returns List of available slots
    */
-  async getAvailableSlots(): Promise<ISlot[]> {
-    return await SlotModel.find({ isBooked: false }).populate("mentorId");
+  async getAvailableSlots(): Promise<Slot[]> {
+    const slots = await SlotModel.find({ isBooked: false });
+    return slots.map(this.mapToSlot);
   }
 
   /**
@@ -36,10 +39,19 @@ class SlotRepository implements ISlotRepository {
    * @param mentorId Mentor's ObjectId
    * @returns List of mentor's slots
    */
-  async getSlotsByMentor(mentorId: string): Promise<ISlot[]> {
+  async getSlotsByMentor(mentorId: string): Promise<Slot[]> {
     const slots = await SlotModel.find({ mentorId });
-    return slots;
-    // .populate("mentorId");
+    return slots.map(this.mapToSlot);
+  }
+
+  /**
+   * Get slots by Course ID
+   * @param courseId Course's ObjectId
+   * @returns List of course's slots
+   */
+  async getSlotsByCourse(courseId: string): Promise<Slot[]> {
+    const slots = await SlotModel.find({ courseId });
+    return slots.map(this.mapToSlot);
   }
 
   /**
@@ -47,8 +59,9 @@ class SlotRepository implements ISlotRepository {
    * @param slotId Slot's ObjectId
    * @returns Slot document or null
    */
-  async getSlotById(slotId: ObjectId): Promise<ISlot | null> {
-    return await SlotModel.findById(slotId).populate("mentorId");
+  async getSlotById(slotId: string): Promise<Slot | null> {
+    const slot = await SlotModel.findById(slotId);
+    return slot ? this.mapToSlot(slot) : null;
   }
 
   /**
@@ -57,12 +70,13 @@ class SlotRepository implements ISlotRepository {
    * @param learnerId Learner's ObjectId
    * @returns Updated Slot Document
    */
-  async bookSlot(slotId: ObjectId): Promise<ISlot | null> {
-    return await SlotModel.findByIdAndUpdate(
+  async bookSlot(slotId: string): Promise<Slot | null> {
+    const slot = await SlotModel.findByIdAndUpdate(
       slotId,
       { isBooked: true },
       { new: true }
     );
+    return slot ? this.mapToSlot(slot) : null;
   }
 
   /**
@@ -70,9 +84,20 @@ class SlotRepository implements ISlotRepository {
    * @param slotId Slot's ObjectId
    * @returns Deleted Slot Document or null
    */
-  async deleteSlot(slotId: ObjectId): Promise<ISlot | null> {
-    return await SlotModel.findByIdAndDelete(slotId);
+  async deleteSlot(slotId: string): Promise<Slot | null> {
+    const slot = await SlotModel.findByIdAndDelete(slotId);
+    return slot ? this.mapToSlot(slot) : null;
   }
+
+  mapToSlot = (doc: Document): Slot => {
+    return new Slot(
+      doc.get("_id").toString(),
+      doc.get("mentorId").toString(),
+      doc.get("duration"),
+      doc.get("dateTime"),
+      doc.get("isBooked")
+    );
+  };
 }
 
 export default SlotRepository;

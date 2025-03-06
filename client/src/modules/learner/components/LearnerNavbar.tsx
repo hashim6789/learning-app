@@ -169,6 +169,16 @@ const CourseNavbar: React.FC = () => {
           >
             Video Call
           </NavLink>
+          <NavLink
+            to="/learner/meets"
+            className={({ isActive }) =>
+              isActive
+                ? "text-blue-600 border-b-2 border-blue-600 flex items-center px-1"
+                : "text-gray-600 hover:text-gray-900 flex items-center px-1"
+            }
+          >
+            My meetings
+          </NavLink>
         </div>
       </div>
     </nav>

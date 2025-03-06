@@ -27,5 +27,19 @@ slotRouter.get(
   authorizeRole(["mentor"]),
   slotController.getSlots
 );
+slotRouter.get(
+  "/mentors/:mentorId",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["mentor", "learner"]),
+  slotController.getSlotsOfLearner
+);
+slotRouter.patch(
+  "/:slotId/book",
+  authenticateToken,
+  checkUserBlocked,
+  authorizeRole(["learner"]),
+  slotController.bookSlot
+);
 
 export default slotRouter;

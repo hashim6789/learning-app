@@ -31,6 +31,8 @@ interface Lesson {
   title: string;
   duration: number;
   materials: Material[];
+  mentorId: string;
+  courseId: string;
 }
 
 const CourseLearningLayout = () => {
@@ -159,7 +161,11 @@ const CourseLearningLayout = () => {
             Course Community
           </button> */}
           <button
-            onClick={() => navigate("/learner/meets")}
+            onClick={() =>
+              navigate(
+                `/learner/meets/${lessons[0].mentorId}/${lessons[0].courseId}`
+              )
+            }
             className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 rounded-lg"
           >
             Connect Mentor

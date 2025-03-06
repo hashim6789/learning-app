@@ -32,6 +32,7 @@ class GetProgressOfCourseUseCase {
           message: "The progress is not exist!",
         };
       }
+
       const subscriptions =
         await this.subscriptionRepository.findSubscriptionHistoryByUserId(
           userId

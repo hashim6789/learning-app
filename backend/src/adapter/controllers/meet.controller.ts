@@ -76,7 +76,8 @@ class MeetController {
   async getMeetings(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.user?.userId || "";
-      const response = await getAllMeetingsUseCase.execute(userId);
+      const role = req.user?.role || "learner";
+      const response = await getAllMeetingsUseCase.execute(userId, role);
       if (response && response.data) {
         res.status(200).json({
           message: response.message,

@@ -15,6 +15,18 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
     },
   });
 
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
+
+    if (io) {
+      handleNotification(io, socket);
+    }
+
+    socket.on("disconnect", () => {
+      console.log("A user disconnected:", socket.id);
+    });
+  });
+
   // Namespace for Chats
   const chatNamespace = io.of("/chats");
   chatNamespace.on("connection", (socket) => {
@@ -26,14 +38,14 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
   });
 
   // Namespace for Notifications
-  const notificationNamespace = io.of("/notify");
-  notificationNamespace.on("connection", (socket) => {
-    console.log("A user connected to /notify namespace:", socket.id);
-    handleNotification(notificationNamespace, socket); // Pass Namespace instead of Server
-    socket.on("disconnect", () => {
-      console.log("A user disconnected from /notify namespace:", socket.id);
-    });
-  });
+  // const notificationNamespace = io.of("/notify");
+  // notificationNamespace.on("connection", (socket) => {
+  //   console.log("A user connected to /notify namespace:", socket.id);
+  //   handleNotification(notificationNamespace, socket); // Pass Namespace instead of Server
+  //   socket.on("disconnect", () => {
+  //     console.log("A user disconnected from /notify namespace:", socket.id);
+  //   });
+  // });
 
   // Namespace for Video Calls
   const callNamespace = io.of("/calls");

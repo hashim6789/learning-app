@@ -16,6 +16,8 @@ interface Lesson {
   title: string;
   duration: number;
   materials: Material[];
+  mentorId: string;
+  courseId: string;
 }
 
 interface LearningState {

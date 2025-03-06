@@ -21,6 +21,6 @@ const LearnerSchema: Schema = new Schema(
   }
 );
 
-const LearnerModel = mongoose.model<ILearner>("Learner", LearnerSchema);
+const LearnerModel = mongoose.model<ILearner>("Learners", LearnerSchema);
 
 export default LearnerModel;

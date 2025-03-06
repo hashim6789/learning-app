@@ -23,6 +23,7 @@ import MainChatLayout from "../modules/chat/LearnerChatManagement";
 import SlotManager from "../modules/mentor/pages/meetings/MentorMeetingManagement";
 import MainPage from "../modules/video/VideoCallManagement";
 import CallingPage from "../modules/video/CallingPage";
+import MentorOfferComponent from "../modules/call/MentorOfferComponent";
 
 export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -81,6 +82,7 @@ export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
                 path: "video-call/offer/:roomId",
                 element: <CallingPage />,
               },
+              { path: "offer/:roomId", element: <MentorOfferComponent /> },
             ],
           },
         ],

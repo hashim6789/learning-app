@@ -2,6 +2,7 @@ import { ResponseModel } from "../../../shared/types/ResponseModel";
 import { IProgressRepository } from "../../../infrastructures/database/repositories/interface/IProgressRepository";
 import { ISubscriptionHistoryRepository } from "../../../infrastructures/database/repositories/interface";
 import { Progress } from "../../entities";
+import IGroupChatRepository from "../../../infrastructures/database/repositories/interface/IGroupChatRepository";
 
 interface ProgressDTO {
   courseId: string;
@@ -11,12 +12,15 @@ interface ProgressDTO {
 class CreateProgressUseCase {
   private progressRepository: IProgressRepository;
   private subscriptionHistoryRepository: ISubscriptionHistoryRepository;
+  private groupChatRepository: IGroupChatRepository;
   constructor(
     progressRepository: IProgressRepository,
-    subscriptionHistoryRepository: ISubscriptionHistoryRepository
+    subscriptionHistoryRepository: ISubscriptionHistoryRepository,
+    groupChatRepository: IGroupChatRepository
   ) {
     this.progressRepository = progressRepository;
     this.subscriptionHistoryRepository = subscriptionHistoryRepository;
+    this.groupChatRepository = groupChatRepository;
   }
 
   async execute(userId: string, data: ProgressDTO): Promise<ResponseModel> {
@@ -67,6 +71,18 @@ class CreateProgressUseCase {
           statusCode: 400,
           success: false,
           message: "The progress course is not created!",
+        };
+      }
+
+      const chat = await this.groupChatRepository.addLearnerToGroup(
+        data.courseId,
+        userId
+      );
+      if (!chat) {
+        return {
+          statusCode: 400,
+          success: false,
+          message: "The leaner can't be added to the group of the course",
         };
       }
 

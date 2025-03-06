@@ -1,5 +1,5 @@
 export interface ISlot {
-  _id: string;
+  id: string;
   mentorId: string;
   time: string;
   duration: number;

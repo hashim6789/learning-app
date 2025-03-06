@@ -12,7 +12,7 @@ export function transformSlots(slots: any[]): ISlot[] {
       const dateObj = new Date(slot.dateTime);
 
       return {
-        _id: slot._id,
+        id: slot.id,
         mentorId: slot.mentorId,
         time: format(dateObj, "HH:mm"),
         date: format(dateObj, "yyyy-MM-dd"),

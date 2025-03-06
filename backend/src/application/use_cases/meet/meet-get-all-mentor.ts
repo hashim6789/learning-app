@@ -1,6 +1,10 @@
 import { getIo } from "../../../framework/socket/socketSetup";
 import { generateUniqueKey } from "../../../shared/utils/uuid.util";
 import IMeetingRepository from "../../../infrastructures/database/repositories/interface/IMeetingRepository";
+import { UserType } from "../../../shared/types";
+import Meeting, {
+  PopulateMeeting,
+} from "../../entities/meeting.enitity.usecase";
 
 class GetAllMeetOfMentorUseCase {
   private meetingRepository: IMeetingRepository;
@@ -9,11 +13,18 @@ class GetAllMeetOfMentorUseCase {
     this.meetingRepository = meetingRepository;
   }
 
-  async execute(mentorId: string) {
+  async execute(userId: string, role: UserType) {
     try {
-      const fetchMeetings = await this.meetingRepository.getAllMeetingsByMentor(
-        mentorId
-      );
+      let fetchMeetings: PopulateMeeting[] | null = null;
+      if (role === "mentor") {
+        fetchMeetings = await this.meetingRepository.getAllMeetingsByMentor(
+          userId
+        );
+      } else {
+        fetchMeetings = await this.meetingRepository.getAllMeetingsByLearner(
+          userId
+        );
+      }
 
       if (!fetchMeetings) {
         return {

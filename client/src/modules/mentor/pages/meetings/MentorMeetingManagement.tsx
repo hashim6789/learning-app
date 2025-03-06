@@ -5,7 +5,7 @@ import { getUserProperty } from "../../../../shared/utils/user.util";
 import api from "../../../../shared/utils/api";
 import { ISlot } from "../../../../shared/types/Slot";
 import { transformSlots } from "../../../../shared/utils/transformer.util";
-import ScheduledMeetingsTable from "../../components/meeting/MeetingTable";
+import ScheduledMeetingsTable from "../../../common/components/MeetingTable";
 import AvailableSlots from "../../components/meeting/AvailableSlots";
 
 const SlotManager: React.FC = () => {
@@ -50,7 +50,7 @@ const SlotManager: React.FC = () => {
       <h2 className="text-2xl font-semibold mb-4">Manage Availability</h2>
 
       {/* Scheduled Meetings Table */}
-      <ScheduledMeetingsTable />
+      <ScheduledMeetingsTable role="mentor" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Available Slots List */}

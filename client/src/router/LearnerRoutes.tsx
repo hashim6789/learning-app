@@ -30,6 +30,8 @@ import MainPage from "../modules/video/VideoCallManagement";
 import { VideoCallProvider } from "../context/videoCallContext";
 import CallingPage from "../modules/video/CallingPage";
 import AnswerVideo from "../modules/video/AnsweringPage";
+import LearnerMeetingScheduling from "../modules/learner/pages/meeting/LearenrMeetingScheduling";
+import LearnerAnswerComponent from "../modules/call/LearnerAnswerComponent";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -109,8 +111,8 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
                 ),
               },
               {
-                path: "meets",
-                element: <MainChatLayout />,
+                path: "meets/:mentorId/:courseId",
+                element: <LearnerMeetingScheduling />,
               },
               // { path: "video-call", element: <VideoCallPage /> },
               {
@@ -121,6 +123,8 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
                 path: "video-call/answer/:roomId",
                 element: <AnswerVideo />,
               },
+
+              { path: "answer/:roomId", element: <LearnerAnswerComponent /> },
             ],
           },
         ],

@@ -1,13 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
-
-interface ISlot {
-  _id: string;
-  date: string;
-  time: string;
-  duration: number;
-  isBooked: boolean;
-}
+import { ISlot } from "../../../../shared/types/Slot";
 
 interface Props {
   slots: ISlot[];
@@ -28,7 +21,7 @@ const AvailableSlots: React.FC<Props> = ({ slots }) => {
         </thead>
         <tbody>
           {slots.map((slot) => (
-            <tr key={slot._id} className="text-center">
+            <tr key={slot.id} className="text-center">
               <td className="p-2 border">
                 {format(new Date(slot.date), "yyyy-MM-dd")}
               </td>

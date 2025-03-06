@@ -4,7 +4,8 @@ import { getUserProperty } from "../../../../shared/utils/user.util";
 import api from "../../../../shared/utils/api";
 import { ISlot } from "../../../../shared/types/Slot";
 import { transformSlots } from "../../../../shared/utils/transformer.util";
-import ScheduledMeetingsTable from "../../../mentor/components/meeting/MeetingTable";
+import ScheduledMeetingsTable from "../../../common/components/MeetingTable";
+import AvailableSlots from "../../../mentor/components/meeting/AvailableSlots";
 
 const MeetingManagement: React.FC = () => {
   const [slots, setSlots] = useState<ISlot[]>([]);
@@ -26,29 +27,12 @@ const MeetingManagement: React.FC = () => {
     }
   };
 
-  //   // Handle new slot submission
-  //   const handleAddSlot = async (data: SlotFormData) => {
-  //     try {
-  //       const newSlot = {
-  //         mentorId: getUserProperty("id"),
-  //         date: data.date,
-  //         time: data.time,
-  //         duration: data.duration,
-  //       };
-
-  //       await api.post("/api/slots", newSlot);
-  //       fetchSlots();
-  //     } catch (error) {
-  //       console.error("Error adding slot:", error);
-  //     }
-  //   };
-
   return (
     <div className="w-full h-full p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-semibold mb-4">Manage Availability</h2>
 
       {/* Scheduled Meetings Table */}
-      <ScheduledMeetingsTable />
+      {/* <ScheduledMeetingsTable role="learner" /> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Available Slots List */}

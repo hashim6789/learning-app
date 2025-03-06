@@ -1,19 +1,23 @@
 import { Model } from "mongoose";
 import { IMeeting } from "../../interfaces/IMeeting";
+import Meeting, {
+  PopulateMeeting,
+} from "../../../../application/entities/meeting.enitity.usecase";
 
 interface IMeetingRepository {
-  createMeeting(meeting: IMeeting): Promise<IMeeting>;
+  createMeeting(meeting: Meeting): Promise<Meeting>;
 
-  getMeetingById(id: string): Promise<IMeeting | null>;
+  getMeetingById(id: string): Promise<Meeting | null>;
 
-  getAllMeetings(): Promise<IMeeting[]>;
-  getAllMeetingsByMentor(mentorId: string): Promise<IMeeting[]>;
+  getAllMeetings(): Promise<Meeting[]>;
+  getAllMeetingsByMentor(mentorId: string): Promise<PopulateMeeting[]>;
+  getAllMeetingsByLearner(learnerId: string): Promise<PopulateMeeting[]>;
   updateMeeting(
     id: string,
-    updatedMeeting: Partial<IMeeting>
-  ): Promise<IMeeting | null>;
+    updatedMeeting: Partial<Meeting>
+  ): Promise<Meeting | null>;
 
-  deleteMeeting(id: string): Promise<IMeeting | null>;
+  deleteMeeting(id: string): Promise<Meeting | null>;
 }
 
 export default IMeetingRepository;

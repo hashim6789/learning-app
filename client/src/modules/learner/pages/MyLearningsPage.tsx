@@ -90,7 +90,7 @@ const MyLearningsPage = () => {
 
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-sm font-medium text-gray-900">
-                        {learning.progress}% Complete
+                        {Math.round(learning.progress)}% Complete
                       </span>
                       <span className="text-sm text-gray-500">
                         {learning.completedLessons.length} lessons completed
