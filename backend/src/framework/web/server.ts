@@ -2,6 +2,7 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import http from "http";
+import { ExpressPeerServer } from "peer";
 import "reflect-metadata";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
@@ -27,12 +28,22 @@ import connectDB from "../db/dbSetup";
 // SOCKET connection setup
 import { connectSocket } from "../socket/socketSetup";
 import { errorHandler } from "../../adapter/middleware";
+import { connectPeer } from "../peer/setupPeer";
 
 // Load environment variables
 dotenv.config();
 
 // Initialize Express app
 const app: Application = express();
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.io
+connectSocket(server);
+
+// Initialize PeerJS
+connectPeer(server, app);
 
 // Middleware setups
 app.use(morgan("dev")); // Request logging
@@ -52,17 +63,12 @@ connectDB();
 // app.use("/learner", learnerRouter);
 // app.use("/admin", adminRouter);
 // app.use("/mentor", mentorRouter);
+// app.use("/peerjs", peerServer);
 app.use("/refresh", refreshTokenRouter);
 app.use("/api", apiRouter);
 
 // Error handling middleware (after routes to catch any errors)
 app.use(errorHandler);
-
-// Create HTTP server
-const server = http.createServer(app);
-
-// Initialize Socket.io
-const io = connectSocket(server);
 
 // Server configuration
 const port = process.env.PORT || 3000;

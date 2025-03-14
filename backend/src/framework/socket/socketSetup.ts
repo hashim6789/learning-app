@@ -3,7 +3,6 @@ import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { handleGroupChat } from "./groupChat";
 import { handleNotification } from "./notification";
-import { handleVideoCall } from "./videoCall";
 
 let io: SocketIOServer | undefined;
 
@@ -37,25 +36,6 @@ export const connectSocket = (server: HttpServer): SocketIOServer => {
     });
   });
 
-  // Namespace for Notifications
-  // const notificationNamespace = io.of("/notify");
-  // notificationNamespace.on("connection", (socket) => {
-  //   console.log("A user connected to /notify namespace:", socket.id);
-  //   handleNotification(notificationNamespace, socket); // Pass Namespace instead of Server
-  //   socket.on("disconnect", () => {
-  //     console.log("A user disconnected from /notify namespace:", socket.id);
-  //   });
-  // });
-
-  // Namespace for Video Calls
-  const callNamespace = io.of("/calls");
-  callNamespace.on("connection", (socket) => {
-    handleVideoCall(callNamespace, socket); // Pass Namespace instead of Server
-    socket.on("disconnect", () => {
-      console.log("A user disconnected from /calls namespace:", socket.id);
-    });
-  });
-
   return io;
 };
 
@@ -65,3 +45,22 @@ export const getIo = (): SocketIOServer => {
   }
   return io;
 };
+
+// // Namespace for Video Calls
+// const callNamespace = io.of("/calls");
+// callNamespace.on("connection", (socket) => {
+//   handleVideoCall(callNamespace, socket); // Pass Namespace instead of Server
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected from /calls namespace:", socket.id);
+//   });
+// });
+
+// Namespace for Notifications
+// const notificationNamespace = io.of("/notify");
+// notificationNamespace.on("connection", (socket) => {
+//   console.log("A user connected to /notify namespace:", socket.id);
+//   handleNotification(notificationNamespace, socket); // Pass Namespace instead of Server
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected from /notify namespace:", socket.id);
+//   });
+// });
