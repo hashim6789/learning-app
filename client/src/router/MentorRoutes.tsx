@@ -17,13 +17,16 @@ import MentorLessonDetailsPage from "../modules/mentor/pages/lesson/MentorLesson
 import Layout from "../modules/mentor/pages/Layout";
 import MentorProfile from "../modules/mentor/pages/ProfilePage";
 import MentorCreateCourse from "../modules/mentor/pages/course/MentorCreateCourse";
-import VideoCallManagement from "../modules/mentor/pages/video/VideoCallManamgemtnt";
-import LobbyScreen from "../modules/mentor/pages/video/LobbyScreen";
+// import VideoCallManagement from "../modules/mentor/pages/video/VideoCallManamgemtnt";
 import MainChatLayout from "../modules/chat/LearnerChatManagement";
 import SlotManager from "../modules/mentor/pages/meetings/MentorMeetingManagement";
-import MainPage from "../modules/video/VideoCallManagement";
-import CallingPage from "../modules/video/CallingPage";
+// import MainPage from "../modules/video/VideoCallManagement";
+// import CallingPage from "../modules/video/CallingPage";
 import MentorOfferComponent from "../modules/call/MentorOfferComponent";
+// import LobbyScreen from "../modules/call/LobbyScreec";
+// import { SocketProvider } from "../context/socketContext";
+// import RoomPage from "../modules/call/RoomPage";
+import VideoCall from "../modules/call/VideoCallComponent";
 
 export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -74,15 +77,34 @@ export const MentorRoutes = (isAuthenticated: boolean, user: string) => [
                 element: <MentorLessonDetailsPage />,
               },
               // { path: "meetings", element: <VideoCallManagement /> },
-              // { path: "meetings", element: <LobbyScreen /> },
               { path: "meetings", element: <SlotManager /> },
               { path: "my-chats", element: <MainChatLayout /> },
-              { path: "video-call", element: <MainPage /> },
+              // { path: "video-call", element: <MainPage /> },
+              // {
+              //   path: "video-call/offer/:roomId",
+              //   element: <CallingPage />,
+              // },
               {
-                path: "video-call/offer/:roomId",
-                element: <CallingPage />,
+                path: "lobby/:roomId",
+                // element: (
+                //   <SocketProvider>
+                //     <LobbyScreen role="mentor" />,
+                //   </SocketProvider>
+                // ),
+                element: <VideoCall />,
               },
-              { path: "offer/:roomId", element: <MentorOfferComponent /> },
+              // {
+              //   path: "room/:roomId",
+              //   element: (
+              //     <SocketProvider>
+              //       <RoomPage />,
+              //     </SocketProvider>
+              //   ),
+              // },
+              {
+                path: "offer/:roomId",
+                element: <MentorOfferComponent role="mentor" />,
+              },
             ],
           },
         ],

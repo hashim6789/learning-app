@@ -121,16 +121,3 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
 };
 
 export default Navbar;
-
-// ${
-//   theme === "dark"
-//     ? "dark bg-gray-900 text-purple-300 border-purple-800"
-//     : "bg-purple-100 text-purple-800 border-purple-200"
-// }
-
-// text-purple-800 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-800
-
-// text-purple-800 dark:text-purple-300 hover:text-purple-200 dark:hover:text-purple-50 hover:bg-purple-100 dark:hover:bg-purple-700
-
-// bg-white dark:bg-gray-800
-// text-purple-700 dark:text-white

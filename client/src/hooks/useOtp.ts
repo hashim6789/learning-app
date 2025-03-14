@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../shared/utils/api";
-import { config } from "../shared/configs/config";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { verifyOtp } from "../store/thunks/verifyOtp";
 import { User } from "../shared/types/User";
 import { showToast } from "../shared/utils/toastUtils";
-import axios from "axios";
 
 const useOtp = (onComplete?: (otp: string) => void) => {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));

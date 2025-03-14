@@ -24,14 +24,18 @@ import LearningCoursePage from "../modules/learner/pages/learnings/LearningCours
 import MaterialContent from "../modules/learner/components/learnings/MaterialContent";
 import CourseGroupChat from "../modules/learner/pages/chat/LearnerChatManagement";
 import VideoCallPage from "../modules/learner/pages/video/VideoCallPage";
-import { SocketProvider } from "../context/socketContext";
+// import { SocketProvider } from "../context/socketContext";
 import MainChatLayout from "../modules/chat/LearnerChatManagement";
-import MainPage from "../modules/video/VideoCallManagement";
-import { VideoCallProvider } from "../context/videoCallContext";
-import CallingPage from "../modules/video/CallingPage";
-import AnswerVideo from "../modules/video/AnsweringPage";
+// import MainPage from "../modules/video/VideoCallManagement";
+// import { VideoCallProvider } from "../context/videoCallContext";
+// import CallingPage from "../modules/video/CallingPage";
+// import AnswerVideo from "../modules/video/AnsweringPage";
 import LearnerMeetingScheduling from "../modules/learner/pages/meeting/LearenrMeetingScheduling";
 import LearnerAnswerComponent from "../modules/call/LearnerAnswerComponent";
+import MentorOfferComponent from "../modules/call/MentorOfferComponent";
+// import LobbyScreen from "../modules/call/LobbyScreec";
+// import RoomPage from "../modules/call/RoomPage";
+import VideoCall from "../modules/call/VideoCallComponent";
 
 export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
   {
@@ -115,16 +119,37 @@ export const LearnerRoutes = (isAuthenticated: boolean, user: string) => [
                 element: <LearnerMeetingScheduling />,
               },
               // { path: "video-call", element: <VideoCallPage /> },
-              {
-                path: "video-call",
-                element: <MainPage />,
-              },
-              {
-                path: "video-call/answer/:roomId",
-                element: <AnswerVideo />,
-              },
+              // {
+              //   path: "video-call",
+              //   element: <MainPage />,
+              // },
+              // {
+              //   path: "video-call/answer/:roomId",
+              //   element: <AnswerVideo />,
+              // },
 
-              { path: "answer/:roomId", element: <LearnerAnswerComponent /> },
+              {
+                path: "lobby/:roomId",
+                element: <VideoCall />,
+                // element: (
+                //   <SocketProvider>
+                //     <LobbyScreen role="learner" />,
+                //   </SocketProvider>
+                // ),
+              },
+              // {
+              //   path: "room/:roomId",
+              //   element: (
+              //     <SocketProvider>
+              //       <RoomPage />,
+              //     </SocketProvider>
+              //   ),
+              // },
+              {
+                path: "answer/:roomId",
+                element: <MentorOfferComponent role="learner" />,
+              },
+              // { path: "answer/:roomId", element: <LearnerAnswerComponent /> },
             ],
           },
         ],

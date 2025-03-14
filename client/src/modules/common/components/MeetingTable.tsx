@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 interface IMeeting {
   id: string;
   course: { _id: string; title: string };
-  learner: { firstName: string; lastName: string };
-  mentor: { firstName: string; lastName: string };
+  learner: { firstName: string; lastName: string; id: string };
+  mentor: { firstName: string; lastName: string; id: string };
   roomId: string;
   slot: { dateTime: string };
 }
@@ -56,7 +56,8 @@ const ScheduledMeetingsTable: React.FC<Props> = ({ role }) => {
 
   const handleStartCall = (roomId: string) => {
     const action = role === "mentor" ? "offer" : "answer";
-    navigate(`/${role}/${action}/${roomId}`);
+    // navigate(`/${role}/${action}/${roomId}`);
+    navigate(`/${role}/lobby/${roomId}`);
   };
 
   return (

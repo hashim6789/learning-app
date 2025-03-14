@@ -58,10 +58,10 @@ const CourseGrid: React.FC<CourseGridProps> = () => {
               className="pl-10 w-full md:w-[300px] py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
           </div>
-          {/* <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors">
             <Filter className="h-4 w-4" />
             Filters
-          </button> */}
+          </button>
         </div>
       </div>
 

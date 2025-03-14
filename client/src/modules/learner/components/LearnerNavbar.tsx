@@ -159,7 +159,7 @@ const CourseNavbar: React.FC = () => {
           >
             My Chats
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/learner/video-call"
             className={({ isActive }) =>
               isActive
@@ -178,7 +178,7 @@ const CourseNavbar: React.FC = () => {
             }
           >
             My meetings
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
     </nav>

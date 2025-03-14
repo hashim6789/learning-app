@@ -1,15 +1,15 @@
-import React from "react";
-// import MeetingList from "../../tables/MeetingList";
+// import React from "react";
+// // import MeetingList from "../../tables/MeetingList";
 
-interface LobbyScreenProps {}
+// interface LobbyScreenProps {}
 
-const LobbyScreen: React.FC<LobbyScreenProps> = ({}) => {
-  return (
-    <>
-      <div>Scheduled meetings</div>
-      {/* <MeetingList /> */}
-    </>
-  );
-};
+// const LobbyScreen: React.FC<LobbyScreenProps> = ({}) => {
+//   return (
+//     <>
+//       <div>Scheduled meetings</div>
+//       {/* <MeetingList /> */}
+//     </>
+//   );
+// };
 
-export default LobbyScreen;
+// export default LobbyScreen;

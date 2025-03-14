@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import io from "socket.io-client";
+import {
+  socket,
+  getLocalStream,
+  createPeerConnection,
+} from "../../shared/utils/webRTC/webRTC.util";
 
-const socket = io("http://localhost:3000/calls");
+interface VideoCallComponentProps {
+  role: "mentor" | "learner";
+}
 
-const MentorOfferComponent: React.FC = () => {
+const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ role }) => {
   const { roomId } = useParams<{ roomId: string }>();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -12,73 +18,84 @@ const MentorOfferComponent: React.FC = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    console.log("Mentor: Joining room", roomId);
-    socket.emit("joinRoom", roomId);
-
     const setupWebRTC = async () => {
-      console.log("Mentor: Setting up WebRTC");
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      setLocalStream(stream);
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
+      if (!roomId || peerConnection.current) return; // Prevent duplicate connections
+
+      try {
+        // Get user media stream
+        const stream = await getLocalStream();
+        setLocalStream(stream);
+        if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+
+        // Create and store peer connection
+        const pc = createPeerConnection(roomId, stream, remoteVideoRef);
+        peerConnection.current = pc;
+
+        if (role === "mentor") {
+          // Mentor initiates the offer
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          socket.emit("offer", { roomId, offer });
+        }
+      } catch (error) {
+        console.error("Error setting up WebRTC:", error);
       }
-
-      const pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-      });
-
-      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log("Mentor: Emitting ICE candidate", event.candidate);
-          socket.emit("ice-candidate", { roomId, candidate: event.candidate });
-        }
-      };
-
-      pc.ontrack = (event) => {
-        console.log("Mentor: Receiving remote track");
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = event.streams[0];
-        }
-      };
-
-      const offer = await pc.createOffer();
-      console.log("Mentor: Created offer", offer);
-      await pc.setLocalDescription(offer);
-      socket.emit("offer", { roomId, offer });
-
-      peerConnection.current = pc;
     };
 
-    setupWebRTC();
+    if (roomId) {
+      socket.emit("joinRoom", roomId);
+      setupWebRTC();
+    }
 
-    socket.on("answer", async (answer) => {
-      console.log("Mentor: Received answer", answer);
-      if (peerConnection.current) {
-        await peerConnection.current.setRemoteDescription(
-          new RTCSessionDescription(answer)
-        );
+    socket.on("offer", async ({ offer }) => {
+      if (role === "learner" && peerConnection.current) {
+        try {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(offer)
+          );
+          const answer = await peerConnection.current.createAnswer();
+          await peerConnection.current.setLocalDescription(answer);
+          socket.emit("answer", { roomId, answer });
+        } catch (error) {
+          console.error("Error handling offer:", error);
+        }
       }
     });
 
-    socket.on("ice-candidate", (candidate) => {
-      console.log("Mentor: Received ICE candidate", candidate);
+    socket.on("answer", async (answer) => {
       if (peerConnection.current) {
-        peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+        try {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(answer)
+          );
+        } catch (error) {
+          console.error("Error setting remote description:", error);
+        }
+      }
+    });
+
+    socket.on("ice-candidate", async (candidate) => {
+      if (peerConnection.current) {
+        try {
+          await peerConnection.current.addIceCandidate(
+            new RTCIceCandidate(candidate)
+          );
+        } catch (error) {
+          console.error("Error adding ICE candidate:", error);
+        }
       }
     });
 
     return () => {
-      if (peerConnection.current) {
-        peerConnection.current.close();
-      }
+      console.log("Cleaning up WebRTC connection...");
+      peerConnection.current?.close();
+      peerConnection.current = null;
       socket.emit("leaveRoom", roomId);
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice-candidate");
     };
-  }, [roomId]);
+  }, [roomId, role]);
 
   return (
     <div>
@@ -90,4 +107,4 @@ const MentorOfferComponent: React.FC = () => {
   );
 };
 
-export default MentorOfferComponent;
+export default VideoCallComponent;

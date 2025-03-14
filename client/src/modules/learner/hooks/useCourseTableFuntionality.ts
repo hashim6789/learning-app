@@ -9,6 +9,8 @@ interface UseCourseTableFunctionalityOptions {
   itemsPerPage: number;
 }
 
+type Sort = "sortAscPrice";
+
 export function useCourseTableFunctionality({
   itemsPerPage,
 }: UseCourseTableFunctionalityOptions) {
@@ -17,6 +19,8 @@ export function useCourseTableFunctionality({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategpry] = useState("all");
+  const [range, setRange] = useState("all");
+  const [sort, setSort] = useState<"ASC" | "DEC">("ASC");
 
   const [data, setData] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
@@ -30,7 +34,7 @@ export function useCourseTableFunctionality({
       try {
         const auth = isAuthenticated ? "" : "/no-auth";
         const response = await api.get(
-          `/api${auth}/courses?category=${category}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}`
+          `/api${auth}/courses?category=${category}&range=${range}&search=${searchQuery}&page=${currentPage}&limit=${itemsPerPage}&sort=${sort}`
         );
         const result = response.data;
         setData(result.data);
@@ -65,6 +69,9 @@ export function useCourseTableFunctionality({
   return {
     currentPage,
     searchQuery,
+    category,
+    range,
+    sort,
     data,
     totalPages,
     loading,
